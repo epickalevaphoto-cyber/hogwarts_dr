@@ -579,6 +579,39 @@
             color: var(--red);
         }
 
+        /* ===== FACULTY COLOR SELECT ===== */
+        .faculty-color-select {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        .faculty-color-select label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .faculty-color-select label input[type="radio"] {
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .faculty-color-select .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         /* ===== JOURNAL ===== */
         .journal {
             background: var(--bg-card);
@@ -1389,7 +1422,25 @@
                         </div>
                         <div class="import-hint">
                             Поддерживаются: CSV, Excel (.xlsx, .xls)<br>
-                            Формат: Имя,Факультет,Предмет1,Оценка1,Предмет2,Оценка2,...
+                            Каждый лист = отдельный курс
+                        </div>
+                        <div class="faculty-color-select" id="facultyColorSelect">
+                            <label>
+                                <input type="radio" name="facultyColor" value="Гриффиндор" checked>
+                                <span class="color-dot" style="background:#ae0000;"></span> Гриффиндор
+                            </label>
+                            <label>
+                                <input type="radio" name="facultyColor" value="Слизерин">
+                                <span class="color-dot" style="background:#1a6b47;"></span> Слизерин
+                            </label>
+                            <label>
+                                <input type="radio" name="facultyColor" value="Когтевран">
+                                <span class="color-dot" style="background:#2a4b7c;"></span> Когтевран
+                            </label>
+                            <label>
+                                <input type="radio" name="facultyColor" value="Пуффендуй">
+                                <span class="color-dot" style="background:#e3a738;"></span> Пуффендуй
+                            </label>
                         </div>
                         <div class="import-status" id="importStatus">✅ Импорт выполнен</div>
                     </div>
@@ -1576,7 +1627,7 @@
                 'Полеты на метле'
             ],
             2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
+                'Полеты на метле'
             ],
             3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
@@ -1591,7 +1642,7 @@
                 'УЗМС', 'Прорицание'
             ],
             7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'УЗМС'
+                'Прорицание', 'УЗМС'
             ]
         };
 
@@ -1783,7 +1834,7 @@
         }
 
         // ============================================================
-        //  IMPORT FUNCTIONS
+        //  IMPORT FUNCTIONS — адаптированы под вашу таблицу
         // ============================================================
         function showImportStatus(msg, isError = false) {
             const el = document.getElementById('importStatus');
@@ -1792,6 +1843,11 @@
             setTimeout(() => {
                 el.classList.remove('show');
             }, 5000);
+        }
+
+        function getSelectedFaculty() {
+            const selected = document.querySelector('input[name="facultyColor"]:checked');
+            return selected ? selected.value : 'Гриффиндор';
         }
 
         function parseCSVLine(line) {
@@ -1813,67 +1869,54 @@
             return result;
         }
 
-        function importFromCSV(text) {
-            const lines = text.split('\n').filter(l => l.trim());
-            if (lines.length < 2) {
-                showImportStatus('❌ Файл должен содержать заголовок и данные', true);
-                return;
-            }
+        function importFromTableData(header, rows, sheetName, faculty) {
+            // Ищем колонку с именами (первая колонка после пустой)
+            const nameIdx = 0;
+            // Ищем колонку СУММА
+            const sumIdx = header.findIndex(h => /сумма|sum|итого/i.test(h));
 
-            // Парсим заголовок
-            const header = parseCSVLine(lines[0]);
-            // Ищем колонки
-            const nameIdx = header.findIndex(h => /имя|name|ученик|student/i.test(h));
-            const facultyIdx = header.findIndex(h => /факультет|faculty|house/i.test(h));
-
-            if (nameIdx === -1 || facultyIdx === -1) {
-                showImportStatus('❌ Не найдены колонки "Имя" и "Факультет"', true);
-                return;
-            }
-
-            // Собираем предметы из заголовка (все, кроме имени и факультета)
+            // Собираем предметы из заголовка (все колонки кроме первой и СУММА)
             const subjectMap = {};
             header.forEach((h, idx) => {
-                if (idx !== nameIdx && idx !== facultyIdx) {
-                    // Пытаемся сопоставить с известными предметами
+                if (idx !== nameIdx && idx !== sumIdx && h && h.trim()) {
                     const clean = h.replace(/[\[\](){}]/g, '').trim();
+                    // Ищем соответствие с известными предметами
                     const allSubs = getAllSubjects();
-                    const match = allSubs.find(s => s.toLowerCase() === clean.toLowerCase() ||
+                    const match = allSubs.find(s => 
+                        s.toLowerCase() === clean.toLowerCase() ||
                         clean.toLowerCase().includes(s.toLowerCase()) ||
-                        s.toLowerCase().includes(clean.toLowerCase()));
+                        s.toLowerCase().includes(clean.toLowerCase())
+                    );
                     if (match) {
                         subjectMap[idx] = match;
                     }
                 }
             });
 
+            // Определяем курс из названия листа
+            let course = 7;
+            const sheetMatch = sheetName.match(/(\d+)/);
+            if (sheetMatch) {
+                const num = parseInt(sheetMatch[1]);
+                if (num >= 1 && num <= 7) course = num;
+            }
+
             const subjectColumns = Object.keys(subjectMap).map(Number);
             if (subjectColumns.length === 0) {
-                showImportStatus('❌ Не найдены колонки с предметами', true);
-                return;
+                return { error: 'Не найдены колонки с предметами' };
             }
 
             let imported = 0;
             let errors = 0;
 
-            for (let i = 1; i < lines.length; i++) {
-                const values = parseCSVLine(lines[i]);
-                if (values.length < Math.max(nameIdx, facultyIdx) + 1) continue;
+            for (let i = 0; i < rows.length; i++) {
+                const values = rows[i];
+                if (!values || values.length < 2) continue;
 
                 const name = values[nameIdx]?.trim();
-                let faculty = values[facultyIdx]?.trim();
+                if (!name || name === '') continue;
 
-                if (!name) { errors++; continue; }
-                if (!faculty) { errors++; continue; }
-
-                // Проверяем факультет
-                if (!FACULTIES.includes(faculty)) {
-                    const found = FACULTIES.find(f => f.toLowerCase() === faculty.toLowerCase());
-                    if (found) faculty = found;
-                    else { errors++; continue; }
-                }
-
-                // Проверяем, нет ли уже такого студента
+                // Проверяем, есть ли уже такой студент
                 let student = students.find(s => s.name === name && s.faculty === faculty);
                 if (!student) {
                     student = { id: nextId++, name, faculty, grades: {} };
@@ -1887,7 +1930,7 @@
                     const val = values[colIdx]?.trim();
                     if (val && subject) {
                         const num = parseFloat(val.replace(',', '.'));
-                        const available = getAvailableGrades(currentCourse);
+                        const available = getAvailableGrades(course);
                         if (!isNaN(num) && available.includes(num)) {
                             student.grades[subject] = num;
                         }
@@ -1895,12 +1938,65 @@
                 });
             }
 
-            if (imported > 0 || errors > 0) {
-                saveData();
-                renderAll();
-                showImportStatus(`✅ Импортировано: ${imported} студентов, ${errors} ошибок`);
-            } else {
-                showImportStatus('❌ Не удалось импортировать данные', true);
+            return { imported, errors, course };
+        }
+
+        function importFromCSV(text, faculty) {
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length < 2) {
+                return { error: 'Файл должен содержать заголовок и данные' };
+            }
+
+            const header = parseCSVLine(lines[0]);
+            const rows = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = parseCSVLine(lines[i]);
+                if (row.length > 1) rows.push(row);
+            }
+
+            // Определяем курс из названия листа (если есть)
+            // Для CSV используем отдельный подход — определяем по предметам
+            const result = importFromTableData(header, rows, 'Импорт', faculty);
+            return result;
+        }
+
+        function importFromExcel(data, faculty) {
+            if (typeof XLSX === 'undefined') {
+                return { error: 'Библиотека Excel не загружена' };
+            }
+
+            try {
+                const workbook = XLSX.read(data, { type: 'array' });
+                let totalImported = 0;
+                let totalErrors = 0;
+                let courses = [];
+
+                workbook.SheetNames.forEach(sheetName => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const csv = XLSX.utils.sheet_to_csv(sheet);
+                    const lines = csv.split('\n').filter(l => l.trim());
+                    if (lines.length < 2) return;
+
+                    const header = parseCSVLine(lines[0]);
+                    const rows = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const row = parseCSVLine(lines[i]);
+                        if (row.length > 1) rows.push(row);
+                    }
+
+                    const result = importFromTableData(header, rows, sheetName, faculty);
+                    if (result.error) {
+                        totalErrors++;
+                    } else {
+                        totalImported += result.imported || 0;
+                        totalErrors += result.errors || 0;
+                        if (result.course) courses.push(result.course);
+                    }
+                });
+
+                return { imported: totalImported, errors: totalErrors, courses };
+            } catch (err) {
+                return { error: 'Ошибка при чтении Excel: ' + err.message };
             }
         }
 
@@ -2125,7 +2221,7 @@
 
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
+                'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
             ];
             const display = order.filter(s => subs.includes(s));
 
@@ -2365,7 +2461,6 @@
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
             document.head.appendChild(script);
 
-            // Загружаем библиотеку для работы с Excel
             const xlsxScript = document.createElement('script');
             xlsxScript.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
             document.head.appendChild(xlsxScript);
@@ -2502,32 +2597,42 @@
                     return;
                 }
 
-                const reader = new FileReader();
+                const faculty = getSelectedFaculty();
 
                 if (file.name.endsWith('.csv')) {
+                    const reader = new FileReader();
                     reader.onload = function(e) {
-                        importFromCSV(e.target.result);
+                        const result = importFromCSV(e.target.result, faculty);
+                        if (result.error) {
+                            showImportStatus('❌ ' + result.error, true);
+                        } else {
+                            saveData();
+                            renderAll();
+                            showImportStatus(`✅ Импортировано: ${result.imported || 0} студентов, ${result.errors || 0} ошибок`);
+                        }
                     };
                     reader.readAsText(file, 'UTF-8');
                 } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
                     if (typeof XLSX === 'undefined') {
-                        showImportStatus('❌ Библиотека Excel не загружена. Попробуйте CSV формат.', true);
+                        showImportStatus('❌ Библиотека Excel не загружена', true);
                         return;
                     }
+                    const reader = new FileReader();
                     reader.onload = function(e) {
-                        try {
-                            const data = new Uint8Array(e.target.result);
-                            const workbook = XLSX.read(data, { type: 'array' });
-                            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                            const csv = XLSX.utils.sheet_to_csv(firstSheet);
-                            importFromCSV(csv);
-                        } catch (err) {
-                            showImportStatus('❌ Ошибка при чтении Excel файла: ' + err.message, true);
+                        const result = importFromExcel(e.target.result, faculty);
+                        if (result.error) {
+                            showImportStatus('❌ ' + result.error, true);
+                        } else {
+                            saveData();
+                            renderAll();
+                            const courseInfo = result.courses && result.courses.length > 0 ?
+                                ` (курсы: ${[...new Set(result.courses)].join(', ')})` : '';
+                            showImportStatus(`✅ Импортировано: ${result.imported || 0} студентов, ${result.errors || 0} ошибок${courseInfo}`);
                         }
                     };
                     reader.readAsArrayBuffer(file);
                 } else {
-                    showImportStatus('❌ Неподдерживаемый формат файла. Используйте CSV или Excel.', true);
+                    showImportStatus('❌ Неподдерживаемый формат. Используйте CSV или Excel.', true);
                 }
 
                 fileInput.value = '';
