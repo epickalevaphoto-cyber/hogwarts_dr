@@ -489,7 +489,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
             z-index: 1000;
             justify-content: center;
@@ -893,6 +893,8 @@
         #reportContainer table {
             font-size: 0.7rem;
             min-width: auto;
+            width: 100%;
+            border-collapse: collapse;
         }
 
         #reportContainer table th {
@@ -900,11 +902,14 @@
             padding: 4px 6px;
             background: rgba(30, 28, 45, 0.4);
             color: #d4af37;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.2);
+            text-align: left;
         }
 
         #reportContainer table td {
             padding: 3px 6px;
             font-size: 0.7rem;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.08);
         }
 
         #reportContainer h3 {
@@ -913,6 +918,12 @@
             font-family: 'Cinzel Decorative', cursive;
             font-weight: 400;
             font-size: 1rem;
+        }
+
+        #reportContainer .empty-report {
+            color: #555566;
+            text-align: center;
+            padding: 40px;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -1229,7 +1240,7 @@
                 <h2>📊 Годовой отчет</h2>
                 <button class="close-btn" id="closeReportBtn">✕</button>
             </div>
-            <div id="reportContainer" style="overflow-x:auto;"></div>
+            <div id="reportContainer"></div>
             <div class="btn-row" style="margin-top:12px;">
                 <button class="btn-primary" id="exportCsvBtn">📥 Экспорт CSV</button>
                 <button class="btn-secondary" id="printReportBtn">🖨️ Печать</button>
@@ -1239,11 +1250,20 @@
 
     <!-- ===== CERTIFICATE MODAL ===== -->
     <div class="modal-overlay" id="certModal">
-        <div class="modal-content" style="max-width:700px;background:transparent;border:none;box-shadow:none;padding:0;">
-            <div id="certificateContainer"></div>
-            <div style="text-align:center;margin-top:10px;">
-                <button class="cert-download" id="downloadCertBtn">📥 Скачать аттестат (PNG)</button>
+        <div class="modal-content" style="max-width:700px;background:#1a1828;border:1px solid rgba(212,175,55,0.15);border-radius:12px;padding:24px 28px;">
+            <div class="modal-header">
+                <h2>🏆 Аттестат</h2>
+                <button class="close-btn" id="closeCertModalBtn">✕</button>
             </div>
+            <div class="form-group">
+                <label>👤 Выберите ученика</label>
+                <select class="cert-select" id="certStudentSelect">
+                    <option value="">— Выберите ученика —</option>
+                </select>
+            </div>
+            <button class="cert-download" id="generateCertBtn" style="width:100%;">📜 Сгенерировать аттестат</button>
+            <div id="certificateContainer" style="margin-top:16px;"></div>
+            <button class="cert-download" id="downloadCertBtn" style="display:none;">📥 Скачать аттестат (PNG)</button>
         </div>
     </div>
 
@@ -1274,7 +1294,7 @@
 
     <script>
         // ============================================================
-        //  CONFIG — ИСПРАВЛЕНЫ ПРЕДМЕТЫ (НА 7 КУРСЕ ЕСТЬ ПОЛЕТЫ)
+        //  CONFIG
         // ============================================================
         const USERS = {
             prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
@@ -1298,13 +1318,6 @@
             PASSWORD_MAP[USERS[key].password] = key;
         });
 
-        // ============================================================
-        //  ПРЕДМЕТЫ — ИСПРАВЛЕНЫ
-        //  — 1 курс: 8 предметов (с Полётами)
-        //  — 2 курс: 9 предметов (без Полётов, с УЗМС и Прорицанием)
-        //  — 3-6 курсы: 9 предметов
-        //  — 7 курс: 10 предметов (с Полётами!)
-        // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'Полеты на метле'
@@ -1500,7 +1513,6 @@
                 const currentCourse = detectCourse(student);
                 if (currentCourse === newCourse) { errors++; return; }
 
-                // Очищаем оценки (на новом курсе будут новые предметы)
                 student.grades = {};
                 transferred++;
                 names.push(student.name);
@@ -1599,7 +1611,6 @@
             });
             tbody.innerHTML = html;
 
-            // Delete buttons
             if (canManageStudents()) {
                 tbody.querySelectorAll('.del-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -1610,7 +1621,6 @@
                 });
             }
 
-            // Grade editing
             if (canEdit) {
                 tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
                     input.addEventListener('blur', function() {
@@ -1738,7 +1748,6 @@
                 return;
             }
 
-            // Для аттестата используем предметы 7 курса (с Полётами!)
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
                 'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
@@ -1748,7 +1757,6 @@
 
             let html = `
                     <div class="certificate" id="certificateDisplay">
-                        <button class="close-cert" id="closeCertBtn2">✕</button>
                         <div class="school-name">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
                         <div class="cert-title">CERTIFICATE OF COMPLETION</div>
                         <div class="student-name-cert">${studentName.toUpperCase()}</div>
@@ -1791,10 +1799,7 @@
                 `;
 
             document.getElementById('certificateContainer').innerHTML = html;
-
-            document.getElementById('closeCertBtn2').addEventListener('click', function() {
-                document.getElementById('certModal').classList.remove('open');
-            });
+            document.getElementById('downloadCertBtn').style.display = 'inline-block';
         }
 
         function downloadCertificate() {
@@ -1872,7 +1877,7 @@
             });
 
             if (!Object.keys(grouped).length) {
-                html = `<p style="color:#555566;text-align:center;padding:40px;">Нет данных для отчета</p>`;
+                html = `<p class="empty-report">Нет данных для отчета</p>`;
             }
 
             return html;
@@ -2175,37 +2180,26 @@
                     return;
                 }
                 document.getElementById('certificateContainer').innerHTML = '';
+                document.getElementById('downloadCertBtn').style.display = 'none';
                 document.getElementById('certModal').classList.add('open');
                 renderCertSelect();
+            });
+
+            document.getElementById('closeCertModalBtn').addEventListener('click', function() {
+                document.getElementById('certModal').classList.remove('open');
             });
 
             document.getElementById('certModal').addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('open');
             });
 
-            // Добавляем select для аттестата, если его нет
-            let certSelect = document.getElementById('certStudentSelect');
-            if (!certSelect) {
-                const certModalContent = document.querySelector('#certModal .modal-content');
-                const certSelectDiv = document.createElement('div');
-                certSelectDiv.className = 'form-group';
-                certSelectDiv.innerHTML = `
-                            <label>👤 Выберите ученика</label>
-                            <select class="cert-select" id="certStudentSelect">
-                                <option value="">— Выберите ученика —</option>
-                            </select>
-                        `;
-                const downloadBtn = document.querySelector('#certModal .cert-download');
-                certModalContent.insertBefore(certSelectDiv, downloadBtn);
-                certSelect = document.getElementById('certStudentSelect');
-            }
-
-            certSelect.addEventListener('change', function() {
-                if (this.value) {
-                    generateCertificate(this.value);
-                } else {
-                    document.getElementById('certificateContainer').innerHTML = '';
+            document.getElementById('generateCertBtn').addEventListener('click', function() {
+                const name = document.getElementById('certStudentSelect').value;
+                if (!name) {
+                    alert('Выберите ученика');
+                    return;
                 }
+                generateCertificate(name);
             });
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
