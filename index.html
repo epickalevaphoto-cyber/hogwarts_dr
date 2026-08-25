@@ -126,16 +126,6 @@
             box-shadow: 0 0 20px rgba(46, 125, 50, 0.25);
         }
 
-        .header-controls .btn-orange {
-            background: linear-gradient(135deg, #e65100, #f57c00);
-            border: none;
-            color: #fff;
-        }
-
-        .header-controls .btn-orange:hover {
-            box-shadow: 0 0 20px rgba(245, 124, 0, 0.25);
-        }
-
         .role-badge {
             font-size: 0.5rem;
             padding: 2px 10px;
@@ -899,6 +889,32 @@
             border-color: #d4af37;
         }
 
+        /* ===== REPORT STYLES ===== */
+        #reportContainer table {
+            font-size: 0.7rem;
+            min-width: auto;
+        }
+
+        #reportContainer table th {
+            font-size: 0.55rem;
+            padding: 4px 6px;
+            background: rgba(30, 28, 45, 0.4);
+            color: #d4af37;
+        }
+
+        #reportContainer table td {
+            padding: 3px 6px;
+            font-size: 0.7rem;
+        }
+
+        #reportContainer h3 {
+            color: #d4af37;
+            margin: 16px 0 8px;
+            font-family: 'Cinzel Decorative', cursive;
+            font-weight: 400;
+            font-size: 1rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .main-grid {
@@ -1258,7 +1274,7 @@
 
     <script>
         // ============================================================
-        //  CONFIG — ИСПРАВЛЕНЫ ПРЕДМЕТЫ
+        //  CONFIG — ИСПРАВЛЕНЫ ПРЕДМЕТЫ (НА 7 КУРСЕ ЕСТЬ ПОЛЕТЫ)
         // ============================================================
         const USERS = {
             prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
@@ -1287,7 +1303,7 @@
         //  — 1 курс: 8 предметов (с Полётами)
         //  — 2 курс: 9 предметов (без Полётов, с УЗМС и Прорицанием)
         //  — 3-6 курсы: 9 предметов
-        //  — 7 курс: 9 предметов (без Полётов)
+        //  — 7 курс: 10 предметов (с Полётами!)
         // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
@@ -1309,7 +1325,7 @@
                 'УЗМС', 'Прорицание'
             ],
             7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Прорицание', 'УЗМС'
+                'Полеты на метле', 'Прорицание', 'УЗМС'
             ]
         };
 
@@ -1677,15 +1693,12 @@
             });
             container.innerHTML = html;
 
-            // Обновляем счетчик
             updateSelectedCount();
 
-            // События для чекбоксов
             container.querySelectorAll('.student-check').forEach(cb => {
                 cb.addEventListener('change', updateSelectedCount);
             });
 
-            // Выбрать всех
             document.getElementById('selectAllCheck').addEventListener('change', function() {
                 const checks = container.querySelectorAll('.student-check');
                 checks.forEach(cb => cb.checked = this.checked);
@@ -1694,7 +1707,6 @@
         }
 
         function updateSelectedCount() {
-            const checks = document.querySelectorAll('.student-check');
             const checked = document.querySelectorAll('.student-check:checked');
             document.getElementById('selectedCount').textContent = `Выбрано: ${checked.length}`;
         }
@@ -1717,7 +1729,7 @@
         }
 
         // ============================================================
-        //  CERTIFICATE
+        //  CERTIFICATE — ИСПРАВЛЕН
         // ============================================================
         function generateCertificate(studentName) {
             const student = students.find(s => s.name === studentName);
@@ -1726,10 +1738,10 @@
                 return;
             }
 
-            // Для аттестата используем предметы 7 курса
+            // Для аттестата используем предметы 7 курса (с Полётами!)
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
-                'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
+                'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
             ];
             const display = order.filter(s => subs.includes(s));
             const deanName = DEANS[student.faculty] || 'Декан факультета';
@@ -1815,7 +1827,7 @@
         }
 
         // ============================================================
-        //  REPORT
+        //  REPORT — ИСПРАВЛЕН
         // ============================================================
         function generateReport() {
             const allStudents = students.map(s => ({ ...s, course: detectCourse(s) }));
@@ -1837,14 +1849,14 @@
                 const list = grouped[c];
                 const subs = SUBJECTS[parseInt(c)] || SUBJECTS[1];
 
-                html += `<h3 style="color:#d4af37;margin:16px 0 8px;">${c} курс (${subs.length} предметов)</h3>`;
-                html += `<table style="font-size:0.7rem;"><thead><tr><th>Ученик</th><th>Факультет</th>`;
-                subs.forEach(s => { html += `<th style="font-size:0.55rem;">${s}</th>`; });
-                html += `<th style="color:#d4af37;">Сумма</th></tr></thead><tbody>`;
+                html += `<h3>${c} курс (${subs.length} предметов)</h3>`;
+                html += `<table><thead><tr><th>Ученик</th><th>Факультет</th>`;
+                subs.forEach(s => { html += `<th>${s}</th>`; });
+                html += `<th>Сумма</th></tr></thead><tbody>`;
 
                 list.forEach(st => {
                     html +=
-                        `<tr><td style="font-weight:500;">${st.name}</td><td style="color:#666688;font-size:0.6rem;">${st.faculty}</td>`;
+                        `<tr><td><strong>${st.name}</strong></td><td style="color:#666688;font-size:0.6rem;">${st.faculty}</td>`;
                     let sum = 0;
                     subs.forEach(sub => {
                         const v = st.grades[sub];
@@ -2152,7 +2164,7 @@
                 clearFaculty(currentFaculty);
             });
 
-            // Certificate
+            // ===== CERTIFICATE =====
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2171,20 +2183,24 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            // Добавляем select для аттестата
-            const certModalContent = document.querySelector('#certModal .modal-content');
-            const certSelectDiv = document.createElement('div');
-            certSelectDiv.className = 'form-group';
-            certSelectDiv.innerHTML = `
-                        <label>👤 Выберите ученика</label>
-                        <select class="cert-select" id="certStudentSelect">
-                            <option value="">— Выберите ученика —</option>
-                        </select>
-                    `;
-            const downloadBtn = document.querySelector('#certModal .cert-download');
-            certModalContent.insertBefore(certSelectDiv, downloadBtn);
+            // Добавляем select для аттестата, если его нет
+            let certSelect = document.getElementById('certStudentSelect');
+            if (!certSelect) {
+                const certModalContent = document.querySelector('#certModal .modal-content');
+                const certSelectDiv = document.createElement('div');
+                certSelectDiv.className = 'form-group';
+                certSelectDiv.innerHTML = `
+                            <label>👤 Выберите ученика</label>
+                            <select class="cert-select" id="certStudentSelect">
+                                <option value="">— Выберите ученика —</option>
+                            </select>
+                        `;
+                const downloadBtn = document.querySelector('#certModal .cert-download');
+                certModalContent.insertBefore(certSelectDiv, downloadBtn);
+                certSelect = document.getElementById('certStudentSelect');
+            }
 
-            document.getElementById('certStudentSelect').addEventListener('change', function() {
+            certSelect.addEventListener('change', function() {
                 if (this.value) {
                     generateCertificate(this.value);
                 } else {
@@ -2194,7 +2210,7 @@
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
-            // Report
+            // ===== REPORT =====
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
