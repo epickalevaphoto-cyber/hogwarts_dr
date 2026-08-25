@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ж.А.Б.А. — Электронный дневник</title>
+    <title>Hogwarts Daily — Электронный дневник</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -1218,9 +1218,9 @@
         <!-- ===== HEADER ===== -->
         <header class="header">
             <div class="header-brand">
-                <span class="crest">📜</span>
+                <span class="crest">🏰</span>
                 <div>
-                    <h1>Ж.А.Б.А.</h1>
+                    <h1>Hogwarts Daily</h1>
                     <span class="subtitle">Школа Чародейства и Волшебства</span>
                 </div>
             </div>
@@ -1292,7 +1292,7 @@
                 <div class="journal-header">
                     <div class="title-group">
                         <h2 id="journalTitle">📖 Журнал: 7 курс</h2>
-                        <span class="sub" id="journalSub">Когтевран · 2026–2027</span>
+                        <span class="sub" id="journalSub">Гриффиндор · 2026–2027</span>
                     </div>
                     <div class="stats">
                         <span>👨‍🎓 <span class="num" id="studentCount">0</span></span>
@@ -1380,7 +1380,7 @@
     <!-- ===== LOGIN MODAL ===== -->
     <div class="login-overlay" id="loginModal">
         <div class="login-box">
-            <h2>🔐 Ж.А.Б.А.</h2>
+            <h2>🔐 Hogwarts Daily</h2>
             <div class="sub">Вход в систему</div>
             <form id="loginForm" autocomplete="off">
                 <label for="loginPassword">Пароль</label>
@@ -1415,7 +1415,7 @@
     <div class="modal-overlay" id="certModal">
         <div class="modal-content" style="max-width:800px;">
             <button class="close-modal" id="closeCertModalBtn">✕</button>
-            <h2>🏆 Аттестат Ж.А.Б.А.</h2>
+            <h2>🏆 Аттестат</h2>
             <select class="cert-select" id="certStudentSelect">
                 <option value="">— Выберите ученика —</option>
             </select>
@@ -1429,20 +1429,20 @@
         //  CONFIG
         // ============================================================
         const USERS = {
-            prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
-            prof_snape: { password: 'snape', role: 'professor', name: 'С. Снейп' },
-            prof_mcgonagall: { password: 'minerva', role: 'professor', name: 'М. МакГонагалл' },
-            prof_flitwick: { password: 'flitwick', role: 'professor', name: 'Ф. Флитвик' },
+            prof_default: { password: 'prof2026', role: 'professor', name: 'Professor' },
+            prof_snape: { password: 'snape', role: 'professor', name: 'S. Snape' },
+            prof_mcgonagall: { password: 'minerva', role: 'professor', name: 'M. McGonagall' },
+            prof_flitwick: { password: 'flitwick', role: 'professor', name: 'F. Flitwick' },
 
-            dean_default: { password: 'dean2026', role: 'dean', name: 'Декан' },
-            dean_gryffindor: { password: 'gryffindor', role: 'dean', name: 'Декан Гриффиндора' },
-            dean_slytherin: { password: 'slytherin', role: 'dean', name: 'Декан Слизерина' },
-            dean_ravenclaw: { password: 'ravenclaw', role: 'dean', name: 'Декан Когтеврана' },
-            dean_hufflepuff: { password: 'hufflepuff', role: 'dean', name: 'Декан Пуффендуя' },
+            dean_default: { password: 'dean2026', role: 'dean', name: 'Dean' },
+            dean_gryffindor: { password: 'gryffindor', role: 'dean', name: 'Dean of Gryffindor' },
+            dean_slytherin: { password: 'slytherin', role: 'dean', name: 'Dean of Slytherin' },
+            dean_ravenclaw: { password: 'ravenclaw', role: 'dean', name: 'Dean of Ravenclaw' },
+            dean_hufflepuff: { password: 'hufflepuff', role: 'dean', name: 'Dean of Hufflepuff' },
 
-            headmaster_default: { password: 'admin2026', role: 'headmaster', name: 'Завуч' },
-            headmaster_dumbledore: { password: 'dumbledore', role: 'headmaster', name: 'А. Дамблдор' },
-            headmaster_sprout: { password: 'sprout', role: 'headmaster', name: 'П. Стебль' }
+            headmaster_default: { password: 'admin2026', role: 'headmaster', name: 'Headmaster' },
+            headmaster_dumbledore: { password: 'dumbledore', role: 'headmaster', name: 'A. Dumbledore' },
+            headmaster_sprout: { password: 'sprout', role: 'headmaster', name: 'P. Sprout' }
         };
 
         const PASSWORD_MAP = {};
@@ -1451,7 +1451,7 @@
         });
 
         // ============================================================
-        //  SUBJECTS — правильное количество по курсам
+        //  SUBJECTS — НА 7 КУРСЕ 10 ПРЕДМЕТОВ (С ПОЛЕТАМИ)
         // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
@@ -1473,7 +1473,7 @@
                 'УЗМС', 'Прорицание'
             ],
             7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Прорицание', 'УЗМС'
+                'Полеты на метле', 'Прорицание', 'УЗМС'
             ]
         };
 
@@ -1483,7 +1483,6 @@
         const GRADE_COLORS = { 5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d', 2: '#ff9800', 1: '#ef5350', 0: '#d32f2f' };
         const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
 
-        // Деканы факультетов для аттестата
         const DEANS = {
             'Гриффиндор': 'Минерва МакГонагалл',
             'Слизерин': 'Гораций Слизнорт',
@@ -1496,7 +1495,7 @@
         // ============================================================
         let students = [];
         let currentCourse = 7;
-        let currentFaculty = 'Когтевран';
+        let currentFaculty = 'Гриффиндор';
         let nextId = 1;
         let userRole = 'guest';
         let userName = '';
@@ -1514,7 +1513,7 @@
                     students = d.students || [];
                     nextId = d.nextId || 1;
                     currentCourse = d.currentCourse || 7;
-                    currentFaculty = d.currentFaculty || 'Когтевран';
+                    currentFaculty = d.currentFaculty || 'Гриффиндор';
                     return;
                 } catch (e) {}
             }
@@ -1573,14 +1572,9 @@
             const keys = Object.keys(student.grades);
             for (let c = 1; c <= 7; c++) {
                 const subs = SUBJECTS[c] || [];
-                if (subs.every(s => keys.includes(s)) && subs.length > 0) return c;
-            }
-            // Проверяем по количеству предметов
-            for (let c = 1; c <= 7; c++) {
-                const subs = SUBJECTS[c] || [];
                 let match = 0;
                 subs.forEach(s => { if (keys.includes(s)) match++; });
-                if (match >= subs.length * 0.7) return c;
+                if (match >= subs.length * 0.6 && subs.length > 0) return c;
             }
             return '?';
         }
@@ -1864,7 +1858,6 @@
 
             const journalView = document.getElementById('journalView');
             const mgmtPage = document.getElementById('mgmtPage');
-            const sidebar = document.getElementById('sidebar');
             const mainGrid = document.getElementById('mainGrid');
 
             if (isMgmtMode && canManageStudents()) {
@@ -1888,9 +1881,10 @@
                 return;
             }
 
+            // Для аттестата используем все 10 предметов 7 курса
             const subs = SUBJECTS[7] || SUBJECTS[1];
-            const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение', 'Полеты на метле',
-                'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
+            const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
+                'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
             ];
             const display = order.filter(s => subs.includes(s));
 
@@ -2056,7 +2050,7 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `ЖАБА_отчет_${new Date().toISOString().slice(0,10)}.csv`;
+            link.download = `HogwartsDaily_отчет_${new Date().toISOString().slice(0,10)}.csv`;
             link.click();
         }
 
@@ -2126,7 +2120,6 @@
         function init() {
             loadData();
 
-            // Загружаем html2canvas
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
             document.head.appendChild(script);
@@ -2163,7 +2156,6 @@
                 });
             });
 
-            // Login
             document.getElementById('loginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.add('open');
                 document.getElementById('loginPassword').focus();
@@ -2192,7 +2184,6 @@
                 }
             });
 
-            // Management toggle
             document.getElementById('mgmtToggleBtn').addEventListener('click', function() {
                 if (!canManageStudents()) {
                     alert('Доступ только у деканов и завуча');
@@ -2213,7 +2204,6 @@
                 renderAll();
             });
 
-            // MGMT: Add student
             document.getElementById('mgmtAddBtn').addEventListener('click', function() {
                 const name = document.getElementById('mgmtNameInput').value;
                 const faculty = document.getElementById('mgmtFacultySelect').value;
@@ -2225,7 +2215,6 @@
                 if (e.key === 'Enter') document.getElementById('mgmtAddBtn').click();
             });
 
-            // MGMT: Mass add
             document.getElementById('mgmtMassBtn').addEventListener('click', function() {
                 const text = document.getElementById('mgmtMassInput').value;
                 if (text.trim()) {
@@ -2236,7 +2225,6 @@
                 }
             });
 
-            // MGMT: Remove faculty
             document.getElementById('mgmtRemoveFacultyBtn').addEventListener('click', function() {
                 const faculty = prompt('Введите название факультета для удаления:');
                 if (faculty && FACULTIES.includes(faculty)) {
@@ -2246,7 +2234,6 @@
                 }
             });
 
-            // MGMT: Filter
             document.querySelectorAll('#mgmtFilter button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('#mgmtFilter button').forEach(b => b.classList.remove(
@@ -2256,7 +2243,6 @@
                 });
             });
 
-            // Certificate
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2280,16 +2266,13 @@
                 }
             });
 
-            // Download certificate
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
-            // Report
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
             });
 
-            // Close modals
             document.getElementById('closeReportBtn').addEventListener('click', () => {
                 document.getElementById('reportModal').classList.remove('open');
             });
@@ -2304,11 +2287,9 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            // Export
             document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
             document.getElementById('printReportBtn').addEventListener('click', () => window.print());
 
-            // Cleanup
             window.addEventListener('beforeunload', () => {
                 if (userRole !== 'guest') unregisterProfessor();
             });
