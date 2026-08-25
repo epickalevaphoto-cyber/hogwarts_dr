@@ -28,7 +28,6 @@
             width: 100%;
         }
 
-        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -174,14 +173,12 @@
             }
         }
 
-        /* ===== MAIN GRID ===== */
         .main-grid {
             display: grid;
             grid-template-columns: 200px 1fr;
             gap: 20px;
         }
 
-        /* ===== SIDEBAR ===== */
         .sidebar {
             background: rgba(18, 16, 26, 0.85);
             border-radius: 12px;
@@ -300,7 +297,6 @@
             border-color: #ef5350;
         }
 
-        /* ===== JOURNAL ===== */
         .journal {
             background: rgba(18, 16, 26, 0.85);
             border-radius: 12px;
@@ -371,7 +367,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== TABLE ===== */
         .table-wrap {
             overflow-x: auto;
         }
@@ -520,7 +515,7 @@
             background: #1a1828;
             border-radius: 12px;
             padding: 24px 28px;
-            max-width: 520px;
+            max-width: 560px;
             width: 100%;
             max-height: 90vh;
             overflow: auto;
@@ -696,75 +691,66 @@
             margin-top: 4px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .sidebar .title {
-                grid-column: 1 / -1;
-            }
-            .sidebar-actions {
-                grid-column: 1 / -1;
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            .sidebar-actions button {
-                flex: 1;
-                justify-content: center;
-                min-width: 80px;
-            }
-            .faculty-list {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 2px;
-            }
+        .modal-content .student-check-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 8px 10px;
+            border: 1px solid rgba(60, 60, 80, 0.15);
         }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .header {
-                padding: 10px 14px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .header-brand h1 {
-                font-size: 1rem;
-            }
-            .header-controls {
-                justify-content: center;
-            }
-            .header-controls select,
-            .header-controls button {
-                font-size: 0.6rem;
-                padding: 4px 10px;
-            }
-            .journal {
-                padding: 10px 12px;
-            }
-            .modal-content {
-                padding: 16px;
-            }
-            .modal-content .form-row {
-                flex-direction: column;
-            }
-            .sidebar {
-                grid-template-columns: 1fr;
-            }
-            .faculty-list {
-                grid-template-columns: 1fr 1fr;
-            }
+        .modal-content .student-check-list .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
         }
 
-        /* Certificate */
+        .modal-content .student-check-list .check-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .modal-content .student-check-list .check-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: #d4af37;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .modal-content .student-check-list .check-item .check-name {
+            flex: 1;
+        }
+
+        .modal-content .student-check-list .check-item .check-course {
+            font-size: 0.6rem;
+            color: #555566;
+        }
+
+        .modal-content .select-all-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 6px 8px 6px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.1);
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+            color: #8888aa;
+        }
+
+        .modal-content .select-all-row input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: #d4af37;
+            cursor: pointer;
+        }
+
+        /* ===== CERTIFICATE ===== */
         .certificate {
             background: #f5e6c8;
             padding: 30px 32px;
@@ -911,6 +897,111 @@
         .cert-select:focus {
             outline: none;
             border-color: #d4af37;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .sidebar .title {
+                grid-column: 1 / -1;
+            }
+            .sidebar-actions {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sidebar-actions button {
+                flex: 1;
+                justify-content: center;
+                min-width: 80px;
+            }
+            .faculty-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header {
+                padding: 10px 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-brand h1 {
+                font-size: 1rem;
+            }
+            .header-controls {
+                justify-content: center;
+            }
+            .header-controls select,
+            .header-controls button {
+                font-size: 0.6rem;
+                padding: 4px 10px;
+            }
+            .journal {
+                padding: 10px 12px;
+            }
+            .modal-content {
+                padding: 16px;
+            }
+            .modal-content .form-row {
+                flex-direction: column;
+            }
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            .faculty-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media print {
+            .header,
+            .sidebar,
+            .modal-content .close-btn,
+            .btn-row,
+            .export-actions {
+                display: none !important;
+            }
+            .modal-overlay {
+                position: static !important;
+                background: none !important;
+                backdrop-filter: none !important;
+                padding: 0 !important;
+            }
+            .modal-content {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                max-height: none !important;
+                background: white !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            table {
+                font-size: 0.7rem !important;
+            }
+            th {
+                background: #f0f0f0 !important;
+                color: #333 !important;
+            }
+            td {
+                border-color: #ddd !important;
+            }
         }
     </style>
 </head>
@@ -1066,39 +1157,50 @@
     <div class="modal-overlay" id="transferModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🔄 Перевод студента</h2>
+                <h2>🔄 Перевод студентов</h2>
                 <button class="close-btn" id="closeTransferBtn">✕</button>
             </div>
 
-            <div class="form-group">
-                <label>👤 Выберите студента</label>
-                <select id="transferStudentSelect">
-                    <option value="">— Выберите студента —</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📚 С факультета</label>
+                    <select id="transferFacultySelect">
+                        <option value="Гриффиндор">🦁 Гриффиндор</option>
+                        <option value="Слизерин">🐍 Слизерин</option>
+                        <option value="Когтевран">🦅 Когтевран</option>
+                        <option value="Пуффендуй">🦡 Пуффендуй</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📚 На курс</label>
+                    <select id="transferNewCourse">
+                        <option value="1">1 курс</option>
+                        <option value="2">2 курс</option>
+                        <option value="3">3 курс</option>
+                        <option value="4">4 курс</option>
+                        <option value="5">5 курс</option>
+                        <option value="6">6 курс</option>
+                        <option value="7">7 курс</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="info-box" id="transferInfo">
-                <div><span class="label">Текущий курс:</span> <span class="value" id="transferCurrentCourse">—</span></div>
-                <div><span class="label">Факультет:</span> <span class="value" id="transferFaculty">—</span></div>
-            </div>
-
             <div class="form-group">
-                <label>📚 Новый курс</label>
-                <select id="transferNewCourse">
-                    <option value="1">1 курс</option>
-                    <option value="2">2 курс</option>
-                    <option value="3">3 курс</option>
-                    <option value="4">4 курс</option>
-                    <option value="5">5 курс</option>
-                    <option value="6">6 курс</option>
-                    <option value="7">7 курс</option>
-                </select>
+                <label>👤 Выберите студентов для перевода</label>
+                <div class="select-all-row">
+                    <input type="checkbox" id="selectAllCheck">
+                    <label for="selectAllCheck" style="cursor:pointer;">Выбрать всех</label>
+                    <span style="margin-left:auto;font-size:0.65rem;color:#555566;" id="selectedCount">Выбрано: 0</span>
+                </div>
+                <div class="student-check-list" id="transferStudentList">
+                    <div style="color:#555566;text-align:center;padding:12px;font-size:0.75rem;">Нет студентов на этом факультете</div>
+                </div>
             </div>
 
             <div class="status-msg" id="transferStatus"></div>
 
             <div class="btn-row">
-                <button class="btn-primary" id="transferConfirmBtn">🔄 Перевести</button>
+                <button class="btn-primary" id="transferConfirmBtn">🔄 Перевести выбранных</button>
                 <button class="btn-secondary" id="transferCancelBtn">Отмена</button>
             </div>
         </div>
@@ -1156,7 +1258,7 @@
 
     <script>
         // ============================================================
-        //  CONFIG
+        //  CONFIG — ИСПРАВЛЕНЫ ПРЕДМЕТЫ
         // ============================================================
         const USERS = {
             prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
@@ -1180,12 +1282,19 @@
             PASSWORD_MAP[USERS[key].password] = key;
         });
 
+        // ============================================================
+        //  ПРЕДМЕТЫ — ИСПРАВЛЕНЫ
+        //  — 1 курс: 8 предметов (с Полётами)
+        //  — 2 курс: 9 предметов (без Полётов, с УЗМС и Прорицанием)
+        //  — 3-6 курсы: 9 предметов
+        //  — 7 курс: 9 предметов (без Полётов)
+        // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'Полеты на метле'
             ],
             2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле'
+                'УЗМС', 'Прорицание'
             ],
             3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
@@ -1363,27 +1472,30 @@
             return false;
         }
 
-        function transferStudent(studentId, newCourse) {
-            const student = students.find(s => s.id === studentId);
-            if (!student) return { error: 'Студент не найден' };
+        function transferStudents(studentIds, newCourse) {
+            let transferred = 0;
+            let errors = 0;
+            let names = [];
 
-            const currentCourse = detectCourse(student);
-            if (currentCourse === newCourse) {
-                return { error: 'Студент уже на этом курсе' };
+            studentIds.forEach(id => {
+                const student = students.find(s => s.id === id);
+                if (!student) { errors++; return; }
+
+                const currentCourse = detectCourse(student);
+                if (currentCourse === newCourse) { errors++; return; }
+
+                // Очищаем оценки (на новом курсе будут новые предметы)
+                student.grades = {};
+                transferred++;
+                names.push(student.name);
+            });
+
+            if (transferred > 0) {
+                saveData();
+                renderAll();
             }
 
-            // Очищаем оценки (на новом курсе будут новые предметы)
-            student.grades = {};
-            saveData();
-            renderAll();
-
-            return {
-                success: true,
-                name: student.name,
-                faculty: student.faculty,
-                fromCourse: currentCourse,
-                toCourse: newCourse
-            };
+            return { transferred, errors, names };
         }
 
         // ============================================================
@@ -1394,7 +1506,6 @@
             renderJournal();
             renderLegend();
             renderCertSelect();
-            renderTransferSelect();
             updateUI();
         }
 
@@ -1540,22 +1651,52 @@
             }
         }
 
-        function renderTransferSelect() {
-            const select = document.getElementById('transferStudentSelect');
-            if (!select) return;
-            const currentVal = select.value;
-            select.innerHTML = `<option value="">— Выберите студента —</option>`;
-            const sorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
-            sorted.forEach(s => {
-                const course = detectCourse(s);
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.textContent = `${s.name} (${s.faculty}, ${course} курс)`;
-                select.appendChild(opt);
-            });
-            if (currentVal && students.some(s => s.id === parseInt(currentVal))) {
-                select.value = currentVal;
+        function renderTransferList() {
+            const faculty = document.getElementById('transferFacultySelect').value;
+            const filtered = students.filter(s => s.faculty === faculty);
+            const container = document.getElementById('transferStudentList');
+
+            if (!filtered.length) {
+                container.innerHTML =
+                    `<div style="color:#555566;text-align:center;padding:12px;font-size:0.75rem;">Нет студентов на этом факультете</div>`;
+                document.getElementById('selectAllCheck').checked = false;
+                document.getElementById('selectedCount').textContent = 'Выбрано: 0';
+                return;
             }
+
+            let html = '';
+            filtered.forEach(s => {
+                const course = detectCourse(s);
+                html += `
+                        <div class="check-item">
+                            <input type="checkbox" class="student-check" value="${s.id}">
+                            <span class="check-name">${s.name}</span>
+                            <span class="check-course">${course} курс</span>
+                        </div>
+                    `;
+            });
+            container.innerHTML = html;
+
+            // Обновляем счетчик
+            updateSelectedCount();
+
+            // События для чекбоксов
+            container.querySelectorAll('.student-check').forEach(cb => {
+                cb.addEventListener('change', updateSelectedCount);
+            });
+
+            // Выбрать всех
+            document.getElementById('selectAllCheck').addEventListener('change', function() {
+                const checks = container.querySelectorAll('.student-check');
+                checks.forEach(cb => cb.checked = this.checked);
+                updateSelectedCount();
+            });
+        }
+
+        function updateSelectedCount() {
+            const checks = document.querySelectorAll('.student-check');
+            const checked = document.querySelectorAll('.student-check:checked');
+            document.getElementById('selectedCount').textContent = `Выбрано: ${checked.length}`;
         }
 
         function updateUI() {
@@ -1585,6 +1726,7 @@
                 return;
             }
 
+            // Для аттестата используем предметы 7 курса
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
                 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
@@ -1638,7 +1780,6 @@
 
             document.getElementById('certificateContainer').innerHTML = html;
 
-            // Close button
             document.getElementById('closeCertBtn2').addEventListener('click', function() {
                 document.getElementById('certModal').classList.remove('open');
             });
@@ -1955,9 +2096,7 @@
                 }
                 document.getElementById('transferModal').classList.add('open');
                 document.getElementById('transferStatus').className = 'status-msg';
-                renderTransferSelect();
-                document.getElementById('transferCurrentCourse').textContent = '—';
-                document.getElementById('transferFaculty').textContent = '—';
+                renderTransferList();
             });
 
             document.getElementById('closeTransferBtn').addEventListener('click', function() {
@@ -1972,48 +2111,35 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            document.getElementById('transferStudentSelect').addEventListener('change', function() {
-                const id = parseInt(this.value);
-                if (id) {
-                    const student = students.find(s => s.id === id);
-                    if (student) {
-                        const course = detectCourse(student);
-                        document.getElementById('transferCurrentCourse').textContent = course + ' курс';
-                        document.getElementById('transferFaculty').textContent = student.faculty;
-                        const nextCourse = Math.min(parseInt(course) + 1, 7);
-                        document.getElementById('transferNewCourse').value = nextCourse;
-                    }
-                } else {
-                    document.getElementById('transferCurrentCourse').textContent = '—';
-                    document.getElementById('transferFaculty').textContent = '—';
-                }
+            document.getElementById('transferFacultySelect').addEventListener('change', function() {
+                renderTransferList();
             });
 
             document.getElementById('transferConfirmBtn').addEventListener('click', function() {
-                const studentId = parseInt(document.getElementById('transferStudentSelect').value);
-                const newCourse = parseInt(document.getElementById('transferNewCourse').value);
-
-                if (!studentId) {
+                const checks = document.querySelectorAll('.student-check:checked');
+                if (!checks.length) {
                     const status = document.getElementById('transferStatus');
-                    status.textContent = '❌ Выберите студента';
+                    status.textContent = '❌ Выберите хотя бы одного студента';
                     status.className = 'status-msg show error';
                     return;
                 }
 
-                const result = transferStudent(studentId, newCourse);
-                if (result.error) {
+                const ids = Array.from(checks).map(cb => parseInt(cb.value));
+                const newCourse = parseInt(document.getElementById('transferNewCourse').value);
+
+                const result = transferStudents(ids, newCourse);
+                if (result.transferred > 0) {
                     const status = document.getElementById('transferStatus');
-                    status.textContent = '❌ ' + result.error;
-                    status.className = 'status-msg show error';
-                } else {
-                    const status = document.getElementById('transferStatus');
-                    status.textContent = `✅ ${result.name} переведен на ${result.toCourse} курс`;
+                    status.textContent = `✅ Переведено: ${result.transferred} студентов на ${newCourse} курс`;
                     status.className = 'status-msg show success';
                     setTimeout(() => {
-                        renderTransferSelect();
-                        document.getElementById('transferCurrentCourse').textContent = '—';
-                        document.getElementById('transferFaculty').textContent = '—';
+                        renderTransferList();
+                        document.getElementById('selectAllCheck').checked = false;
                     }, 500);
+                } else {
+                    const status = document.getElementById('transferStatus');
+                    status.textContent = '❌ Не удалось перевести студентов';
+                    status.className = 'status-msg show error';
                 }
             });
 
@@ -2045,7 +2171,7 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            // We need to add certStudentSelect dynamically
+            // Добавляем select для аттестата
             const certModalContent = document.querySelector('#certModal .modal-content');
             const certSelectDiv = document.createElement('div');
             certSelectDiv.className = 'form-group';
