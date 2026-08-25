@@ -837,21 +837,40 @@
         .certificate .footer {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             margin-top: 16px;
             padding-top: 10px;
             border-top: 2px solid #b8860b;
             font-size: 0.8rem;
         }
 
-        .certificate .footer .signature {
+        .certificate .footer .dean-block {
+            text-align: left;
+        }
+
+        .certificate .footer .dean-block .dean-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .certificate .footer .director-block {
             text-align: right;
+        }
+
+        .certificate .footer .director-block .director-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .certificate .footer .signature {
             font-style: italic;
             color: #4a4a4a;
+            font-size: 0.75rem;
         }
         .certificate .footer .date {
             font-weight: 600;
             color: #1a1a1a;
+            font-size: 0.85rem;
         }
 
         .export-actions {
@@ -1407,43 +1426,39 @@
 
     <script>
         // ============================================================
-        //  CONFIG — МНОЖЕСТВО ПАРОЛЕЙ (скрыты, не показываются)
+        //  CONFIG
         // ============================================================
         const USERS = {
-            // Профессора — могут ставить оценки
             prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
             prof_snape: { password: 'snape', role: 'professor', name: 'С. Снейп' },
             prof_mcgonagall: { password: 'minerva', role: 'professor', name: 'М. МакГонагалл' },
             prof_flitwick: { password: 'flitwick', role: 'professor', name: 'Ф. Флитвик' },
 
-            // Деканы — только управляют студентами, НЕ ставят оценки
             dean_default: { password: 'dean2026', role: 'dean', name: 'Декан' },
             dean_gryffindor: { password: 'gryffindor', role: 'dean', name: 'Декан Гриффиндора' },
             dean_slytherin: { password: 'slytherin', role: 'dean', name: 'Декан Слизерина' },
             dean_ravenclaw: { password: 'ravenclaw', role: 'dean', name: 'Декан Когтеврана' },
             dean_hufflepuff: { password: 'hufflepuff', role: 'dean', name: 'Декан Пуффендуя' },
 
-            // Завучи — полный доступ (могут всё)
             headmaster_default: { password: 'admin2026', role: 'headmaster', name: 'Завуч' },
             headmaster_dumbledore: { password: 'dumbledore', role: 'headmaster', name: 'А. Дамблдор' },
             headmaster_sprout: { password: 'sprout', role: 'headmaster', name: 'П. Стебль' }
         };
 
-        // Карта пароль -> ID пользователя
         const PASSWORD_MAP = {};
         Object.keys(USERS).forEach(key => {
             PASSWORD_MAP[USERS[key].password] = key;
         });
 
         // ============================================================
-        //  SUBJECTS
+        //  SUBJECTS — правильное количество по курсам
         // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'Полеты на метле'
             ],
             2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле'
+                'УЗМС', 'Прорицание'
             ],
             3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
@@ -1451,10 +1466,10 @@
             4: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
             ],
-            5: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение',
+            5: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
             ],
-            6: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение',
+            6: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'УЗМС', 'Прорицание'
             ],
             7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
@@ -1467,6 +1482,14 @@
             0: 'Тролль' };
         const GRADE_COLORS = { 5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d', 2: '#ff9800', 1: '#ef5350', 0: '#d32f2f' };
         const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
+
+        // Деканы факультетов для аттестата
+        const DEANS = {
+            'Гриффиндор': 'Минерва МакГонагалл',
+            'Слизерин': 'Гораций Слизнорт',
+            'Когтевран': 'Филиус Флитвик',
+            'Пуффендуй': 'Помона Стебль'
+        };
 
         // ============================================================
         //  STATE
@@ -1551,6 +1574,13 @@
             for (let c = 1; c <= 7; c++) {
                 const subs = SUBJECTS[c] || [];
                 if (subs.every(s => keys.includes(s)) && subs.length > 0) return c;
+            }
+            // Проверяем по количеству предметов
+            for (let c = 1; c <= 7; c++) {
+                const subs = SUBJECTS[c] || [];
+                let match = 0;
+                subs.forEach(s => { if (keys.includes(s)) match++; });
+                if (match >= subs.length * 0.7) return c;
             }
             return '?';
         }
@@ -1721,7 +1751,6 @@
             });
             tbody.innerHTML = html;
 
-            // Обработчики для ввода оценок
             if (canEdit) {
                 tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
                     input.addEventListener('blur', function() {
@@ -1739,7 +1768,6 @@
                             if (!isNaN(num) && available.includes(num)) {
                                 student.grades[subject] = num;
                             } else {
-                                // Восстанавливаем предыдущее значение
                                 const prev = student.grades[subject];
                                 this.value = prev !== undefined && prev !== null ? prev : '';
                                 if (prev !== undefined && prev !== null) {
@@ -1831,11 +1859,9 @@
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginError').classList.remove('show');
 
-            // Показываем/скрываем кнопку "Списки"
             const mgmtBtn = document.getElementById('mgmtToggleBtn');
             mgmtBtn.style.display = canManageStudents() ? 'inline-block' : 'none';
 
-            // Показываем/скрываем страницу управления
             const journalView = document.getElementById('journalView');
             const mgmtPage = document.getElementById('mgmtPage');
             const sidebar = document.getElementById('sidebar');
@@ -1861,11 +1887,15 @@
                 alert('Ученик не найден');
                 return;
             }
+
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение', 'Полеты на метле',
                 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
             ];
             const display = order.filter(s => subs.includes(s));
+
+            const deanName = DEANS[student.faculty] || 'Декан факультета';
+
             let html = `
                     <div class="certificate" id="certificateDisplay">
                         <div class="school-name">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
@@ -1873,6 +1903,7 @@
                         <div class="student-name-cert">${studentName.toUpperCase()}</div>
                         <div class="grades-grid">
                     `;
+
             display.forEach(sub => {
                 const v = student.grades[sub];
                 const text = (v !== undefined && v !== null) ? GRADE_MAP_7[v] || 'Не сдано' : 'Не сдано';
@@ -1883,25 +1914,31 @@
                             </div>
                         `;
             });
+
             const now = new Date();
             const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER',
                 'NOVEMBER', 'DECEMBER'
             ];
             const dateStr = `${now.getDate()} ${months[now.getMonth()]}, ${now.getFullYear()}`;
+
             html += `
                         </div>
                         <div class="footer">
-                            <div>
-                                <div style="font-weight:700;">ДЕКАН ФАКУЛЬТЕТА</div>
-                                <div style="font-style:italic;">Lana McDowell</div>
+                            <div class="dean-block">
+                                <div style="font-weight:700;font-size:0.7rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
+                                <div class="dean-name">${deanName}</div>
+                                <div class="signature">${student.faculty}</div>
                             </div>
-                            <div style="text-align:right;">
+                            <div class="director-block">
                                 <div class="date">${dateStr}</div>
+                                <div style="font-weight:700;font-size:0.7rem;color:#4a4a4a;">ДИРЕКТОР</div>
+                                <div class="director-name">Lana McDowell</div>
                                 <div class="signature">Директор</div>
                             </div>
                         </div>
                     </div>
                 `;
+
             document.getElementById('certificateContainer').innerHTML = html;
             return html;
         }
@@ -1916,8 +1953,6 @@
                 return;
             }
 
-            // Используем html2canvas для захвата
-            // Если библиотека не загружена, используем простой подход — печать в PDF
             if (typeof html2canvas === 'undefined') {
                 alert('Для скачивания PNG нужно загрузить библиотеку html2canvas.\nПопробуйте использовать печать (Ctrl+P)');
                 return;
@@ -1930,7 +1965,8 @@
                 useCORS: true
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `Аттестат_${document.getElementById('certStudentSelect').value || 'student'}.png`;
+                const name = document.getElementById('certStudentSelect').value || 'student';
+                link.download = `Аттестат_${name}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             }).catch(err => {
@@ -1943,7 +1979,6 @@
         //  REPORT
         // ============================================================
         function generateReport() {
-            const allSubs = getAllSubjects().sort();
             const allStudents = students.map(s => ({ ...s, course: detectCourse(s) }));
             const grouped = {};
             allStudents.forEach(s => {
@@ -1951,19 +1986,23 @@
                 if (!grouped[c]) grouped[c] = [];
                 grouped[c].push(s);
             });
+
             const sorted = Object.keys(grouped).sort((a, b) => {
                 if (a === '?') return 1;
                 if (b === '?') return -1;
                 return parseInt(a) - parseInt(b);
             });
+
             let html = '';
             sorted.forEach(c => {
                 const list = grouped[c];
                 const subs = SUBJECTS[parseInt(c)] || SUBJECTS[1];
-                html += `<h3 style="color:var(--gold);margin:16px 0 8px;">${c} курс</h3>`;
+
+                html += `<h3 style="color:var(--gold);margin:16px 0 8px;">${c} курс (${subs.length} предметов)</h3>`;
                 html += `<table><thead><tr><th>Ученик</th><th>Факультет</th>`;
                 subs.forEach(s => { html += `<th style="font-size:0.6rem;">${s}</th>`; });
                 html += `<th style="color:var(--gold);">Сумма</th></tr></thead><tbody>`;
+
                 list.forEach(st => {
                     html +=
                         `<tr><td class="student-name">${st.name}</td><td style="font-size:0.65rem;color:var(--text-secondary);">${st.faculty}</td>`;
@@ -1977,22 +2016,31 @@
                     });
                     html += `<td style="font-weight:700;color:var(--gold);">${sum}</td></tr>`;
                 });
+
                 html += `</tbody></table>`;
             });
+
+            if (!Object.keys(grouped).length) {
+                html = `<p style="color:var(--text-muted);text-align:center;padding:40px;">Нет данных для отчета</p>`;
+            }
+
             return html;
         }
 
         function exportCSV() {
-            const allSubs = getAllSubjects().sort();
             const allStudents = students.map(s => ({ ...s, course: detectCourse(s) }));
+            const allSubs = getAllSubjects().sort();
+
             let csv = '\uFEFF';
             csv += 'Курс,Факультет,Ученик';
             allSubs.forEach(s => csv += `,${s}`);
             csv += ',Сумма\n';
+
             allStudents.sort((a, b) => {
                 if (a.course !== b.course) return parseInt(a.course) - parseInt(b.course);
                 return a.name.localeCompare(b.name);
             });
+
             allStudents.forEach(st => {
                 csv += `${st.course},${st.faculty},${st.name}`;
                 let sum = 0;
@@ -2004,6 +2052,7 @@
                 });
                 csv += `,${sum}\n`;
             });
+
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -2048,6 +2097,7 @@
                 registerProfessor();
                 document.getElementById('loginModal').classList.remove('open');
                 renderAll();
+
                 const msg = `🔓 Вы вошли как ${ROLE_NAMES[userRole]}`;
                 const nameMsg = userName ? ` (${userName})` : '';
                 if (userRole === 'professor') alert(`${msg}${nameMsg}. Введите оценку в ячейку и нажмите Enter.`);
@@ -2076,12 +2126,11 @@
         function init() {
             loadData();
 
-            // Загружаем html2canvas для скачивания PNG
+            // Загружаем html2canvas
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
             document.head.appendChild(script);
 
-            // Broadcast listener
             try {
                 const ch = new BroadcastChannel('hogwarts');
                 ch.onmessage = () => { loadData();
@@ -2100,14 +2149,12 @@
 
             // ===== EVENTS =====
 
-            // Course select
             document.getElementById('courseSelect').addEventListener('change', function() {
                 currentCourse = parseInt(this.value);
                 saveData();
                 renderAll();
             });
 
-            // Faculty select
             document.querySelectorAll('.faculty-item').forEach(el => {
                 el.addEventListener('click', function() {
                     currentFaculty = this.dataset.faculty;
@@ -2223,12 +2270,6 @@
                 document.getElementById('certStudentSelect').value = '';
                 document.getElementById('certModal').classList.add('open');
                 renderCertSelect();
-            });
-
-            document.getElementById('generateCertBtn')?.addEventListener('click', function() {
-                const name = document.getElementById('certStudentSelect').value;
-                if (!name) { alert('Выберите ученика'); return; }
-                generateCertificate(name);
             });
 
             document.getElementById('certStudentSelect').addEventListener('change', function() {
