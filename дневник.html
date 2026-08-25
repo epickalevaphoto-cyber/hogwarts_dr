@@ -55,18 +55,18 @@
 
         .header-controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .header-controls select, .header-controls button {
-            padding: 10px 20px;
+            padding: 10px 18px;
             background: rgba(30, 30, 45, 0.9);
             border: 1px solid #3a3a4a;
             color: #e0dcc8;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
@@ -97,6 +97,28 @@
             color: #d4af37;
         }
 
+        .header-controls .btn-success {
+            background: linear-gradient(135deg, #1a6b47, #2e7d32);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-success:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(46, 125, 50, 0.4);
+        }
+
+        .header-controls .btn-danger {
+            background: linear-gradient(135deg, #8b0000, #c62828);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-danger:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(198, 40, 40, 0.4);
+        }
+
         .online-indicator {
             display: flex;
             align-items: center;
@@ -125,7 +147,7 @@
 
         .main-grid {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 300px 1fr;
             gap: 25px;
         }
 
@@ -187,46 +209,111 @@
             color: #8888aa;
         }
 
-        .import-area {
+        .student-management {
             margin-top: 20px;
             padding: 15px;
             background: rgba(0,0,0,0.3);
             border-radius: 10px;
-            border: 1px dashed #3a3a4a;
+            border: 1px solid rgba(60, 60, 80, 0.3);
         }
 
-        .import-area label {
+        .student-management label {
             display: block;
             font-size: 0.8rem;
             color: #8888aa;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
-        .import-area input[type="file"] {
+        .student-management input, 
+        .student-management textarea,
+        .student-management select {
             width: 100%;
-            padding: 8px;
+            padding: 8px 12px;
             background: #1a1a2a;
             border: 1px solid #3a3a4a;
             border-radius: 6px;
             color: #e0dcc8;
             font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 8px;
         }
 
-        .import-area input[type="file"]::file-selector-button {
-            padding: 6px 16px;
-            background: #2a2a3a;
+        .student-management textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .student-management .btn-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .student-management .btn-row button {
+            flex: 1;
+            min-width: 60px;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: none;
-            border-radius: 4px;
-            color: #d4af37;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            margin-right: 15px;
+            transition: all 0.2s;
         }
 
-        .import-area small {
-            display: block;
+        .student-management .btn-row .add-btn {
+            background: linear-gradient(135deg, #1a6b47, #2e7d32);
+            color: #fff;
+        }
+
+        .student-management .btn-row .add-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .student-management .btn-row .mass-btn {
+            background: linear-gradient(135deg, #b8860b, #d4af37);
+            color: #0a0a0f;
+        }
+
+        .student-management .btn-row .mass-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .student-management .btn-row .remove-btn {
+            background: linear-gradient(135deg, #8b0000, #c62828);
+            color: #fff;
+        }
+
+        .student-management .btn-row .remove-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(198, 40, 40, 0.3);
+        }
+
+        .student-management .hint {
+            font-size: 0.65rem;
             color: #666688;
-            margin-top: 6px;
+            margin-top: 4px;
+        }
+
+        .student-management .current-students {
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.75rem;
+            color: #8888aa;
+            border-top: 1px solid #2a2a3a;
+            padding-top: 8px;
+        }
+
+        .student-management .current-students .student-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin: 2px 4px 2px 0;
+            border: 1px solid #2a2a3a;
             font-size: 0.7rem;
         }
 
@@ -258,27 +345,54 @@
             font-size: 0.85rem;
         }
 
+        .grade-legend {
+            display: flex;
+            gap: 15px;
+            font-size: 0.75rem;
+            color: #8888aa;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(60,60,80,0.2);
+            margin-bottom: 15px;
+        }
+
+        .grade-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grade-legend .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             min-width: 700px;
         }
 
         th {
             text-align: left;
-            padding: 12px 10px;
+            padding: 10px 8px;
             background: rgba(30, 30, 45, 0.5);
             color: #d4af37;
             font-weight: 600;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+            letter-spacing: 0.3px;
             border-bottom: 2px solid #2a2a3a;
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         td {
-            padding: 10px 10px;
+            padding: 8px 8px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.2);
             vertical-align: middle;
         }
@@ -299,12 +413,13 @@
             border-radius: 4px;
             font-weight: 700;
             min-width: 30px;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            padding: 4px 4px;
         }
 
         .grade-cell:hover:not(.readonly) {
             background: rgba(212, 175, 55, 0.15);
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .grade-cell.readonly {
@@ -312,24 +427,26 @@
             opacity: 0.7;
         }
 
-        .grade-5 {
-            color: #4caf50;
-        }
-        .grade-0 {
-            color: #ef5350;
-        }
-        .grade-empty {
-            color: #555566;
-        }
+        .grade-5 { color: #4caf50; }
+        .grade-4 { color: #8bc34a; }
+        .grade-3 { color: #ffb74d; }
+        .grade-2 { color: #ff9800; }
+        .grade-1 { color: #ef5350; }
+        .grade-0 { color: #d32f2f; }
+        .grade-empty { color: #555566; }
 
         .grade-cell .grade-btn {
             display: inline-block;
-            padding: 2px 10px;
+            padding: 2px 7px;
             border-radius: 4px;
-            margin: 0 2px;
+            margin: 0 1px;
             background: rgba(255,255,255,0.05);
             border: 1px solid transparent;
             transition: all 0.2s;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            min-width: 22px;
         }
 
         .grade-cell .grade-btn:hover {
@@ -337,17 +454,14 @@
             border-color: #d4af37;
         }
 
-        .grade-cell .grade-btn.active-5 {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4caf50;
-        }
+        .grade-cell .grade-btn.active-5 { background: rgba(76, 175, 80, 0.3); border-color: #4caf50; }
+        .grade-cell .grade-btn.active-4 { background: rgba(139, 195, 74, 0.3); border-color: #8bc34a; }
+        .grade-cell .grade-btn.active-3 { background: rgba(255, 183, 77, 0.3); border-color: #ffb74d; }
+        .grade-cell .grade-btn.active-2 { background: rgba(255, 152, 0, 0.3); border-color: #ff9800; }
+        .grade-cell .grade-btn.active-1 { background: rgba(239, 83, 80, 0.3); border-color: #ef5350; }
+        .grade-cell .grade-btn.active-0 { background: rgba(211, 47, 47, 0.3); border-color: #d32f2f; }
 
-        .grade-cell .grade-btn.active-0 {
-            background: rgba(239, 83, 80, 0.3);
-            border-color: #ef5350;
-        }
-
-        /* Аттестат */
+        /* Модальные окна */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -362,6 +476,43 @@
 
         .modal-overlay.open {
             display: flex;
+        }
+
+        .modal-content {
+            background: rgba(16, 16, 26, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 95vw;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+
+        .modal-content .close-btn {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #8888aa;
+            transition: transform 0.2s;
+            z-index: 20;
+        }
+
+        .modal-content .close-btn:hover {
+            transform: rotate(90deg);
+            color: #d4af37;
+        }
+
+        .modal-content h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #d4af37;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
         }
 
         .certificate {
@@ -510,6 +661,57 @@
             text-align: center;
         }
 
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .export-actions button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #3a3a4a;
+            background: rgba(30, 30, 45, 0.9);
+            color: #e0dcc8;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .export-actions button:hover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .delete-student-btn {
+            color: #ef5350;
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .delete-student-btn:hover {
+            opacity: 1;
+            background: rgba(239, 83, 80, 0.15);
+        }
+
         @media (max-width: 1000px) {
             .main-grid { grid-template-columns: 1fr; }
             .sidebar { position: static; }
@@ -521,6 +723,8 @@
             .certificate { padding: 25px; }
             .certificate .grades-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.2rem; }
+            .grade-legend { font-size: 0.6rem; gap: 8px; }
+            .modal-content { padding: 15px; }
         }
     </style>
 </head>
@@ -540,11 +744,12 @@
                 <option value="6">6 курс</option>
                 <option value="7" selected>7 курс</option>
             </select>
-            <button class="btn-primary" id="enterProfessorBtn">👤 Войти как профессор</button>
+            <button class="btn-primary" id="enterProfessorBtn">👤 Войти</button>
             <button class="btn-secondary" id="generateCertBtn">🏆 Аттестат</button>
+            <button class="btn-success" id="yearReportBtn">📊 Отчет</button>
             <div class="online-indicator">
                 <span class="online-dot"></span>
-                <span id="professorCount">0 профессоров</span>
+                <span id="professorCount">0</span>
             </div>
         </div>
     </header>
@@ -575,19 +780,39 @@
                 </div>
             </div>
 
-            <div class="import-area">
-                <label>📂 Импорт учеников (CSV)</label>
-                <input type="file" id="csvUpload" accept=".csv">
-                <small>Формат: Фамилия Имя,Факультет</small>
-                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-                    <button class="btn-secondary" style="padding:6px 14px; font-size:0.75rem;" id="loadExampleBtn">📥 Загрузить пример</button>
-                    <button class="btn-secondary" style="padding:6px 14px; font-size:0.75rem;" id="clearDataBtn">🗑️ Очистить</button>
+            <!-- Управление студентами -->
+            <div class="student-management">
+                <label>👨‍🎓 Управление студентами</label>
+                
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <input type="text" id="studentNameInput" placeholder="Имя студента" style="flex:2; min-width:120px;">
+                    <select id="studentFacultySelect" style="flex:1; min-width:100px;">
+                        <option value="Гриффиндор">🦁 Гриффиндор</option>
+                        <option value="Слизерин">🐍 Слизерин</option>
+                        <option value="Когтевран">🦅 Когтевран</option>
+                        <option value="Пуффендуй">🦡 Пуффендуй</option>
+                    </select>
+                    <button class="add-btn" id="addStudentBtn" style="padding:6px 12px;">➕</button>
+                </div>
+
+                <div style="margin-top:8px;">
+                    <textarea id="massStudentInput" placeholder="Вставьте список студентов:&#10;Поттер Гарри,Гриффиндор&#10;Грейнджер Гермиона,Гриффиндор"></textarea>
+                    <div class="btn-row">
+                        <button class="mass-btn" id="massAddBtn">📋 Добавить всех</button>
+                        <button class="remove-btn" id="removeSelectedBtn">🗑️ Удалить с факультета</button>
+                    </div>
+                    <div class="hint">Формат: Имя,Факультет (через запятую, каждый с новой строки)</div>
+                </div>
+
+                <div class="success-message" id="addSuccessMsg">✅ Студент добавлен!</div>
+
+                <div class="current-students" id="currentStudentsList">
+                    <div style="color:#555566; font-size:0.7rem;">Список студентов:</div>
                 </div>
             </div>
 
             <div class="storage-info">
-                💾 Данные сохраняются автоматически
-                <br>🔄 Все профессора видят изменения
+                💾 Автосохранение · 🔄 Синхронизация
             </div>
         </aside>
 
@@ -595,13 +820,15 @@
             <div class="journal-header">
                 <div>
                     <h2 id="journalTitle">📖 Журнал: 7 курс</h2>
-                    <span class="subtitle" id="journalSubtitle">Гриффиндор · Октябрь 2026</span>
+                    <span class="subtitle" id="journalSubtitle">Гриффиндор · 2026-2027</span>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                     <span id="studentCount" style="color:#8888aa; font-size:0.85rem;">0 учеников</span>
                     <span id="professorsOnline" class="professors-list"></span>
                 </div>
             </div>
+
+            <div id="gradeLegend" class="grade-legend"></div>
 
             <div id="journalTableContainer">
                 <table>
@@ -612,7 +839,7 @@
                         </tr>
                     </thead>
                     <tbody id="journalBody">
-                        <tr><td colspan="10" style="text-align:center; color:#555566; padding:40px;">Загрузите учеников через CSV или нажмите "Загрузить пример"</td></tr>
+                        <tr><td colspan="10" style="text-align:center; color:#555566; padding:40px;">Загрузите учеников</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -620,6 +847,20 @@
     </div>
 </div>
 
+<!-- Модальное окно для годового отчета -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal-content">
+        <button class="close-btn" id="closeReportBtn">✕</button>
+        <h2>📊 Годовой отчет Ж.А.Б.А.</h2>
+        <div id="reportContainer" style="overflow-x:auto;"></div>
+        <div class="export-actions">
+            <button id="exportCSVBtn">📥 Экспорт CSV</button>
+            <button id="printReportBtn">🖨️ Печать</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для аттестата -->
 <div class="modal-overlay" id="certModal">
     <div class="certificate" id="certificateContent">
         <button class="close-cert-btn" id="closeCertBtn">✕</button>
@@ -641,30 +882,28 @@
 </div>
 
 <script>
-    // --- Конфигурация ---
+    // --- КОНФИГУРАЦИЯ ---
     const SUBJECTS = {
         1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'Полеты на метле'],
-        2: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
-        3: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
-        4: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'Полеты на метле'],
+        3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        4: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'УЗМС', 'Прорицание'],
         5: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
         6: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
-        7: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание']
+        7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'Прорицание', 'УЗМС']
     };
 
     const FACULTIES = ['Гриффиндор', 'Слизерин', 'Когтевран', 'Пуффендуй'];
-    const GRADE_OPTIONS = [5, 0];
 
-    // --- Состояние ---
+    // --- СОСТОЯНИЕ ---
     let students = [];
     let currentCourse = 7;
     let currentFaculty = 'Гриффиндор';
     let isProfessor = false;
     let professorId = null;
     let nextId = 1;
-    let activeProfessors = new Set();
 
-    // --- Загрузка / Сохранение ---
+    // --- ЗАГРУЗКА / СОХРАНЕНИЕ ---
     function loadData() {
         const saved = localStorage.getItem('hogwartsJournalData');
         if (saved) {
@@ -695,28 +934,25 @@
         localStorage.setItem('hogwartsJournalData', JSON.stringify({
             students, nextId, currentCourse, currentFaculty
         }));
-        // Уведомляем других профессоров
         broadcastUpdate();
     }
 
-    // --- Broadcast для многопользовательской работы ---
+    // --- BROADCAST ---
     function broadcastUpdate() {
         try {
             const channel = new BroadcastChannel('hogwartsJournal');
             channel.postMessage({ type: 'update', timestamp: Date.now() });
             channel.close();
         } catch(e) {
-            // Fallback: используем storage event
             localStorage.setItem('hogwartsJournalUpdate', Date.now().toString());
         }
     }
 
-    // --- Регистрация профессора ---
+    // --- ПРОФЕССОРА ---
     function registerProfessor() {
         if (!professorId) {
             professorId = 'prof_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
         }
-        // Сохраняем в localStorage список активных профессоров
         let professors = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
         if (!professors.includes(professorId)) {
             professors.push(professorId);
@@ -737,33 +973,231 @@
 
     function updateProfessorCount() {
         const professors = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
-        document.getElementById('professorCount').textContent = `${professors.length} профессоров`;
-        // Показываем список
+        document.getElementById('professorCount').textContent = `${professors.length} 👨‍🏫`;
         const container = document.getElementById('professorsOnline');
-        if (professors.length > 0) {
-            container.innerHTML = professors.map(() => 
-                `<span class="professor-tag">👨‍🏫</span>`
-            ).join('');
+        container.innerHTML = professors.length > 0 ? 
+            professors.map(() => `<span class="professor-tag">👨‍🏫</span>`).join('') : '';
+    }
+
+    // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+    function getAvailableGrades(course) {
+        if (course === 7) {
+            return [
+                { value: 5, label: '5' },
+                { value: 4, label: '4' },
+                { value: 3, label: '3' },
+                { value: 2, label: '2' },
+                { value: 1, label: '1' },
+                { value: 0, label: '0' }
+            ];
         } else {
-            container.innerHTML = '';
+            return [
+                { value: 5, label: '5' },
+                { value: 0, label: '0' }
+            ];
         }
     }
 
-    // --- Рендеринг ---
+    function getGradeLabel(course, grade) {
+        if (course === 7) {
+            const map = {
+                5: 'Превосходно',
+                4: 'Выше ожидаемого',
+                3: 'Удовлетворительно',
+                2: 'Слабо',
+                1: 'Отвратительно',
+                0: 'Тролль'
+            };
+            return map[grade] || grade;
+        } else {
+            return grade === 5 ? 'Сдал' : 'Не сдал';
+        }
+    }
+
+    function getAllSubjects() {
+        const all = new Set();
+        Object.values(SUBJECTS).forEach(s => s.forEach(sub => all.add(sub)));
+        return Array.from(all);
+    }
+
+    function detectStudentCourse(student) {
+        const gradeKeys = Object.keys(student.grades);
+        for (let course = 1; course <= 7; course++) {
+            const subjects = SUBJECTS[course] || [];
+            const hasAll = subjects.every(s => gradeKeys.includes(s));
+            if (hasAll && subjects.length > 0) return course;
+        }
+        return '?';
+    }
+
+    // --- УПРАВЛЕНИЕ СТУДЕНТАМИ ---
+    function addStudent(name, faculty) {
+        name = name.trim();
+        if (!name) {
+            alert('Введите имя студента');
+            return false;
+        }
+        
+        if (!FACULTIES.includes(faculty)) {
+            alert('Некорректный факультет');
+            return false;
+        }
+
+        // Проверяем, нет ли уже такого студента
+        if (students.some(s => s.name === name && s.faculty === faculty)) {
+            alert(`Студент "${name}" уже есть на факультете ${faculty}`);
+            return false;
+        }
+
+        students.push({
+            id: nextId++,
+            name: name,
+            faculty: faculty,
+            grades: {}
+        });
+
+        saveData();
+        render();
+        showSuccessMessage(`✅ Добавлен: ${name} (${faculty})`);
+        return true;
+    }
+
+    function massAddStudents(text) {
+        const lines = text.split('\n').filter(line => line.trim());
+        let added = 0;
+        let errors = 0;
+
+        lines.forEach(line => {
+            const parts = line.split(',').map(s => s.trim());
+            if (parts.length >= 2) {
+                const name = parts[0];
+                let faculty = parts[1];
+                if (!FACULTIES.includes(faculty)) {
+                    const found = FACULTIES.find(f => f.toLowerCase() === faculty.toLowerCase());
+                    if (found) faculty = found;
+                    else {
+                        errors++;
+                        return;
+                    }
+                }
+                if (!students.some(s => s.name === name && s.faculty === faculty)) {
+                    students.push({
+                        id: nextId++,
+                        name: name,
+                        faculty: faculty,
+                        grades: {}
+                    });
+                    added++;
+                }
+            } else {
+                errors++;
+            }
+        });
+
+        if (added > 0) {
+            saveData();
+            render();
+            showSuccessMessage(`✅ Добавлено ${added} студентов${errors > 0 ? `, ${errors} пропущено` : ''}`);
+        } else {
+            alert('Не удалось добавить студентов. Проверьте формат: "Имя,Факультет"');
+        }
+    }
+
+    function deleteStudentsFromFaculty(faculty) {
+        const toDelete = students.filter(s => s.faculty === faculty);
+        if (toDelete.length === 0) {
+            alert(`На факультете ${faculty} нет студентов`);
+            return;
+        }
+
+        const names = toDelete.map(s => s.name).join('\n');
+        if (confirm(`Удалить всех студентов с факультета ${faculty}?\n\n${names}`)) {
+            students = students.filter(s => s.faculty !== faculty);
+            saveData();
+            render();
+            showSuccessMessage(`🗑️ Удалены все студенты с факультета ${faculty}`);
+        }
+    }
+
+    function deleteSingleStudent(id, name) {
+        if (confirm(`Удалить студента "${name}"?`)) {
+            students = students.filter(s => s.id !== id);
+            saveData();
+            render();
+            showSuccessMessage(`🗑️ Удален: ${name}`);
+        }
+    }
+
+    function showSuccessMessage(msg) {
+        const el = document.getElementById('addSuccessMsg');
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function renderStudentList() {
+        const container = document.getElementById('currentStudentsList');
+        const faculty = currentFaculty;
+        const filtered = students.filter(s => s.faculty === faculty);
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `<div style="color:#555566; font-size:0.7rem;">Нет студентов на факультете ${faculty}</div>`;
+            return;
+        }
+
+        let html = `<div style="color:#8888aa; font-size:0.7rem; margin-bottom:4px;">${filtered.length} студентов:</div>`;
+        filtered.forEach(s => {
+            html += `<span class="student-tag">${s.name} <button class="delete-student-btn" data-id="${s.id}" title="Удалить">✕</button></span>`;
+        });
+        container.innerHTML = html;
+
+        // Обработчики удаления
+        container.querySelectorAll('.delete-student-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                const student = students.find(s => s.id === id);
+                if (student) deleteSingleStudent(id, student.name);
+            });
+        });
+    }
+
+    // --- РЕНДЕРИНГ ---
     function render() {
         renderFaculties();
         renderJournal();
+        renderStudentList();
         document.getElementById('courseSelect').value = currentCourse;
         
         const certBtn = document.getElementById('generateCertBtn');
         certBtn.style.display = currentCourse == 7 ? 'inline-block' : 'none';
         
         updateProfessorCount();
+        renderLegend();
+    }
+
+    function renderLegend() {
+        const container = document.getElementById('gradeLegend');
+        const grades = getAvailableGrades(currentCourse);
+        const gradeColors = {
+            5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d',
+            2: '#ff9800', 1: '#ef5350', 0: '#d32f2f'
+        };
+        
+        let html = '<span style="font-weight:600; color:#8888aa;">Шкала:</span>';
+        grades.forEach(g => {
+            const label = currentCourse === 7 ? getGradeLabel(7, g.value) : (g.value === 5 ? 'Сдал' : 'Не сдал');
+            html += `
+                <span>
+                    <span class="dot" style="background:${gradeColors[g.value]};"></span>
+                    ${g.value} — ${label}
+                </span>
+            `;
+        });
+        container.innerHTML = html;
     }
 
     function renderFaculties() {
-        const items = document.querySelectorAll('.faculty-item');
-        items.forEach(item => {
+        document.querySelectorAll('.faculty-item').forEach(item => {
             const faculty = item.dataset.faculty;
             const count = students.filter(s => s.faculty === faculty).length;
             const countSpan = document.getElementById(`count-${faculty.toLowerCase()}`);
@@ -777,18 +1211,18 @@
         const faculty = currentFaculty;
         const subjects = SUBJECTS[course] || SUBJECTS[1];
         const filtered = students.filter(s => s.faculty === faculty);
+        const availableGrades = getAvailableGrades(course);
 
         document.getElementById('journalTitle').textContent = `📖 Журнал: ${course} курс`;
-        document.getElementById('journalSubtitle').textContent = `${faculty} · Октябрь 2026`;
+        document.getElementById('journalSubtitle').textContent = `${faculty} · 2026-2027`;
         document.getElementById('studentCount').textContent = `${filtered.length} учеников`;
 
         const tbody = document.getElementById('journalBody');
         if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="${subjects.length + 2}" style="text-align:center; color:#555566; padding:40px;">Нет учеников на этом факультете</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${subjects.length + 2}" style="text-align:center; color:#555566; padding:40px;">Нет учеников на факультете ${faculty}</td></tr>`;
             return;
         }
 
-        // Строим заголовок таблицы
         const thead = document.querySelector('#journalTableContainer table thead');
         let headerRow = `<tr><th>Ученик</th><th>Факультет</th>`;
         subjects.forEach(sub => {
@@ -797,12 +1231,11 @@
         headerRow += `</tr>`;
         thead.innerHTML = headerRow;
 
-        // Строим строки
         let html = '';
         filtered.forEach(student => {
             html += `<tr>`;
             html += `<td class="student-name">${student.name}</td>`;
-            html += `<td style="font-size:0.75rem; color:#8888aa;">${student.faculty}</td>`;
+            html += `<td style="font-size:0.7rem; color:#8888aa;">${student.faculty}</td>`;
             subjects.forEach(sub => {
                 const grade = student.grades[sub];
                 const hasGrade = grade !== undefined && grade !== null;
@@ -811,8 +1244,10 @@
                 const readonly = !isProfessor ? 'readonly' : '';
                 html += `<td class="grade-cell ${gradeClass} ${readonly}" data-student-id="${student.id}" data-subject="${sub}">`;
                 if (isProfessor) {
-                    html += `<span class="grade-btn ${grade === 5 ? 'active-5' : ''}" data-grade="5">5</span>`;
-                    html += `<span class="grade-btn ${grade === 0 ? 'active-0' : ''}" data-grade="0">0</span>`;
+                    availableGrades.forEach(g => {
+                        const active = grade === g.value ? `active-${g.value}` : '';
+                        html += `<span class="grade-btn ${active}" data-grade="${g.value}">${g.value}</span>`;
+                    });
                 } else {
                     html += display;
                 }
@@ -822,7 +1257,6 @@
         });
         tbody.innerHTML = html;
 
-        // Обработчики для профессоров
         if (isProfessor) {
             document.querySelectorAll('.grade-cell:not(.readonly)').forEach(cell => {
                 const studentId = parseInt(cell.dataset.studentId);
@@ -848,7 +1282,108 @@
         }
     }
 
-    // --- Генерация аттестата (точь-в-точь как на картинке) ---
+    // --- ГОДОВОЙ ОТЧЕТ ---
+    function generateYearReport() {
+        const allSubjects = getAllSubjects().sort();
+        const allStudents = students.map(s => ({
+            ...s,
+            course: detectStudentCourse(s)
+        }));
+
+        const grouped = {};
+        allStudents.forEach(s => {
+            const course = s.course || '?';
+            if (!grouped[course]) grouped[course] = [];
+            grouped[course].push(s);
+        });
+
+        const sortedCourses = Object.keys(grouped).sort((a, b) => {
+            if (a === '?') return 1;
+            if (b === '?') return -1;
+            return parseInt(a) - parseInt(b);
+        });
+
+        let html = '';
+        sortedCourses.forEach(course => {
+            const studentsInCourse = grouped[course];
+            const subjects = SUBJECTS[parseInt(course)] || SUBJECTS[1];
+            
+            html += `<h3 style="color:#d4af37; margin:20px 0 10px;">${course} курс</h3>`;
+            html += `<table style="margin-bottom:20px;">`;
+            html += `<thead><tr><th>Ученик</th><th>Факультет</th>`;
+            subjects.forEach(sub => {
+                html += `<th style="font-size:0.65rem;">${sub}</th>`;
+            });
+            html += `<th style="color:#d4af37;">Сумма</th></tr></thead>`;
+            html += `<tbody>`;
+            
+            studentsInCourse.forEach(student => {
+                html += `<tr>`;
+                html += `<td class="student-name">${student.name}</td>`;
+                html += `<td style="font-size:0.7rem; color:#8888aa;">${student.faculty}</td>`;
+                let sum = 0;
+                subjects.forEach(sub => {
+                    const grade = student.grades[sub];
+                    const hasGrade = grade !== undefined && grade !== null;
+                    const display = hasGrade ? grade : '';
+                    const gradeClass = hasGrade ? `grade-${grade}` : 'grade-empty';
+                    html += `<td class="grade-cell ${gradeClass}" style="font-size:0.9rem;">${display}</td>`;
+                    if (hasGrade) sum += grade;
+                });
+                html += `<td style="font-weight:700; color:#d4af37;">${sum}</td>`;
+                html += `</tr>`;
+            });
+            
+            html += `</tbody></table>`;
+        });
+
+        return html;
+    }
+
+    function showYearReport() {
+        const container = document.getElementById('reportContainer');
+        container.innerHTML = generateYearReport();
+        document.getElementById('reportModal').classList.add('open');
+    }
+
+    // --- ЭКСПОРТ CSV ---
+    function exportReportCSV() {
+        const allSubjects = getAllSubjects().sort();
+        const allStudents = students.map(s => ({
+            ...s,
+            course: detectStudentCourse(s)
+        }));
+
+        let csv = '\uFEFF';
+        csv += 'Курс,Факультет,Ученик';
+        allSubjects.forEach(sub => csv += `,${sub}`);
+        csv += ',Сумма\n';
+
+        allStudents.sort((a, b) => {
+            if (a.course !== b.course) return parseInt(a.course) - parseInt(b.course);
+            return a.name.localeCompare(b.name);
+        });
+
+        allStudents.forEach(student => {
+            csv += `${student.course},${student.faculty},${student.name}`;
+            let sum = 0;
+            allSubjects.forEach(sub => {
+                const grade = student.grades[sub];
+                const val = (grade !== undefined && grade !== null) ? grade : '';
+                csv += `,${val}`;
+                if (val) sum += parseInt(val);
+            });
+            csv += `,${sum}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Годовой_отчет_ЖАБА_${new Date().toISOString().slice(0,10)}.csv`;
+        link.click();
+    }
+
+    // --- АТТЕСТАТ ---
     function generateCertificate(studentName) {
         const student = students.find(s => s.name === studentName);
         if (!student) {
@@ -860,30 +1395,30 @@
         const subjects = SUBJECTS[course] || SUBJECTS[1];
         const grades = student.grades;
 
-        // Маппинг оценок в текст (как на картинке)
         const gradeMap = {
             5: 'Превосходно',
-            0: 'Не сдано'
+            4: 'Выше ожидаемого',
+            3: 'Удовлетворительно',
+            2: 'Слабо',
+            1: 'Отвратительно',
+            0: 'Тролль'
         };
 
         const grid = document.getElementById('certGradesGrid');
         let html = '';
         
-        // Предметы в порядке как на картинке
         const subjectOrder = [
             'Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 
             'Маггловедение', 'Полеты на метле', 'Прорицание', 
             'Травология', 'Трансфигурация', 'УЗМС'
         ];
         
-        // Используем порядок с картинки, но только те предметы, которые есть в курсе
         const displaySubjects = subjectOrder.filter(s => subjects.includes(s));
         
         displaySubjects.forEach(sub => {
             const val = grades[sub];
             const hasGrade = val !== undefined && val !== null;
             const text = hasGrade ? gradeMap[val] || 'Не сдано' : 'Не сдано';
-            const mark = hasGrade ? val : '–';
             html += `
                 <div class="grade-row">
                     <span class="subject">${sub}</span>
@@ -893,10 +1428,8 @@
         });
         grid.innerHTML = html;
 
-        // Имя студента
         document.getElementById('certStudentName').textContent = studentName.toUpperCase();
 
-        // Дата
         const now = new Date();
         const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 
                        'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
@@ -906,7 +1439,7 @@
         document.getElementById('certModal').classList.add('open');
     }
 
-    // --- Импорт CSV ---
+    // --- ИМПОРТ CSV (файл) ---
     function importCSV(text) {
         const lines = text.split('\n').filter(line => line.trim());
         let imported = 0;
@@ -936,16 +1469,16 @@
             render();
             alert(`Импортировано ${imported} учеников!`);
         } else {
-            alert('Не удалось импортировать. Проверьте формат: "Фамилия Имя,Факультет"');
+            alert('Не удалось импортировать. Формат: "Фамилия Имя,Факультет"');
         }
     }
 
-    // --- Инициализация ---
+    // --- ИНИЦИАЛИЗАЦИЯ ---
     function init() {
         loadData();
         render();
 
-        // Слушаем обновления от других профессоров
+        // Broadcast
         try {
             const channel = new BroadcastChannel('hogwartsJournal');
             channel.onmessage = function(e) {
@@ -955,7 +1488,6 @@
                 }
             };
         } catch(e) {
-            // Fallback: слушаем storage events
             window.addEventListener('storage', function(e) {
                 if (e.key === 'hogwartsJournalUpdate' || e.key === 'hogwartsJournalData') {
                     loadData();
@@ -964,14 +1496,11 @@
             });
         }
 
-        // Также слушаем изменения в localStorage для синхронизации профессоров
         window.addEventListener('storage', function(e) {
-            if (e.key === 'hogwartsProfessors') {
-                updateProfessorCount();
-            }
+            if (e.key === 'hogwartsProfessors') updateProfessorCount();
         });
 
-        // --- События ---
+        // --- СОБЫТИЯ ---
 
         document.getElementById('courseSelect').addEventListener('change', function() {
             currentCourse = parseInt(this.value);
@@ -987,6 +1516,7 @@
             });
         });
 
+        // Кнопка входа профессора
         document.getElementById('enterProfessorBtn').addEventListener('click', function() {
             isProfessor = !isProfessor;
             if (isProfessor) {
@@ -994,10 +1524,11 @@
                 this.textContent = '👤 Выйти';
                 this.classList.add('btn-primary');
                 this.classList.remove('btn-secondary');
-                alert('Вы вошли как профессор. Нажмите 5 или 0 для выставления оценки.');
+                const grades = getAvailableGrades(currentCourse);
+                alert(`Вы вошли как профессор. Доступны оценки: ${grades.map(g => g.value).join(', ')}`);
             } else {
                 unregisterProfessor();
-                this.textContent = '👤 Войти как профессор';
+                this.textContent = '👤 Войти';
                 this.classList.remove('btn-primary');
                 this.classList.add('btn-secondary');
             }
@@ -1005,34 +1536,81 @@
             render();
         });
 
+        // Добавление одного студента
+        document.getElementById('addStudentBtn').addEventListener('click', function() {
+            const name = document.getElementById('studentNameInput').value.trim();
+            const faculty = document.getElementById('studentFacultySelect').value;
+            if (addStudent(name, faculty)) {
+                document.getElementById('studentNameInput').value = '';
+            }
+        });
+
+        document.getElementById('studentNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('addStudentBtn').click();
+            }
+        });
+
+        // Массовое добавление
+        document.getElementById('massAddBtn').addEventListener('click', function() {
+            const text = document.getElementById('massStudentInput').value;
+            if (text.trim()) {
+                massAddStudents(text);
+                document.getElementById('massStudentInput').value = '';
+            } else {
+                alert('Введите список студентов');
+            }
+        });
+
+        // Удаление всех с факультета
+        document.getElementById('removeSelectedBtn').addEventListener('click', function() {
+            const faculty = currentFaculty;
+            deleteStudentsFromFaculty(faculty);
+        });
+
+        // Аттестат
         document.getElementById('generateCertBtn').addEventListener('click', function() {
             if (currentCourse != 7) {
-                alert('Аттестат доступен только для 7 курса.');
+                alert('Аттестат только для 7 курса.');
                 return;
             }
             const filtered = students.filter(s => s.faculty === currentFaculty);
             if (filtered.length === 0) {
-                alert('Нет учеников на этом факультете.');
+                alert('Нет учеников.');
                 return;
             }
             const names = filtered.map(s => s.name);
-            const choice = prompt(`Выберите ученика для аттестата:\n${names.join('\n')}`);
+            const choice = prompt(`Выберите ученика:\n${names.join('\n')}`);
             if (choice && names.includes(choice)) {
                 generateCertificate(choice);
-            } else if (choice) {
-                alert('Ученик не найден на этом факультете.');
             }
+        });
+
+        // Годовой отчет
+        document.getElementById('yearReportBtn').addEventListener('click', showYearReport);
+
+        // Модальные окна
+        document.getElementById('closeReportBtn').addEventListener('click', function() {
+            document.getElementById('reportModal').classList.remove('open');
+        });
+        document.getElementById('reportModal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('open');
         });
 
         document.getElementById('closeCertBtn').addEventListener('click', function() {
             document.getElementById('certModal').classList.remove('open');
         });
         document.getElementById('certModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('open');
-            }
+            if (e.target === this) this.classList.remove('open');
         });
 
+        // Экспорт
+        document.getElementById('exportCSVBtn').addEventListener('click', exportReportCSV);
+        document.getElementById('printReportBtn').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Загрузка CSV файла
         document.getElementById('csvUpload').addEventListener('change', function(e) {
             const file = this.files[0];
             if (!file) return;
@@ -1044,6 +1622,7 @@
             this.value = '';
         });
 
+        // Пример
         document.getElementById('loadExampleBtn').addEventListener('click', function() {
             const example = `Поттер Гарри,Гриффиндор
 Грейнджер Гермиона,Гриффиндор
@@ -1069,6 +1648,7 @@
             importCSV(example);
         });
 
+        // Очистка
         document.getElementById('clearDataBtn').addEventListener('click', function() {
             if (confirm('Удалить всех учеников?')) {
                 students = [];
@@ -1080,17 +1660,13 @@
 
         if (isProfessor) {
             registerProfessor();
-            const btn = document.getElementById('enterProfessorBtn');
-            btn.textContent = '👤 Выйти';
-            btn.classList.add('btn-primary');
-            btn.classList.remove('btn-secondary');
+            document.getElementById('enterProfessorBtn').textContent = '👤 Выйти';
+            document.getElementById('enterProfessorBtn').classList.add('btn-primary');
+            document.getElementById('enterProfessorBtn').classList.remove('btn-secondary');
         }
 
-        // Автосохранение при закрытии
         window.addEventListener('beforeunload', function() {
-            if (isProfessor) {
-                unregisterProfessor();
-            }
+            if (isProfessor) unregisterProfessor();
         });
     }
 
