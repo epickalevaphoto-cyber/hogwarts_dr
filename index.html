@@ -1250,7 +1250,7 @@
 
     <!-- ===== CERTIFICATE MODAL ===== -->
     <div class="modal-overlay" id="certModal">
-        <div class="modal-content" style="max-width:700px;background:#1a1828;border:1px solid rgba(212,175,55,0.15);border-radius:12px;padding:24px 28px;">
+        <div class="modal-content" style="max-width:700px;">
             <div class="modal-header">
                 <h2>🏆 Аттестат</h2>
                 <button class="close-btn" id="closeCertModalBtn">✕</button>
@@ -1261,9 +1261,9 @@
                     <option value="">— Выберите ученика —</option>
                 </select>
             </div>
-            <button class="cert-download" id="generateCertBtn" style="width:100%;">📜 Сгенерировать аттестат</button>
+            <button class="btn-primary" id="generateCertBtn" style="width:100%;justify-content:center;">📜 Сгенерировать аттестат</button>
             <div id="certificateContainer" style="margin-top:16px;"></div>
-            <button class="cert-download" id="downloadCertBtn" style="display:none;">📥 Скачать аттестат (PNG)</button>
+            <button class="cert-download" id="downloadCertBtn" style="display:none;width:100%;">📥 Скачать аттестат (PNG)</button>
         </div>
     </div>
 
@@ -1382,14 +1382,7 @@
                     return;
                 } catch (e) {}
             }
-            students = [
-                { id: nextId++, name: 'Поттер Гарри', faculty: 'Гриффиндор', grades: {} },
-                { id: nextId++, name: 'Грейнджер Гермиона', faculty: 'Гриффиндор', grades: {} },
-                { id: nextId++, name: 'Уизли Рон', faculty: 'Гриффиндор', grades: {} },
-                { id: nextId++, name: 'Малфой Драко', faculty: 'Слизерин', grades: {} },
-                { id: nextId++, name: 'Лавгуд Луна', faculty: 'Когтевран', grades: {} },
-                { id: nextId++, name: 'Патинсон Седрик', faculty: 'Пуффендуй', grades: {} },
-            ];
+            students = [];
             saveData();
         }
 
@@ -1426,13 +1419,19 @@
             return Array.from(s);
         }
 
-        function detectCourse(student) {
+        function getStudentCourse(student) {
+            // Если у студента нет поля course, определяем по его оценкам
+            if (student.course) return student.course;
+            
             const keys = Object.keys(student.grades);
             for (let c = 1; c <= 7; c++) {
                 const subs = SUBJECTS[c] || [];
                 let match = 0;
                 subs.forEach(s => { if (keys.includes(s)) match++; });
-                if (match >= subs.length * 0.6 && subs.length > 0) return c;
+                if (match >= subs.length * 0.6 && subs.length > 0) {
+                    student.course = c;
+                    return c;
+                }
             }
             return '?';
         }
@@ -1457,7 +1456,7 @@
                 const name = line.trim();
                 if (!name) return;
 
-                if (students.some(s => s.name === name && s.faculty === faculty)) {
+                if (students.some(s => s.name === name && s.faculty === faculty && s.course === course)) {
                     duplicates++;
                     return;
                 }
@@ -1466,6 +1465,7 @@
                     id: nextId++,
                     name: name,
                     faculty: faculty,
+                    course: course,
                     grades: {}
                 });
                 added++;
@@ -1510,9 +1510,11 @@
                 const student = students.find(s => s.id === id);
                 if (!student) { errors++; return; }
 
-                const currentCourse = detectCourse(student);
+                const currentCourse = getStudentCourse(student);
                 if (currentCourse === newCourse) { errors++; return; }
 
+                // Меняем курс и очищаем оценки
+                student.course = newCourse;
                 student.grades = {};
                 transferred++;
                 names.push(student.name);
@@ -1568,7 +1570,8 @@
             const course = currentCourse;
             const faculty = currentFaculty;
             const subjects = SUBJECTS[course] || SUBJECTS[1];
-            const filtered = students.filter(s => s.faculty === faculty);
+            // Фильтруем студентов по факультету и курсу
+            const filtered = students.filter(s => s.faculty === faculty && getStudentCourse(s) === course);
             const canEdit = canEditGrades();
 
             document.getElementById('journalTitle').textContent = `📖 Журнал: ${course} курс`;
@@ -1584,7 +1587,7 @@
             const tbody = document.getElementById('tableBody');
             if (!filtered.length) {
                 tbody.innerHTML =
-                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:#555566;padding:30px;">Нет учеников на ${faculty}</td></tr>`;
+                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:#555566;padding:30px;">Нет учеников на ${faculty} на ${course} курсе</td></tr>`;
                 return;
             }
 
@@ -1665,14 +1668,16 @@
             if (!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="">— Выберите ученика —</option>`;
-            const sorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
+            // Для аттестата показываем только студентов 7 курса
+            const seventhCourseStudents = students.filter(s => getStudentCourse(s) === 7);
+            const sorted = [...seventhCourseStudents].sort((a, b) => a.name.localeCompare(b.name));
             sorted.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s.name;
                 opt.textContent = `${s.name} (${s.faculty})`;
                 select.appendChild(opt);
             });
-            if (currentVal && students.some(s => s.name === currentVal)) {
+            if (currentVal && sorted.some(s => s.name === currentVal)) {
                 select.value = currentVal;
             }
         }
@@ -1692,7 +1697,7 @@
 
             let html = '';
             filtered.forEach(s => {
-                const course = detectCourse(s);
+                const course = getStudentCourse(s);
                 html += `
                         <div class="check-item">
                             <input type="checkbox" class="student-check" value="${s.id}">
@@ -1739,12 +1744,12 @@
         }
 
         // ============================================================
-        //  CERTIFICATE — ИСПРАВЛЕН
+        //  CERTIFICATE
         // ============================================================
         function generateCertificate(studentName) {
             const student = students.find(s => s.name === studentName);
             if (!student) {
-                alert('Ученик не найден');
+                alert('Ученик не найден или не на 7 курсе');
                 return;
             }
 
@@ -1832,13 +1837,12 @@
         }
 
         // ============================================================
-        //  REPORT — ИСПРАВЛЕН
+        //  REPORT
         // ============================================================
         function generateReport() {
-            const allStudents = students.map(s => ({ ...s, course: detectCourse(s) }));
             const grouped = {};
-            allStudents.forEach(s => {
-                const c = s.course || '?';
+            students.forEach(s => {
+                const c = getStudentCourse(s);
                 if (!grouped[c]) grouped[c] = [];
                 grouped[c].push(s);
             });
@@ -1884,7 +1888,6 @@
         }
 
         function exportCSV() {
-            const allStudents = students.map(s => ({ ...s, course: detectCourse(s) }));
             const allSubs = getAllSubjects().sort();
 
             let csv = '\uFEFF';
@@ -1892,13 +1895,16 @@
             allSubs.forEach(s => csv += `,${s}`);
             csv += ',Сумма\n';
 
-            allStudents.sort((a, b) => {
-                if (a.course !== b.course) return parseInt(a.course) - parseInt(b.course);
+            students.sort((a, b) => {
+                const cA = getStudentCourse(a);
+                const cB = getStudentCourse(b);
+                if (cA !== cB) return parseInt(cA) - parseInt(cB);
                 return a.name.localeCompare(b.name);
             });
 
-            allStudents.forEach(st => {
-                csv += `${st.course},${st.faculty},${st.name}`;
+            students.forEach(st => {
+                const course = getStudentCourse(st);
+                csv += `${course},${st.faculty},${st.name}`;
                 let sum = 0;
                 allSubs.forEach(sub => {
                     const v = st.grades[sub];
@@ -2176,7 +2182,7 @@
                     return;
                 }
                 if (!students.length) {
-                    alert('Нет учеников');
+                    alert('Нет учеников на 7 курсе');
                     return;
                 }
                 document.getElementById('certificateContainer').innerHTML = '';
