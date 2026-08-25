@@ -185,17 +185,6 @@
             box-shadow: 0 0 25px rgba(123, 31, 162, 0.35);
         }
 
-        .header-controls .btn-blue {
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
-            border: none;
-            color: #fff;
-        }
-
-        .header-controls .btn-blue:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(21, 101, 192, 0.35);
-        }
-
         .online-indicator {
             display: flex;
             align-items: center;
@@ -494,122 +483,178 @@
             margin-top: 8px;
         }
 
-        /* ===== IMPORT SECTION ===== */
-        .import-section {
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 10px;
-            padding: 14px;
-            border: 1px solid var(--border-color);
-            margin-top: 12px;
+        /* ===== ADD STUDENT MODAL ===== */
+        .add-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1500;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .import-section .import-row {
+        .add-modal-overlay.open {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
         }
 
-        .import-section .import-row input[type="file"] {
-            flex: 1;
-            padding: 6px 10px;
+        .add-modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px 40px;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid var(--border-gold);
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .add-modal h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .add-modal .close-add {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .add-modal .close-add:hover {
+            color: var(--gold);
+            transform: rotate(90deg);
+        }
+
+        .add-modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .add-modal .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .add-modal .form-group select,
+        .add-modal .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
             color: var(--text-primary);
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
-            min-width: 120px;
+            transition: var(--transition);
         }
 
-        .import-section .import-row input[type="file"]::file-selector-button {
-            padding: 4px 12px;
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid var(--border-gold);
-            border-radius: 4px;
-            color: var(--gold);
+        .add-modal .form-group select:focus,
+        .add-modal .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .add-modal .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .add-modal .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .add-modal .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .add-modal .form-row .form-group {
+            flex: 1;
+        }
+
+        .add-modal .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .add-modal .btn-row button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 600;
-            font-size: 0.7rem;
             cursor: pointer;
             transition: var(--transition);
         }
 
-        .import-section .import-row input[type="file"]::file-selector-button:hover {
+        .add-modal .btn-row .btn-add-students {
+            background: linear-gradient(135deg, #1a6b47, #2e7d32);
+            color: #fff;
+            flex: 1;
+        }
+
+        .add-modal .btn-row .btn-add-students:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(46, 125, 50, 0.35);
+        }
+
+        .add-modal .btn-row .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .add-modal .btn-row .btn-cancel:hover {
+            border-color: var(--gold);
             background: var(--gold-glow);
         }
 
-        .import-section .import-row button {
-            padding: 6px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-
-        .import-section .import-row .btn-import {
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
-            color: #fff;
-        }
-
-        .import-section .import-row .btn-import:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(21, 101, 192, 0.3);
-        }
-
-        .import-section .import-hint {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        .import-section .import-status {
+        .add-modal .add-status {
             color: var(--green);
-            font-size: 0.75rem;
-            margin-top: 6px;
+            font-size: 0.8rem;
+            margin-top: 12px;
             display: none;
+            padding: 8px 12px;
+            background: rgba(76, 175, 80, 0.08);
+            border-radius: 6px;
+            border: 1px solid rgba(76, 175, 80, 0.15);
         }
 
-        .import-section .import-status.show {
+        .add-modal .add-status.show {
             display: block;
         }
 
-        .import-section .import-status.error {
+        .add-modal .add-status.error {
             color: var(--red);
+            border-color: rgba(239, 83, 80, 0.15);
+            background: rgba(239, 83, 80, 0.08);
         }
 
-        /* ===== FACULTY COLOR SELECT ===== */
-        .faculty-color-select {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-        }
-
-        .faculty-color-select label {
+        .add-modal .hint-text {
             font-size: 0.7rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .faculty-color-select label input[type="radio"] {
-            accent-color: var(--gold);
-            cursor: pointer;
-        }
-
-        .faculty-color-select .color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
         /* ===== JOURNAL ===== */
@@ -1026,223 +1071,6 @@
             background: var(--gold-glow);
         }
 
-        /* ===== STUDENT MANAGEMENT PAGE ===== */
-        .mgmt-page {
-            display: none;
-            padding: 24px;
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-        }
-
-        .mgmt-page.active {
-            display: block;
-        }
-
-        .mgmt-page .mgmt-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .mgmt-page .mgmt-header h2 {
-            font-family: 'Cinzel Decorative', cursive;
-            color: var(--gold);
-            font-size: 1.3rem;
-        }
-
-        .mgmt-page .mgmt-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .mgmt-page .mgmt-card {
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 10px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .mgmt-page .mgmt-card h3 {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .mgmt-page .mgmt-card .row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .mgmt-page .mgmt-card .row input,
-        .mgmt-page .mgmt-card .row select {
-            flex: 1;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
-        }
-
-        .mgmt-page .mgmt-card .row input:focus,
-        .mgmt-page .mgmt-card .row select:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .mgmt-page .mgmt-card .row button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-
-        .mgmt-page .mgmt-card .btn-add {
-            background: linear-gradient(135deg, #1a6b47, #2e7d32);
-            color: #fff;
-        }
-        .mgmt-page .mgmt-card .btn-add:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(46, 125, 50, 0.3);
-        }
-
-        .mgmt-page .mgmt-card .btn-mass {
-            background: linear-gradient(135deg, #b8860b, var(--gold));
-            color: #0a0a12;
-        }
-        .mgmt-page .mgmt-card .btn-mass:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .mgmt-page .mgmt-card .btn-danger {
-            background: linear-gradient(135deg, #7a0000, #c62828);
-            color: #fff;
-        }
-        .mgmt-page .mgmt-card .btn-danger:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(198, 40, 40, 0.3);
-        }
-
-        .mgmt-page .mgmt-card textarea {
-            width: 100%;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            font-family: 'Inter', sans-serif;
-            resize: vertical;
-            min-height: 80px;
-            transition: var(--transition);
-            margin-bottom: 8px;
-        }
-
-        .mgmt-page .mgmt-card textarea:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .mgmt-page .mgmt-card .hint {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .mgmt-page .mgmt-card .success-msg {
-            color: var(--green);
-            font-size: 0.75rem;
-            margin-top: 6px;
-            display: none;
-        }
-        .mgmt-page .mgmt-card .success-msg.show {
-            display: block;
-        }
-
-        .mgmt-page .student-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .mgmt-page .student-grid .student-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 4px 8px 4px 14px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-
-        .mgmt-page .student-grid .student-tag:hover {
-            border-color: var(--gold);
-        }
-
-        .mgmt-page .student-grid .student-tag .del-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0 4px;
-            transition: var(--transition);
-            line-height: 1;
-        }
-
-        .mgmt-page .student-grid .student-tag .del-btn:hover {
-            color: var(--red);
-        }
-
-        .mgmt-page .mgmt-card .faculty-filter {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .mgmt-page .mgmt-card .faculty-filter button {
-            padding: 4px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .mgmt-page .mgmt-card .faculty-filter button.active {
-            border-color: var(--gold);
-            background: var(--gold-glow);
-            color: var(--gold);
-        }
-
-        .mgmt-page .mgmt-card .faculty-filter button:hover {
-            border-color: var(--gold);
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .main-grid {
@@ -1250,9 +1078,6 @@
             }
             .sidebar {
                 position: static;
-            }
-            .mgmt-page .mgmt-grid {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -1285,6 +1110,9 @@
             .login-box {
                 padding: 24px 20px;
             }
+            .add-modal {
+                padding: 20px;
+            }
             .certificate {
                 padding: 20px;
             }
@@ -1296,15 +1124,6 @@
             }
             .certificate .student-name-cert {
                 font-size: 1.3rem;
-            }
-            .mgmt-page .mgmt-grid {
-                grid-template-columns: 1fr;
-            }
-            .mgmt-page .mgmt-card .row {
-                flex-wrap: wrap;
-            }
-            .import-section .import-row {
-                flex-direction: column;
             }
         }
 
@@ -1372,7 +1191,7 @@
                 <button class="btn-gold" id="loginBtn">🔑 Войти</button>
                 <button class="btn-outline" id="certBtn">🏆 Аттестат</button>
                 <button class="btn-green" id="reportBtn">📊 Отчет</button>
-                <button class="btn-purple" id="mgmtToggleBtn">👨‍🎓 Списки</button>
+                <button class="btn-purple" id="addStudentsBtn">➕ Добавить студентов</button>
                 <div class="online-indicator">
                     <span class="online-dot"></span>
                     <span id="profCount">0</span>
@@ -1412,45 +1231,11 @@
                     </div>
                 </div>
 
-                <!-- Импорт данных -->
-                <div class="sidebar-section">
-                    <div class="section-title">📥 Импорт данных</div>
-                    <div class="import-section">
-                        <div class="import-row">
-                            <input type="file" id="importFile" accept=".csv,.xlsx,.xls">
-                            <button class="btn-import" id="importBtn">📤 Загрузить</button>
-                        </div>
-                        <div class="import-hint">
-                            Поддерживаются: CSV, Excel (.xlsx, .xls)<br>
-                            Каждый лист = отдельный курс
-                        </div>
-                        <div class="faculty-color-select" id="facultyColorSelect">
-                            <label>
-                                <input type="radio" name="facultyColor" value="Гриффиндор" checked>
-                                <span class="color-dot" style="background:#ae0000;"></span> Гриффиндор
-                            </label>
-                            <label>
-                                <input type="radio" name="facultyColor" value="Слизерин">
-                                <span class="color-dot" style="background:#1a6b47;"></span> Слизерин
-                            </label>
-                            <label>
-                                <input type="radio" name="facultyColor" value="Когтевран">
-                                <span class="color-dot" style="background:#2a4b7c;"></span> Когтевран
-                            </label>
-                            <label>
-                                <input type="radio" name="facultyColor" value="Пуффендуй">
-                                <span class="color-dot" style="background:#e3a738;"></span> Пуффендуй
-                            </label>
-                        </div>
-                        <div class="import-status" id="importStatus">✅ Импорт выполнен</div>
-                    </div>
-                </div>
-
                 <div class="sidebar-section">
                     <div class="sidebar-hint">
                         💾 Автосохранение · 🔄 Синхронизация<br>
                         <span style="font-size:0.55rem;color:var(--text-muted);">
-                            Для управления списками перейдите в раздел "Списки"
+                            Нажмите "Добавить студентов" для ввода списка
                         </span>
                     </div>
                 </div>
@@ -1482,66 +1267,59 @@
                         <tbody id="tableBody">
                             <tr>
                                 <td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px;">
-                                    Загрузите учеников через раздел "Списки" или "Импорт данных"
+                                    Нажмите "Добавить студентов" чтобы загрузить список
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </main>
+        </div>
+    </div>
 
-            <!-- ===== STUDENT MANAGEMENT PAGE ===== -->
-            <div class="mgmt-page" id="mgmtPage">
-                <div class="mgmt-header">
-                    <h2>👨‍🎓 Управление списками студентов</h2>
-                    <button class="btn-outline" id="closeMgmtBtn">✕ Закрыть</button>
+    <!-- ===== ADD STUDENTS MODAL ===== -->
+    <div class="add-modal-overlay" id="addModal">
+        <div class="add-modal">
+            <div style="display:flex; align-items:center; margin-bottom:8px;">
+                <h2>➕ Добавить студентов</h2>
+                <button class="close-add" id="closeAddBtn">✕</button>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📚 Курс</label>
+                    <select id="addCourseSelect">
+                        <option value="1">1 курс</option>
+                        <option value="2">2 курс</option>
+                        <option value="3">3 курс</option>
+                        <option value="4">4 курс</option>
+                        <option value="5">5 курс</option>
+                        <option value="6">6 курс</option>
+                        <option value="7" selected>7 курс</option>
+                    </select>
                 </div>
-
-                <div class="mgmt-grid">
-                    <!-- Добавление одного студента -->
-                    <div class="mgmt-card">
-                        <h3>➕ Добавить студента</h3>
-                        <div class="row">
-                            <input type="text" id="mgmtNameInput" placeholder="Имя студента">
-                            <select id="mgmtFacultySelect">
-                                <option value="Гриффиндор">🦁 Гриффиндор</option>
-                                <option value="Слизерин">🐍 Слизерин</option>
-                                <option value="Когтевран">🦅 Когтевран</option>
-                                <option value="Пуффендуй">🦡 Пуффендуй</option>
-                            </select>
-                            <button class="btn-add" id="mgmtAddBtn">➕</button>
-                        </div>
-                        <div class="success-msg" id="mgmtSuccess">✅ Готово!</div>
-                    </div>
-
-                    <!-- Массовое добавление -->
-                    <div class="mgmt-card">
-                        <h3>📋 Массовое добавление</h3>
-                        <textarea id="mgmtMassInput" placeholder="Вставьте список:&#10;Поттер Гарри,Гриффиндор&#10;Грейнджер Гермиона,Гриффиндор"></textarea>
-                        <div class="row">
-                            <button class="btn-mass" id="mgmtMassBtn">📋 Добавить всех</button>
-                            <button class="btn-danger" id="mgmtRemoveFacultyBtn">🗑️ Удалить факультет</button>
-                        </div>
-                        <div class="hint">Формат: Имя,Факультет (каждый с новой строки)</div>
-                    </div>
-
-                    <!-- Список студентов -->
-                    <div class="mgmt-card" style="grid-column: 1 / -1;">
-                        <h3>📋 Список студентов</h3>
-                        <div class="faculty-filter" id="mgmtFilter">
-                            <button class="active" data-filter="all">Все</button>
-                            <button data-filter="Гриффиндор">🦁 Гриффиндор</button>
-                            <button data-filter="Слизерин">🐍 Слизерин</button>
-                            <button data-filter="Когтевран">🦅 Когтевран</button>
-                            <button data-filter="Пуффендуй">🦡 Пуффендуй</button>
-                        </div>
-                        <div class="student-grid" id="mgmtStudentGrid">
-                            <div style="color:var(--text-muted);padding:20px;text-align:center;width:100%;">
-                                Нет студентов
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>🦁 Факультет</label>
+                    <select id="addFacultySelect">
+                        <option value="Гриффиндор">🦁 Гриффиндор</option>
+                        <option value="Слизерин">🐍 Слизерин</option>
+                        <option value="Когтевран">🦅 Когтевран</option>
+                        <option value="Пуффендуй">🦡 Пуффендуй</option>
+                    </select>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>📝 Список студентов</label>
+                <textarea id="addStudentsTextarea" placeholder="Введите имена студентов, каждое с новой строки:&#10;Поттер Гарри&#10;Грейнджер Гермиона&#10;Уизли Рон"></textarea>
+                <div class="hint-text">Каждое имя на новой строке. Можно скопировать из Excel или Google Таблиц.</div>
+            </div>
+
+            <div class="add-status" id="addStatus">✅ Студенты добавлены!</div>
+
+            <div class="btn-row">
+                <button class="btn-add-students" id="addStudentsConfirmBtn">📥 Добавить студентов</button>
+                <button class="btn-cancel" id="addStudentsCancelBtn">Отмена</button>
             </div>
         </div>
     </div>
@@ -1671,7 +1449,6 @@
         let userRole = 'guest';
         let userName = '';
         let professorId = null;
-        let isMgmtMode = false;
 
         // ============================================================
         //  STORAGE
@@ -1759,245 +1536,38 @@
         }
 
         // ============================================================
-        //  STUDENT MANAGEMENT
+        //  ADD STUDENTS
         // ============================================================
-        function addStudent(name, faculty) {
-            name = name.trim();
-            if (!name) { alert('Введите имя'); return false; }
-            if (!FACULTIES.includes(faculty)) { alert('Неверный факультет'); return false; }
-            if (students.some(s => s.name === name && s.faculty === faculty)) {
-                alert(`"${name}" уже есть на ${faculty}`);
-                return false;
-            }
-            students.push({ id: nextId++, name, faculty, grades: {} });
-            saveData();
-            renderAll();
-            showSuccess(`✅ Добавлен: ${name} (${faculty})`);
-            return true;
-        }
+        function addStudentsFromList(names, faculty, course) {
+            const lines = names.split('\n').filter(l => l.trim());
+            let added = 0;
+            let duplicates = 0;
 
-        function massAddStudents(text) {
-            const lines = text.split('\n').filter(l => l.trim());
-            let added = 0,
-                errors = 0;
             lines.forEach(line => {
-                const parts = line.split(',').map(s => s.trim());
-                if (parts.length >= 2) {
-                    const name = parts[0];
-                    let faculty = parts[1];
-                    if (!FACULTIES.includes(faculty)) {
-                        const found = FACULTIES.find(f => f.toLowerCase() === faculty.toLowerCase());
-                        if (found) faculty = found;
-                        else { errors++; return; }
-                    }
-                    if (!students.some(s => s.name === name && s.faculty === faculty)) {
-                        students.push({ id: nextId++, name, faculty, grades: {} });
-                        added++;
-                    }
-                } else { errors++; }
-            });
-            if (added > 0) {
-                saveData();
-                renderAll();
-                showSuccess(`✅ Добавлено ${added} студ.${errors > 0 ? `, ${errors} пропущено` : ''}`);
-            } else {
-                alert('Не удалось добавить. Формат: "Имя,Факультет"');
-            }
-        }
+                const name = line.trim();
+                if (!name) return;
 
-        function deleteFaculty(faculty) {
-            const toDel = students.filter(s => s.faculty === faculty);
-            if (!toDel.length) { alert(`Нет студентов на ${faculty}`); return; }
-            if (confirm(`Удалить всех с ${faculty}? (${toDel.length} чел.)`)) {
-                students = students.filter(s => s.faculty !== faculty);
-                saveData();
-                renderAll();
-                showSuccess(`🗑️ Удалены все с ${faculty}`);
-            }
-        }
-
-        function deleteStudent(id, name) {
-            if (confirm(`Удалить "${name}"?`)) {
-                students = students.filter(s => s.id !== id);
-                saveData();
-                renderAll();
-                showSuccess(`🗑️ Удален: ${name}`);
-            }
-        }
-
-        function showSuccess(msg) {
-            const el = document.getElementById('mgmtSuccess');
-            el.textContent = msg;
-            el.classList.add('show');
-            clearTimeout(el._timer);
-            el._timer = setTimeout(() => el.classList.remove('show'), 3000);
-        }
-
-        // ============================================================
-        //  IMPORT FUNCTIONS — адаптированы под вашу таблицу
-        // ============================================================
-        function showImportStatus(msg, isError = false) {
-            const el = document.getElementById('importStatus');
-            el.textContent = msg;
-            el.className = 'import-status show' + (isError ? ' error' : '');
-            setTimeout(() => {
-                el.classList.remove('show');
-            }, 5000);
-        }
-
-        function getSelectedFaculty() {
-            const selected = document.querySelector('input[name="facultyColor"]:checked');
-            return selected ? selected.value : 'Гриффиндор';
-        }
-
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
+                // Проверяем, есть ли уже такой студент на этом факультете
+                if (students.some(s => s.name === name && s.faculty === faculty)) {
+                    duplicates++;
+                    return;
                 }
-            }
-            result.push(current.trim());
-            return result;
-        }
 
-        function importFromTableData(header, rows, sheetName, faculty) {
-            // Ищем колонку с именами (первая колонка после пустой)
-            const nameIdx = 0;
-            // Ищем колонку СУММА
-            const sumIdx = header.findIndex(h => /сумма|sum|итого/i.test(h));
-
-            // Собираем предметы из заголовка (все колонки кроме первой и СУММА)
-            const subjectMap = {};
-            header.forEach((h, idx) => {
-                if (idx !== nameIdx && idx !== sumIdx && h && h.trim()) {
-                    const clean = h.replace(/[\[\](){}]/g, '').trim();
-                    // Ищем соответствие с известными предметами
-                    const allSubs = getAllSubjects();
-                    const match = allSubs.find(s => 
-                        s.toLowerCase() === clean.toLowerCase() ||
-                        clean.toLowerCase().includes(s.toLowerCase()) ||
-                        s.toLowerCase().includes(clean.toLowerCase())
-                    );
-                    if (match) {
-                        subjectMap[idx] = match;
-                    }
-                }
+                students.push({
+                    id: nextId++,
+                    name: name,
+                    faculty: faculty,
+                    grades: {}
+                });
+                added++;
             });
 
-            // Определяем курс из названия листа
-            let course = 7;
-            const sheetMatch = sheetName.match(/(\d+)/);
-            if (sheetMatch) {
-                const num = parseInt(sheetMatch[1]);
-                if (num >= 1 && num <= 7) course = num;
+            if (added > 0 || duplicates > 0) {
+                saveData();
+                renderAll();
+                return { added, duplicates };
             }
-
-            const subjectColumns = Object.keys(subjectMap).map(Number);
-            if (subjectColumns.length === 0) {
-                return { error: 'Не найдены колонки с предметами' };
-            }
-
-            let imported = 0;
-            let errors = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                const values = rows[i];
-                if (!values || values.length < 2) continue;
-
-                const name = values[nameIdx]?.trim();
-                if (!name || name === '') continue;
-
-                // Проверяем, есть ли уже такой студент
-                let student = students.find(s => s.name === name && s.faculty === faculty);
-                if (!student) {
-                    student = { id: nextId++, name, faculty, grades: {} };
-                    students.push(student);
-                    imported++;
-                }
-
-                // Добавляем оценки
-                subjectColumns.forEach(colIdx => {
-                    const subject = subjectMap[colIdx];
-                    const val = values[colIdx]?.trim();
-                    if (val && subject) {
-                        const num = parseFloat(val.replace(',', '.'));
-                        const available = getAvailableGrades(course);
-                        if (!isNaN(num) && available.includes(num)) {
-                            student.grades[subject] = num;
-                        }
-                    }
-                });
-            }
-
-            return { imported, errors, course };
-        }
-
-        function importFromCSV(text, faculty) {
-            const lines = text.split('\n').filter(l => l.trim());
-            if (lines.length < 2) {
-                return { error: 'Файл должен содержать заголовок и данные' };
-            }
-
-            const header = parseCSVLine(lines[0]);
-            const rows = [];
-            for (let i = 1; i < lines.length; i++) {
-                const row = parseCSVLine(lines[i]);
-                if (row.length > 1) rows.push(row);
-            }
-
-            // Определяем курс из названия листа (если есть)
-            // Для CSV используем отдельный подход — определяем по предметам
-            const result = importFromTableData(header, rows, 'Импорт', faculty);
-            return result;
-        }
-
-        function importFromExcel(data, faculty) {
-            if (typeof XLSX === 'undefined') {
-                return { error: 'Библиотека Excel не загружена' };
-            }
-
-            try {
-                const workbook = XLSX.read(data, { type: 'array' });
-                let totalImported = 0;
-                let totalErrors = 0;
-                let courses = [];
-
-                workbook.SheetNames.forEach(sheetName => {
-                    const sheet = workbook.Sheets[sheetName];
-                    const csv = XLSX.utils.sheet_to_csv(sheet);
-                    const lines = csv.split('\n').filter(l => l.trim());
-                    if (lines.length < 2) return;
-
-                    const header = parseCSVLine(lines[0]);
-                    const rows = [];
-                    for (let i = 1; i < lines.length; i++) {
-                        const row = parseCSVLine(lines[i]);
-                        if (row.length > 1) rows.push(row);
-                    }
-
-                    const result = importFromTableData(header, rows, sheetName, faculty);
-                    if (result.error) {
-                        totalErrors++;
-                    } else {
-                        totalImported += result.imported || 0;
-                        totalErrors += result.errors || 0;
-                        if (result.course) courses.push(result.course);
-                    }
-                });
-
-                return { imported: totalImported, errors: totalErrors, courses };
-            } catch (err) {
-                return { error: 'Ошибка при чтении Excel: ' + err.message };
-            }
+            return null;
         }
 
         // ============================================================
@@ -2006,7 +1576,6 @@
         function renderAll() {
             renderFaculties();
             renderJournal();
-            renderMgmtStudents();
             renderLegend();
             renderCertSelect();
             updateUI();
@@ -2127,35 +1696,6 @@
             }
         }
 
-        function renderMgmtStudents() {
-            const container = document.getElementById('mgmtStudentGrid');
-            const filter = document.querySelector('#mgmtFilter .active')?.dataset.filter || 'all';
-            const filtered = filter === 'all' ? students : students.filter(s => s.faculty === filter);
-
-            if (!filtered.length) {
-                container.innerHTML =
-                    `<div style="color:var(--text-muted);padding:20px;text-align:center;width:100%;">Нет студентов${filter !== 'all' ? ` на ${filter}` : ''}</div>`;
-                return;
-            }
-
-            let html = '';
-            filtered.forEach(s => {
-                html += `<span class="student-tag">
-                            ${s.name} (${s.faculty})
-                            <button class="del-btn" data-id="${s.id}">✕</button>
-                        </span>`;
-            });
-            container.innerHTML = html;
-
-            container.querySelectorAll('.del-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.dataset.id);
-                    const s = students.find(st => st.id === id);
-                    if (s) deleteStudent(id, s.name);
-                });
-            });
-        }
-
         function renderCertSelect() {
             const select = document.getElementById('certStudentSelect');
             const currentVal = select.value;
@@ -2191,22 +1731,9 @@
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginError').classList.remove('show');
 
-            const mgmtBtn = document.getElementById('mgmtToggleBtn');
-            mgmtBtn.style.display = canManageStudents() ? 'inline-block' : 'none';
-
-            const journalView = document.getElementById('journalView');
-            const mgmtPage = document.getElementById('mgmtPage');
-            const mainGrid = document.getElementById('mainGrid');
-
-            if (isMgmtMode && canManageStudents()) {
-                journalView.style.display = 'none';
-                mgmtPage.classList.add('active');
-                mainGrid.style.display = 'block';
-            } else {
-                journalView.style.display = 'block';
-                mgmtPage.classList.remove('active');
-                mainGrid.style.display = 'grid';
-            }
+            // Показываем кнопку добавления студентов только для деканов и завуча
+            const addBtn = document.getElementById('addStudentsBtn');
+            addBtn.style.display = canManageStudents() ? 'inline-block' : 'none';
         }
 
         // ============================================================
@@ -2432,7 +1959,7 @@
                 const msg = `🔓 Вы вошли как ${ROLE_NAMES[userRole]}`;
                 const nameMsg = userName ? ` (${userName})` : '';
                 if (userRole === 'professor') alert(`${msg}${nameMsg}. Введите оценку в ячейку и нажмите Enter.`);
-                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете управлять списками студентов.`);
+                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять студентов.`);
                 else if (userRole === 'headmaster') alert(`${msg}${nameMsg}. У вас полный доступ.`);
                 return true;
             } else {
@@ -2446,7 +1973,6 @@
             unregisterProfessor();
             userRole = 'guest';
             userName = '';
-            isMgmtMode = false;
             document.getElementById('loginModal').classList.remove('open');
             renderAll();
         }
@@ -2460,10 +1986,6 @@
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
             document.head.appendChild(script);
-
-            const xlsxScript = document.createElement('script');
-            xlsxScript.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-            document.head.appendChild(xlsxScript);
 
             try {
                 const ch = new BroadcastChannel('hogwarts');
@@ -2497,6 +2019,7 @@
                 });
             });
 
+            // Login
             document.getElementById('loginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.add('open');
                 document.getElementById('loginPassword').focus();
@@ -2525,120 +2048,65 @@
                 }
             });
 
-            document.getElementById('mgmtToggleBtn').addEventListener('click', function() {
+            // ===== ADD STUDENTS =====
+            document.getElementById('addStudentsBtn').addEventListener('click', function() {
                 if (!canManageStudents()) {
                     alert('Доступ только у деканов и завуча');
                     return;
                 }
-                isMgmtMode = !isMgmtMode;
-                renderAll();
-                if (isMgmtMode) {
-                    this.textContent = '📖 Журнал';
-                } else {
-                    this.textContent = '👨‍🎓 Списки';
+                document.getElementById('addModal').classList.add('open');
+                document.getElementById('addStudentsTextarea').value = '';
+                document.getElementById('addStatus').classList.remove('show');
+                document.getElementById('addStatus').classList.remove('error');
+            });
+
+            document.getElementById('closeAddBtn').addEventListener('click', function() {
+                document.getElementById('addModal').classList.remove('open');
+            });
+
+            document.getElementById('addStudentsCancelBtn').addEventListener('click', function() {
+                document.getElementById('addModal').classList.remove('open');
+            });
+
+            document.getElementById('addModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('open');
                 }
             });
 
-            document.getElementById('closeMgmtBtn').addEventListener('click', function() {
-                isMgmtMode = false;
-                document.getElementById('mgmtToggleBtn').textContent = '👨‍🎓 Списки';
-                renderAll();
-            });
+            document.getElementById('addStudentsConfirmBtn').addEventListener('click', function() {
+                const names = document.getElementById('addStudentsTextarea').value;
+                const faculty = document.getElementById('addFacultySelect').value;
+                const course = parseInt(document.getElementById('addCourseSelect').value);
 
-            // MGMT: Add student
-            document.getElementById('mgmtAddBtn').addEventListener('click', function() {
-                const name = document.getElementById('mgmtNameInput').value;
-                const faculty = document.getElementById('mgmtFacultySelect').value;
-                if (addStudent(name, faculty)) {
-                    document.getElementById('mgmtNameInput').value = '';
-                }
-            });
-            document.getElementById('mgmtNameInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') document.getElementById('mgmtAddBtn').click();
-            });
-
-            // MGMT: Mass add
-            document.getElementById('mgmtMassBtn').addEventListener('click', function() {
-                const text = document.getElementById('mgmtMassInput').value;
-                if (text.trim()) {
-                    massAddStudents(text);
-                    document.getElementById('mgmtMassInput').value = '';
-                } else {
-                    alert('Введите список студентов');
-                }
-            });
-
-            // MGMT: Remove faculty
-            document.getElementById('mgmtRemoveFacultyBtn').addEventListener('click', function() {
-                const faculty = prompt('Введите название факультета для удаления:');
-                if (faculty && FACULTIES.includes(faculty)) {
-                    deleteFaculty(faculty);
-                } else if (faculty) {
-                    alert('Некорректное название факультета');
-                }
-            });
-
-            // MGMT: Filter
-            document.querySelectorAll('#mgmtFilter button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('#mgmtFilter button').forEach(b => b.classList.remove(
-                    'active'));
-                    this.classList.add('active');
-                    renderMgmtStudents();
-                });
-            });
-
-            // ===== IMPORT =====
-            document.getElementById('importBtn').addEventListener('click', function() {
-                const fileInput = document.getElementById('importFile');
-                const file = fileInput.files[0];
-                if (!file) {
-                    showImportStatus('❌ Выберите файл для загрузки', true);
+                if (!names.trim()) {
+                    const status = document.getElementById('addStatus');
+                    status.textContent = '❌ Введите хотя бы одно имя';
+                    status.className = 'add-status show error';
                     return;
                 }
 
-                const faculty = getSelectedFaculty();
+                const result = addStudentsFromList(names, faculty, course);
 
-                if (file.name.endsWith('.csv')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const result = importFromCSV(e.target.result, faculty);
-                        if (result.error) {
-                            showImportStatus('❌ ' + result.error, true);
-                        } else {
-                            saveData();
-                            renderAll();
-                            showImportStatus(`✅ Импортировано: ${result.imported || 0} студентов, ${result.errors || 0} ошибок`);
-                        }
-                    };
-                    reader.readAsText(file, 'UTF-8');
-                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
-                    if (typeof XLSX === 'undefined') {
-                        showImportStatus('❌ Библиотека Excel не загружена', true);
-                        return;
+                if (result) {
+                    const status = document.getElementById('addStatus');
+                    const msg = `✅ Добавлено: ${result.added} студентов`;
+                    const dupMsg = result.duplicates > 0 ? ` (${result.duplicates} пропущено, уже есть)` : '';
+                    status.textContent = msg + dupMsg;
+                    status.className = 'add-status show';
+                    if (result.added === 0) {
+                        status.classList.add('error');
                     }
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const result = importFromExcel(e.target.result, faculty);
-                        if (result.error) {
-                            showImportStatus('❌ ' + result.error, true);
-                        } else {
-                            saveData();
-                            renderAll();
-                            const courseInfo = result.courses && result.courses.length > 0 ?
-                                ` (курсы: ${[...new Set(result.courses)].join(', ')})` : '';
-                            showImportStatus(`✅ Импортировано: ${result.imported || 0} студентов, ${result.errors || 0} ошибок${courseInfo}`);
-                        }
-                    };
-                    reader.readAsArrayBuffer(file);
+                    document.getElementById('addStudentsTextarea').value = '';
+                    renderAll();
                 } else {
-                    showImportStatus('❌ Неподдерживаемый формат. Используйте CSV или Excel.', true);
+                    const status = document.getElementById('addStatus');
+                    status.textContent = '❌ Ошибка при добавлении';
+                    status.className = 'add-status show error';
                 }
-
-                fileInput.value = '';
             });
 
-            // Certificate
+            // ===== CERTIFICATE =====
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2664,7 +2132,7 @@
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
-            // Report
+            // ===== REPORT =====
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
@@ -2689,6 +2157,7 @@
             document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
             document.getElementById('printReportBtn').addEventListener('click', () => window.print());
 
+            // Cleanup
             window.addEventListener('beforeunload', () => {
                 if (userRole !== 'guest') unregisterProfessor();
             });
