@@ -185,6 +185,28 @@
             box-shadow: 0 0 25px rgba(123, 31, 162, 0.35);
         }
 
+        .header-controls .btn-blue {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-blue:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(21, 101, 192, 0.35);
+        }
+
+        .header-controls .btn-orange {
+            background: linear-gradient(135deg, #e65100, #f57c00);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-orange:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(245, 124, 0, 0.35);
+        }
+
         .online-indicator {
             display: flex;
             align-items: center;
@@ -657,6 +679,175 @@
             margin-top: 4px;
         }
 
+        /* ===== TRANSFER MODAL ===== */
+        .transfer-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1500;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .transfer-modal-overlay.open {
+            display: flex;
+        }
+
+        .transfer-modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-gold);
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .transfer-modal h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transfer-modal .close-transfer {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .transfer-modal .close-transfer:hover {
+            color: var(--gold);
+            transform: rotate(90deg);
+        }
+
+        .transfer-modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .transfer-modal .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .transfer-modal .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .transfer-modal .form-group select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .transfer-modal .form-group select option {
+            background: var(--bg-secondary);
+        }
+
+        .transfer-modal .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .transfer-modal .btn-row button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .transfer-modal .btn-row .btn-transfer {
+            background: linear-gradient(135deg, #e65100, #f57c00);
+            color: #fff;
+            flex: 1;
+        }
+
+        .transfer-modal .btn-row .btn-transfer:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(245, 124, 0, 0.35);
+        }
+
+        .transfer-modal .btn-row .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .transfer-modal .btn-row .btn-cancel:hover {
+            border-color: var(--gold);
+            background: var(--gold-glow);
+        }
+
+        .transfer-modal .transfer-status {
+            color: var(--green);
+            font-size: 0.8rem;
+            margin-top: 12px;
+            display: none;
+            padding: 8px 12px;
+            background: rgba(76, 175, 80, 0.08);
+            border-radius: 6px;
+            border: 1px solid rgba(76, 175, 80, 0.15);
+        }
+
+        .transfer-modal .transfer-status.show {
+            display: block;
+        }
+
+        .transfer-modal .transfer-status.error {
+            color: var(--red);
+            border-color: rgba(239, 83, 80, 0.15);
+            background: rgba(239, 83, 80, 0.08);
+        }
+
+        .transfer-modal .student-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            border-left: 3px solid var(--gold);
+        }
+
+        .transfer-modal .student-info .info-label {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .transfer-modal .student-info .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
         /* ===== JOURNAL ===== */
         .journal {
             background: var(--bg-card);
@@ -1110,8 +1301,12 @@
             .login-box {
                 padding: 24px 20px;
             }
-            .add-modal {
+            .add-modal,
+            .transfer-modal {
                 padding: 20px;
+            }
+            .add-modal .form-row {
+                flex-direction: column;
             }
             .certificate {
                 padding: 20px;
@@ -1191,7 +1386,8 @@
                 <button class="btn-gold" id="loginBtn">🔑 Войти</button>
                 <button class="btn-outline" id="certBtn">🏆 Аттестат</button>
                 <button class="btn-green" id="reportBtn">📊 Отчет</button>
-                <button class="btn-purple" id="addStudentsBtn">➕ Добавить студентов</button>
+                <button class="btn-purple" id="addStudentsBtn">➕ Добавить</button>
+                <button class="btn-orange" id="transferBtn">🔄 Перевод</button>
                 <div class="online-indicator">
                     <span class="online-dot"></span>
                     <span id="profCount">0</span>
@@ -1235,7 +1431,8 @@
                     <div class="sidebar-hint">
                         💾 Автосохранение · 🔄 Синхронизация<br>
                         <span style="font-size:0.55rem;color:var(--text-muted);">
-                            Нажмите "Добавить студентов" для ввода списка
+                            "Добавить" — новые студенты<br>
+                            "Перевод" — смена курса
                         </span>
                     </div>
                 </div>
@@ -1267,7 +1464,7 @@
                         <tbody id="tableBody">
                             <tr>
                                 <td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px;">
-                                    Нажмите "Добавить студентов" чтобы загрузить список
+                                    Нажмите "Добавить" чтобы загрузить список студентов
                                 </td>
                             </tr>
                         </tbody>
@@ -1320,6 +1517,48 @@
             <div class="btn-row">
                 <button class="btn-add-students" id="addStudentsConfirmBtn">📥 Добавить студентов</button>
                 <button class="btn-cancel" id="addStudentsCancelBtn">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TRANSFER MODAL ===== -->
+    <div class="transfer-modal-overlay" id="transferModal">
+        <div class="transfer-modal">
+            <div style="display:flex; align-items:center; margin-bottom:8px;">
+                <h2>🔄 Перевод студента</h2>
+                <button class="close-transfer" id="closeTransferBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label>👤 Выберите студента</label>
+                <select id="transferStudentSelect">
+                    <option value="">— Выберите студента —</option>
+                </select>
+            </div>
+
+            <div class="student-info" id="transferStudentInfo">
+                <div><span class="info-label">Текущий курс:</span> <span class="info-value" id="transferCurrentCourse">—</span></div>
+                <div><span class="info-label">Факультет:</span> <span class="info-value" id="transferFaculty">—</span></div>
+            </div>
+
+            <div class="form-group">
+                <label>📚 Новый курс</label>
+                <select id="transferNewCourse">
+                    <option value="1">1 курс</option>
+                    <option value="2">2 курс</option>
+                    <option value="3">3 курс</option>
+                    <option value="4">4 курс</option>
+                    <option value="5">5 курс</option>
+                    <option value="6">6 курс</option>
+                    <option value="7">7 курс</option>
+                </select>
+            </div>
+
+            <div class="transfer-status" id="transferStatus">✅ Студент переведен!</div>
+
+            <div class="btn-row">
+                <button class="btn-transfer" id="transferConfirmBtn">🔄 Перевести</button>
+                <button class="btn-cancel" id="transferCancelBtn">Отмена</button>
             </div>
         </div>
     </div>
@@ -1547,7 +1786,6 @@
                 const name = line.trim();
                 if (!name) return;
 
-                // Проверяем, есть ли уже такой студент на этом факультете
                 if (students.some(s => s.name === name && s.faculty === faculty)) {
                     duplicates++;
                     return;
@@ -1571,6 +1809,45 @@
         }
 
         // ============================================================
+        //  TRANSFER STUDENT
+        // ============================================================
+        function transferStudent(studentId, newCourse) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) {
+                return { error: 'Студент не найден' };
+            }
+
+            // Проверяем, есть ли уже такой студент на новом курсе с тем же факультетом
+            const existing = students.find(s => 
+                s.name === student.name && 
+                s.faculty === student.faculty && 
+                detectCourse(s) === newCourse
+            );
+            if (existing) {
+                return { error: 'Студент уже есть на этом курсе' };
+            }
+
+            // Сохраняем старые оценки
+            const oldGrades = { ...student.grades };
+            
+            // Очищаем оценки (на новом курсе будут новые предметы)
+            student.grades = {};
+
+            // Определяем новый факультет (оставляем тот же)
+            // Сохраняем изменения
+            saveData();
+            renderAll();
+            
+            return { 
+                success: true, 
+                name: student.name, 
+                faculty: student.faculty,
+                fromCourse: detectCourse({ grades: oldGrades }),
+                toCourse: newCourse
+            };
+        }
+
+        // ============================================================
         //  RENDER
         // ============================================================
         function renderAll() {
@@ -1578,6 +1855,7 @@
             renderJournal();
             renderLegend();
             renderCertSelect();
+            renderTransferSelect();
             updateUI();
         }
 
@@ -1712,6 +1990,23 @@
             }
         }
 
+        function renderTransferSelect() {
+            const select = document.getElementById('transferStudentSelect');
+            const currentVal = select.value;
+            select.innerHTML = `<option value="">— Выберите студента —</option>`;
+            const sorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
+            sorted.forEach(s => {
+                const course = detectCourse(s);
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = `${s.name} (${s.faculty}, ${course} курс)`;
+                select.appendChild(opt);
+            });
+            if (currentVal && students.some(s => s.id === parseInt(currentVal))) {
+                select.value = currentVal;
+            }
+        }
+
         function updateUI() {
             const badge = document.getElementById('roleBadge');
             badge.textContent = ROLE_NAMES[userRole] || 'Гость';
@@ -1731,9 +2026,9 @@
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginError').classList.remove('show');
 
-            // Показываем кнопку добавления студентов только для деканов и завуча
-            const addBtn = document.getElementById('addStudentsBtn');
-            addBtn.style.display = canManageStudents() ? 'inline-block' : 'none';
+            const canManage = canManageStudents();
+            document.getElementById('addStudentsBtn').style.display = canManage ? 'inline-block' : 'none';
+            document.getElementById('transferBtn').style.display = canManage ? 'inline-block' : 'none';
         }
 
         // ============================================================
@@ -1959,7 +2254,7 @@
                 const msg = `🔓 Вы вошли как ${ROLE_NAMES[userRole]}`;
                 const nameMsg = userName ? ` (${userName})` : '';
                 if (userRole === 'professor') alert(`${msg}${nameMsg}. Введите оценку в ячейку и нажмите Enter.`);
-                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять студентов.`);
+                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять и переводить студентов.`);
                 else if (userRole === 'headmaster') alert(`${msg}${nameMsg}. У вас полный доступ.`);
                 return true;
             } else {
@@ -2103,6 +2398,86 @@
                     const status = document.getElementById('addStatus');
                     status.textContent = '❌ Ошибка при добавлении';
                     status.className = 'add-status show error';
+                }
+            });
+
+            // ===== TRANSFER =====
+            document.getElementById('transferBtn').addEventListener('click', function() {
+                if (!canManageStudents()) {
+                    alert('Доступ только у деканов и завуча');
+                    return;
+                }
+                if (students.length === 0) {
+                    alert('Нет студентов для перевода');
+                    return;
+                }
+                document.getElementById('transferModal').classList.add('open');
+                document.getElementById('transferStatus').classList.remove('show');
+                document.getElementById('transferStatus').classList.remove('error');
+                renderTransferSelect();
+                // Сбрасываем информацию
+                document.getElementById('transferCurrentCourse').textContent = '—';
+                document.getElementById('transferFaculty').textContent = '—';
+            });
+
+            document.getElementById('closeTransferBtn').addEventListener('click', function() {
+                document.getElementById('transferModal').classList.remove('open');
+            });
+
+            document.getElementById('transferCancelBtn').addEventListener('click', function() {
+                document.getElementById('transferModal').classList.remove('open');
+            });
+
+            document.getElementById('transferModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('open');
+                }
+            });
+
+            document.getElementById('transferStudentSelect').addEventListener('change', function() {
+                const id = parseInt(this.value);
+                if (id) {
+                    const student = students.find(s => s.id === id);
+                    if (student) {
+                        const course = detectCourse(student);
+                        document.getElementById('transferCurrentCourse').textContent = course + ' курс';
+                        document.getElementById('transferFaculty').textContent = student.faculty;
+                        // Устанавливаем следующий курс как предложение
+                        const nextCourse = Math.min(parseInt(course) + 1, 7);
+                        document.getElementById('transferNewCourse').value = nextCourse;
+                    }
+                } else {
+                    document.getElementById('transferCurrentCourse').textContent = '—';
+                    document.getElementById('transferFaculty').textContent = '—';
+                }
+            });
+
+            document.getElementById('transferConfirmBtn').addEventListener('click', function() {
+                const studentId = parseInt(document.getElementById('transferStudentSelect').value);
+                const newCourse = parseInt(document.getElementById('transferNewCourse').value);
+
+                if (!studentId) {
+                    const status = document.getElementById('transferStatus');
+                    status.textContent = '❌ Выберите студента';
+                    status.className = 'transfer-status show error';
+                    return;
+                }
+
+                const result = transferStudent(studentId, newCourse);
+                if (result.error) {
+                    const status = document.getElementById('transferStatus');
+                    status.textContent = '❌ ' + result.error;
+                    status.className = 'transfer-status show error';
+                } else {
+                    const status = document.getElementById('transferStatus');
+                    status.textContent = `✅ ${result.name} переведен на ${result.toCourse} курс`;
+                    status.className = 'transfer-status show';
+                    // Обновляем список
+                    setTimeout(() => {
+                        renderTransferSelect();
+                        document.getElementById('transferCurrentCourse').textContent = '—';
+                        document.getElementById('transferFaculty').textContent = '—';
+                    }, 500);
                 }
             });
 
