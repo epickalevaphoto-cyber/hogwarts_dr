@@ -1429,20 +1429,20 @@
         //  CONFIG
         // ============================================================
         const USERS = {
-            prof_default: { password: 'prof2026', role: 'professor', name: 'Professor' },
-            prof_snape: { password: 'snape', role: 'professor', name: 'S. Snape' },
-            prof_mcgonagall: { password: 'minerva', role: 'professor', name: 'M. McGonagall' },
-            prof_flitwick: { password: 'flitwick', role: 'professor', name: 'F. Flitwick' },
+            prof_default: { password: 'prof2026', role: 'professor', name: 'Профессор' },
+            prof_snape: { password: 'snape', role: 'professor', name: 'С. Снейп' },
+            prof_mcgonagall: { password: 'minerva', role: 'professor', name: 'М. МакГонагалл' },
+            prof_flitwick: { password: 'flitwick', role: 'professor', name: 'Ф. Флитвик' },
 
-            dean_default: { password: 'dean2026', role: 'dean', name: 'Dean' },
-            dean_gryffindor: { password: 'gryffindor', role: 'dean', name: 'Dean of Gryffindor' },
-            dean_slytherin: { password: 'slytherin', role: 'dean', name: 'Dean of Slytherin' },
-            dean_ravenclaw: { password: 'ravenclaw', role: 'dean', name: 'Dean of Ravenclaw' },
-            dean_hufflepuff: { password: 'hufflepuff', role: 'dean', name: 'Dean of Hufflepuff' },
+            dean_default: { password: 'dean2026', role: 'dean', name: 'Декан' },
+            dean_gryffindor: { password: 'gryffindor', role: 'dean', name: 'Декан Гриффиндора' },
+            dean_slytherin: { password: 'slytherin', role: 'dean', name: 'Декан Слизерина' },
+            dean_ravenclaw: { password: 'ravenclaw', role: 'dean', name: 'Декан Когтеврана' },
+            dean_hufflepuff: { password: 'hufflepuff', role: 'dean', name: 'Декан Пуффендуя' },
 
-            headmaster_default: { password: 'admin2026', role: 'headmaster', name: 'Headmaster' },
-            headmaster_dumbledore: { password: 'dumbledore', role: 'headmaster', name: 'A. Dumbledore' },
-            headmaster_sprout: { password: 'sprout', role: 'headmaster', name: 'P. Sprout' }
+            headmaster_default: { password: 'admin2026', role: 'headmaster', name: 'Завуч' },
+            headmaster_dumbledore: { password: 'dumbledore', role: 'headmaster', name: 'А. Дамблдор' },
+            headmaster_sprout: { password: 'sprout', role: 'headmaster', name: 'П. Стебль' }
         };
 
         const PASSWORD_MAP = {};
@@ -1484,7 +1484,7 @@
         const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
 
         // ============================================================
-        //  ДЕКАНЫ ФАКУЛЬТЕТОВ (ОБНОВЛЕНЫ)
+        //  ДЕКАНЫ И ДИРЕКТОР (ВСЕ НА РУССКОМ)
         // ============================================================
         const DEANS = {
             'Гриффиндор': 'Минерва МакГонагалл',
@@ -1492,6 +1492,8 @@
             'Когтевран': 'Филиус Флитвик',
             'Пуффендуй': 'Помона Стебль'
         };
+
+        const DIRECTOR = 'Лана МакДауэлл';
 
         // ============================================================
         //  STATE
@@ -1929,7 +1931,7 @@
                             <div class="director-block">
                                 <div class="date">${dateStr}</div>
                                 <div style="font-weight:700;font-size:0.7rem;color:#4a4a4a;">ДИРЕКТОР</div>
-                                <div class="director-name">Lana McDowell</div>
+                                <div class="director-name">${DIRECTOR}</div>
                                 <div class="signature">Директор</div>
                             </div>
                         </div>
