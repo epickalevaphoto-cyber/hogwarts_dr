@@ -5,29 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hogwarts Daily — Электронный дневник</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
-
-        :root {
-            --bg-primary: #0a0a12;
-            --bg-secondary: #12121e;
-            --bg-card: rgba(18, 18, 30, 0.92);
-            --bg-hover: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(60, 60, 80, 0.3);
-            --border-gold: rgba(212, 175, 55, 0.25);
-            --text-primary: #e8e4d8;
-            --text-secondary: #8888aa;
-            --text-muted: #555566;
-            --gold: #d4af37;
-            --gold-light: #f9e28c;
-            --gold-glow: rgba(212, 175, 55, 0.15);
-            --green: #4caf50;
-            --red: #ef5350;
-            --orange: #ffb74d;
-            --blue: #4a7db5;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            --radius: 14px;
-            --transition: all 0.25s ease;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
         * {
             margin: 0;
@@ -36,34 +14,17 @@
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: #0c0a0f;
+            color: #e8e4d8;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 16px;
             display: flex;
             justify-content: center;
-            background-image: radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 60%);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gold);
+            padding: 20px;
         }
 
         .app {
-            max-width: 1440px;
+            max-width: 1400px;
             width: 100%;
         }
 
@@ -72,95 +33,88 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 28px;
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border-gold);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            backdrop-filter: blur(12px);
+            padding: 14px 24px;
+            background: rgba(18, 16, 26, 0.85);
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
         }
 
         .header-brand .crest {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
         }
 
         .header-brand h1 {
             font-family: 'Cinzel Decorative', cursive;
-            font-weight: 700;
-            font-size: 1.6rem;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #d4af37, #f9e28c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px var(--gold-glow);
             letter-spacing: 2px;
         }
 
-        .header-brand .subtitle {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            letter-spacing: 3px;
-            text-transform: uppercase;
+        .header-brand .year {
+            font-size: 0.6rem;
+            color: #666688;
+            letter-spacing: 2px;
             margin-left: 4px;
         }
 
         .header-controls {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .header-controls select,
         .header-controls button {
-            padding: 8px 16px;
-            background: rgba(30, 30, 50, 0.8);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 8px;
-            font-size: 0.82rem;
+            padding: 5px 12px;
+            background: rgba(30, 28, 45, 0.8);
+            border: 1px solid rgba(60, 60, 80, 0.25);
+            color: #e8e4d8;
+            border-radius: 6px;
+            font-size: 0.7rem;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s;
             font-family: 'Inter', sans-serif;
             font-weight: 500;
-            backdrop-filter: blur(4px);
         }
 
         .header-controls select:hover,
         .header-controls button:hover {
-            border-color: var(--gold);
-            background: var(--gold-glow);
-            box-shadow: 0 0 20px var(--gold-glow);
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.06);
         }
 
         .header-controls .btn-gold {
-            background: linear-gradient(135deg, #b8860b, var(--gold));
+            background: linear-gradient(135deg, #b8860b, #d4af37);
             border: none;
-            color: #0a0a12;
+            color: #0a0a0f;
             font-weight: 600;
         }
 
         .header-controls .btn-gold:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
         }
 
         .header-controls .btn-outline {
             background: transparent;
-            border-color: var(--gold);
-            color: var(--gold);
+            border-color: rgba(212, 175, 55, 0.25);
+            color: #d4af37;
         }
 
         .header-controls .btn-outline:hover {
-            background: var(--gold-glow);
+            background: rgba(212, 175, 55, 0.06);
         }
 
         .header-controls .btn-green {
@@ -170,30 +124,7 @@
         }
 
         .header-controls .btn-green:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(46, 125, 50, 0.35);
-        }
-
-        .header-controls .btn-purple {
-            background: linear-gradient(135deg, #4a148c, #7b1fa2);
-            border: none;
-            color: #fff;
-        }
-
-        .header-controls .btn-purple:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(123, 31, 162, 0.35);
-        }
-
-        .header-controls .btn-blue {
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
-            border: none;
-            color: #fff;
-        }
-
-        .header-controls .btn-blue:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(21, 101, 192, 0.35);
+            box-shadow: 0 0 20px rgba(46, 125, 50, 0.25);
         }
 
         .header-controls .btn-orange {
@@ -203,27 +134,33 @@
         }
 
         .header-controls .btn-orange:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(245, 124, 0, 0.35);
+            box-shadow: 0 0 20px rgba(245, 124, 0, 0.25);
         }
 
-        .online-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            color: var(--green);
-            padding: 4px 14px;
-            background: rgba(76, 175, 80, 0.08);
-            border-radius: 20px;
-            border: 1px solid rgba(76, 175, 80, 0.15);
+        .role-badge {
+            font-size: 0.5rem;
+            padding: 2px 10px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .role-badge.guest {
+            background: rgba(255, 255, 255, 0.03);
+            color: #555566;
+            border-color: rgba(255, 255, 255, 0.05);
         }
 
         .online-dot {
-            width: 7px;
-            height: 7px;
-            background: var(--green);
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #4caf50;
             border-radius: 50%;
+            margin-right: 4px;
             animation: pulse 2s infinite;
         }
 
@@ -233,629 +170,144 @@
                 opacity: 1;
             }
             50% {
-                opacity: 0.25;
+                opacity: 0.2;
             }
-        }
-
-        .role-badge {
-            font-size: 0.6rem;
-            padding: 3px 12px;
-            border-radius: 20px;
-            background: var(--gold-glow);
-            color: var(--gold);
-            border: 1px solid var(--border-gold);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .role-badge.guest {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            border-color: var(--border-color);
-        }
-
-        .user-name-badge {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            padding: 4px 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* ===== LOGIN MODAL ===== */
-        .login-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(16px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .login-overlay.open {
-            display: flex;
-        }
-
-        .login-box {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 40px 48px;
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid var(--border-gold);
-            box-shadow: var(--shadow);
-        }
-
-        .login-box h2 {
-            font-family: 'Cinzel Decorative', cursive;
-            color: var(--gold);
-            text-align: center;
-            font-size: 1.6rem;
-            margin-bottom: 4px;
-        }
-
-        .login-box .sub {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        .login-box label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 4px;
-            transition: var(--transition);
-        }
-
-        .login-box input:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .login-box .login-error {
-            color: var(--red);
-            font-size: 0.8rem;
-            margin: 4px 0 12px;
-            display: none;
-            min-height: 20px;
-        }
-
-        .login-box .login-error.show {
-            display: block;
-        }
-
-        .login-box .btn-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .login-box .btn-row button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .login-box .btn-row .btn-login {
-            background: linear-gradient(135deg, #b8860b, var(--gold));
-            color: #0a0a12;
-        }
-
-        .login-box .btn-row .btn-login:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-        }
-
-        .login-box .btn-row .btn-logout {
-            background: linear-gradient(135deg, #7a0000, #c62828);
-            color: #fff;
-        }
-
-        .login-box .btn-row .btn-logout:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(198, 40, 40, 0.3);
-        }
-
-        .login-box .role-info {
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 12px;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-        }
-
-        .login-box .role-info .role-name {
-            color: var(--gold);
-            font-weight: 600;
         }
 
         /* ===== MAIN GRID ===== */
         .main-grid {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
         }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 24px;
-            border: 1px solid var(--border-color);
+            background: rgba(18, 16, 26, 0.85);
+            border-radius: 12px;
+            padding: 16px 14px;
+            border: 1px solid rgba(60, 60, 80, 0.15);
             height: fit-content;
             position: sticky;
-            top: 16px;
-            backdrop-filter: blur(12px);
+            top: 20px;
+            backdrop-filter: blur(8px);
         }
 
-        .sidebar-section {
-            margin-bottom: 24px;
-        }
-        .sidebar-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .sidebar-section .section-title {
-            font-size: 0.7rem;
+        .sidebar .title {
+            font-size: 0.55rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
+            color: #555566;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-section .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
-
-        .faculty-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.15);
         }
 
         .faculty-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 10px;
+            gap: 10px;
+            padding: 6px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-            position: relative;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+            border-left: 2px solid transparent;
         }
 
         .faculty-item:hover {
-            background: var(--bg-hover);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .faculty-item.active {
-            background: var(--gold-glow);
-            border-left-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+            border-left-color: #d4af37;
         }
 
         .faculty-item .dot {
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .faculty-item .name {
-            font-weight: 500;
-            font-size: 0.9rem;
         }
 
         .faculty-item .count {
             margin-left: auto;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
+            font-size: 0.6rem;
+            color: #555566;
         }
 
-        .sidebar-hint {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-align: center;
-            padding: 8px;
-            border-top: 1px solid var(--border-color);
-            margin-top: 8px;
-        }
-
-        /* ===== ADD STUDENT MODAL ===== */
-        .add-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 1500;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .add-modal-overlay.open {
-            display: flex;
-        }
-
-        .add-modal {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 32px 40px;
-            max-width: 600px;
-            width: 100%;
-            border: 1px solid var(--border-gold);
-            box-shadow: var(--shadow);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .add-modal h2 {
-            font-family: 'Cinzel Decorative', cursive;
-            color: var(--gold);
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .add-modal .close-add {
-            margin-left: auto;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: var(--transition);
-            line-height: 1;
-        }
-
-        .add-modal .close-add:hover {
-            color: var(--gold);
-            transform: rotate(90deg);
-        }
-
-        .add-modal .form-group {
-            margin-bottom: 16px;
-        }
-
-        .add-modal .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .add-modal .form-group select,
-        .add-modal .form-group textarea {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
-        }
-
-        .add-modal .form-group select:focus,
-        .add-modal .form-group textarea:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .add-modal .form-group textarea {
-            min-height: 200px;
-            resize: vertical;
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        .add-modal .form-group textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .add-modal .form-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .add-modal .form-row .form-group {
-            flex: 1;
-        }
-
-        .add-modal .btn-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .add-modal .btn-row button {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .add-modal .btn-row .btn-add-students {
-            background: linear-gradient(135deg, #1a6b47, #2e7d32);
-            color: #fff;
-            flex: 1;
-        }
-
-        .add-modal .btn-row .btn-add-students:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(46, 125, 50, 0.35);
-        }
-
-        .add-modal .btn-row .btn-cancel {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        .add-modal .btn-row .btn-cancel:hover {
-            border-color: var(--gold);
-            background: var(--gold-glow);
-        }
-
-        .add-modal .add-status {
-            color: var(--green);
-            font-size: 0.8rem;
+        .sidebar-actions {
             margin-top: 12px;
-            display: none;
-            padding: 8px 12px;
-            background: rgba(76, 175, 80, 0.08);
-            border-radius: 6px;
-            border: 1px solid rgba(76, 175, 80, 0.15);
-        }
-
-        .add-modal .add-status.show {
-            display: block;
-        }
-
-        .add-modal .add-status.error {
-            color: var(--red);
-            border-color: rgba(239, 83, 80, 0.15);
-            background: rgba(239, 83, 80, 0.08);
-        }
-
-        .add-modal .hint-text {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* ===== TRANSFER MODAL ===== */
-        .transfer-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 1500;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .transfer-modal-overlay.open {
+            padding-top: 12px;
+            border-top: 1px solid rgba(60, 60, 80, 0.15);
             display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .transfer-modal {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 32px 40px;
-            max-width: 500px;
-            width: 100%;
-            border: 1px solid var(--border-gold);
-            box-shadow: var(--shadow);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .transfer-modal h2 {
-            font-family: 'Cinzel Decorative', cursive;
-            color: var(--gold);
-            font-size: 1.4rem;
-            margin-bottom: 20px;
+        .sidebar-actions button {
+            padding: 5px 10px;
+            border: 1px solid rgba(60, 60, 80, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.02);
+            color: #aaaabc;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-align: left;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 6px;
         }
 
-        .transfer-modal .close-transfer {
-            margin-left: auto;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: var(--transition);
-            line-height: 1;
+        .sidebar-actions button:hover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+            color: #e8e4d8;
         }
 
-        .transfer-modal .close-transfer:hover {
-            color: var(--gold);
-            transform: rotate(90deg);
+        .sidebar-actions .btn-add {
+            border-color: rgba(46, 125, 50, 0.25);
+            color: #4caf50;
         }
 
-        .transfer-modal .form-group {
-            margin-bottom: 16px;
+        .sidebar-actions .btn-add:hover {
+            background: rgba(46, 125, 50, 0.08);
+            border-color: #4caf50;
         }
 
-        .transfer-modal .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            font-weight: 500;
+        .sidebar-actions .btn-transfer {
+            border-color: rgba(245, 124, 0, 0.25);
+            color: #f57c00;
         }
 
-        .transfer-modal .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
+        .sidebar-actions .btn-transfer:hover {
+            background: rgba(245, 124, 0, 0.08);
+            border-color: #f57c00;
         }
 
-        .transfer-modal .form-group select:focus {
-            outline: none;
-            border-color: var(--gold);
+        .sidebar-actions .btn-danger {
+            border-color: rgba(198, 40, 40, 0.25);
+            color: #ef5350;
         }
 
-        .transfer-modal .form-group select option {
-            background: var(--bg-secondary);
-        }
-
-        .transfer-modal .btn-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .transfer-modal .btn-row button {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .transfer-modal .btn-row .btn-transfer {
-            background: linear-gradient(135deg, #e65100, #f57c00);
-            color: #fff;
-            flex: 1;
-        }
-
-        .transfer-modal .btn-row .btn-transfer:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(245, 124, 0, 0.35);
-        }
-
-        .transfer-modal .btn-row .btn-cancel {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        .transfer-modal .btn-row .btn-cancel:hover {
-            border-color: var(--gold);
-            background: var(--gold-glow);
-        }
-
-        .transfer-modal .transfer-status {
-            color: var(--green);
-            font-size: 0.8rem;
-            margin-top: 12px;
-            display: none;
-            padding: 8px 12px;
-            background: rgba(76, 175, 80, 0.08);
-            border-radius: 6px;
-            border: 1px solid rgba(76, 175, 80, 0.15);
-        }
-
-        .transfer-modal .transfer-status.show {
-            display: block;
-        }
-
-        .transfer-modal .transfer-status.error {
-            color: var(--red);
-            border-color: rgba(239, 83, 80, 0.15);
-            background: rgba(239, 83, 80, 0.08);
-        }
-
-        .transfer-modal .student-info {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            font-size: 0.85rem;
-            border-left: 3px solid var(--gold);
-        }
-
-        .transfer-modal .student-info .info-label {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-        }
-
-        .transfer-modal .student-info .info-value {
-            color: var(--text-primary);
-            font-weight: 500;
+        .sidebar-actions .btn-danger:hover {
+            background: rgba(198, 40, 40, 0.08);
+            border-color: #ef5350;
         }
 
         /* ===== JOURNAL ===== */
         .journal {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            border: 1px solid var(--border-color);
+            background: rgba(18, 16, 26, 0.85);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(60, 60, 80, 0.15);
             overflow-x: auto;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
         }
 
         .journal-header {
@@ -863,55 +315,63 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .journal-header .title-group {
+            display: flex;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 16px;
         }
 
         .journal-header .title-group h2 {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 400;
+            color: #e8e4d8;
         }
+
         .journal-header .title-group .sub {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            color: #666688;
+            font-size: 0.7rem;
         }
 
         .journal-header .stats {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+            font-size: 0.75rem;
+            color: #666688;
         }
+
         .journal-header .stats .num {
-            color: var(--text-primary);
+            color: #e8e4d8;
             font-weight: 600;
         }
 
         .legend {
             display: flex;
-            gap: 12px 20px;
+            gap: 10px 18px;
             flex-wrap: wrap;
-            padding: 10px 0 14px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 16px;
-            font-size: 0.7rem;
+            padding: 8px 0 12px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.12);
+            margin-bottom: 12px;
+            font-size: 0.65rem;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            color: var(--text-secondary);
+            gap: 4px;
+            color: #666688;
         }
+
         .legend-item .swatch {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
             flex-shrink: 0;
         }
 
+        /* ===== TABLE ===== */
         .table-wrap {
             overflow-x: auto;
         }
@@ -919,19 +379,19 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             min-width: 700px;
         }
 
         th {
             text-align: left;
-            padding: 10px 8px;
-            background: rgba(30, 30, 50, 0.4);
-            color: var(--gold);
+            padding: 8px 6px;
+            background: rgba(30, 28, 45, 0.4);
+            color: #d4af37;
             font-weight: 600;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid rgba(60, 60, 80, 0.2);
             white-space: nowrap;
             position: sticky;
             top: 0;
@@ -939,53 +399,71 @@
         }
 
         td {
-            padding: 8px 8px;
-            border-bottom: 1px solid rgba(60, 60, 80, 0.15);
+            padding: 6px 6px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.08);
             vertical-align: middle;
         }
 
         tr:hover td {
-            background: var(--bg-hover);
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .student-name {
             font-weight: 500;
+            font-size: 0.8rem;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+        .student-name .del-btn {
+            background: none;
+            border: none;
+            color: #555566;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0 2px;
+            transition: all 0.2s;
+            opacity: 0.4;
+            line-height: 1;
+        }
+
+        .student-name .del-btn:hover {
+            color: #ef5350;
+            opacity: 1;
+        }
+
         .student-faculty {
-            font-size: 0.65rem;
-            color: var(--text-secondary);
+            font-size: 0.6rem;
+            color: #555566;
             white-space: nowrap;
         }
 
         .grade-cell {
             text-align: center;
-            padding: 4px 4px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            padding: 2px 2px;
             min-width: 40px;
-            transition: var(--transition);
-            position: relative;
         }
 
         .grade-cell .grade-input {
-            width: 36px;
-            padding: 4px 2px;
+            width: 32px;
+            padding: 3px 2px;
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(60, 60, 80, 0.2);
             border-radius: 4px;
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 0.95rem;
+            color: #e8e4d8;
+            font-weight: 600;
+            font-size: 0.85rem;
             font-family: 'Inter', sans-serif;
-            transition: var(--transition);
+            transition: all 0.2s;
         }
 
         .grade-cell .grade-input:focus {
             outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 15px var(--gold-glow);
+            border-color: #d4af37;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
         }
 
         .grade-cell .grade-input.readonly {
@@ -993,11 +471,7 @@
             border: none;
             cursor: default;
             pointer-events: none;
-            width: 30px;
-        }
-
-        .grade-cell .grade-input.readonly:focus {
-            box-shadow: none;
+            width: 28px;
         }
 
         .grade-cell .grade-input.g-5 {
@@ -1019,7 +493,7 @@
             color: #d32f2f;
         }
         .grade-cell .grade-input.g-empty {
-            color: var(--text-muted);
+            color: #555566;
         }
 
         /* ===== MODALS ===== */
@@ -1030,8 +504,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -1043,111 +517,289 @@
         }
 
         .modal-content {
-            background: var(--bg-secondary);
-            border-radius: var(--radius);
-            padding: 28px 32px;
-            max-width: 95vw;
+            background: #1a1828;
+            border-radius: 12px;
+            padding: 24px 28px;
+            max-width: 520px;
             width: 100%;
             max-height: 90vh;
             overflow: auto;
-            border: 1px solid var(--border-gold);
-            position: relative;
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         }
 
-        .modal-content .close-modal {
-            position: sticky;
-            top: 0;
-            float: right;
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-content .modal-header h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #d4af37;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .modal-content .modal-header .close-btn {
             background: none;
             border: none;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             cursor: pointer;
-            color: var(--text-secondary);
-            transition: var(--transition);
-            z-index: 10;
+            color: #555566;
+            transition: all 0.2s;
             line-height: 1;
         }
 
-        .modal-content .close-modal:hover {
-            color: var(--gold);
+        .modal-content .modal-header .close-btn:hover {
+            color: #e8e4d8;
             transform: rotate(90deg);
         }
 
-        .modal-content h2 {
-            font-family: 'Cinzel Decorative', cursive;
-            color: var(--gold);
-            margin-bottom: 20px;
-            font-size: 1.4rem;
+        .modal-content .form-group {
+            margin-bottom: 14px;
         }
 
-        .modal-content .cert-select {
+        .modal-content .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            color: #8888aa;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .modal-content .form-group select,
+        .modal-content .form-group textarea,
+        .modal-content .form-group input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            border: 1px solid rgba(60, 60, 80, 0.25);
+            border-radius: 6px;
+            color: #e8e4d8;
+            font-size: 0.85rem;
             font-family: 'Inter', sans-serif;
-            margin-bottom: 16px;
-            transition: var(--transition);
+            transition: all 0.2s;
         }
 
-        .modal-content .cert-select:focus {
+        .modal-content .form-group select:focus,
+        .modal-content .form-group textarea:focus,
+        .modal-content .form-group input:focus {
             outline: none;
-            border-color: var(--gold);
+            border-color: #d4af37;
         }
 
-        .modal-content .cert-select option {
-            background: var(--bg-secondary);
+        .modal-content .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-size: 0.8rem;
+            line-height: 1.5;
         }
 
-        .modal-content .btn-download {
-            padding: 10px 24px;
+        .modal-content .form-group textarea::placeholder {
+            color: #555566;
+        }
+
+        .modal-content .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-content .form-row .form-group {
+            flex: 1;
+        }
+
+        .modal-content .btn-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .modal-content .btn-row button {
+            padding: 8px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            background: linear-gradient(135deg, #1a6b47, #2e7d32);
-            color: #fff;
-            margin-bottom: 16px;
+            transition: all 0.2s;
         }
 
-        .modal-content .btn-download:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(46, 125, 50, 0.35);
+        .modal-content .btn-row .btn-primary {
+            background: linear-gradient(135deg, #b8860b, #d4af37);
+            color: #0a0a0f;
+            flex: 1;
         }
 
-        /* ===== CERTIFICATE ===== */
+        .modal-content .btn-row .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+
+        .modal-content .btn-row .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #8888aa;
+            border: 1px solid rgba(60, 60, 80, 0.2);
+        }
+
+        .modal-content .btn-row .btn-secondary:hover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .modal-content .status-msg {
+            font-size: 0.8rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .modal-content .status-msg.show {
+            display: block;
+        }
+
+        .modal-content .status-msg.success {
+            color: #4caf50;
+            background: rgba(76, 175, 80, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+        }
+
+        .modal-content .status-msg.error {
+            color: #ef5350;
+            background: rgba(239, 83, 80, 0.08);
+            border: 1px solid rgba(239, 83, 80, 0.15);
+        }
+
+        .modal-content .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            border-left: 2px solid #d4af37;
+        }
+
+        .modal-content .info-box .label {
+            color: #666688;
+            font-size: 0.65rem;
+        }
+
+        .modal-content .info-box .value {
+            color: #e8e4d8;
+            font-weight: 500;
+        }
+
+        .modal-content .hint {
+            font-size: 0.6rem;
+            color: #555566;
+            margin-top: 4px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .sidebar .title {
+                grid-column: 1 / -1;
+            }
+            .sidebar-actions {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sidebar-actions button {
+                flex: 1;
+                justify-content: center;
+                min-width: 80px;
+            }
+            .faculty-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header {
+                padding: 10px 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-brand h1 {
+                font-size: 1rem;
+            }
+            .header-controls {
+                justify-content: center;
+            }
+            .header-controls select,
+            .header-controls button {
+                font-size: 0.6rem;
+                padding: 4px 10px;
+            }
+            .journal {
+                padding: 10px 12px;
+            }
+            .modal-content {
+                padding: 16px;
+            }
+            .modal-content .form-row {
+                flex-direction: column;
+            }
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            .faculty-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Certificate */
         .certificate {
             background: #f5e6c8;
-            background-image: radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
-            padding: 36px 40px;
-            max-width: 720px;
+            padding: 30px 32px;
+            max-width: 660px;
             width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px rgba(212, 175, 55, 0.12);
-            color: #2a2a2a;
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            color: #1a1a1a;
             position: relative;
-            border: 2px solid var(--gold);
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
+            border: 2px solid #d4af37;
         }
 
-        .modal-overlay.open .certificate {
-            transform: scale(1);
+        .certificate .close-cert {
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .certificate .close-cert:hover {
+            color: #b8860b;
+            transform: rotate(90deg);
         }
 
         .certificate .school-name {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             text-align: center;
             color: #1a1a1a;
-            letter-spacing: 3px;
-            font-weight: 700;
+            letter-spacing: 2px;
             border-bottom: 2px solid #b8860b;
             padding-bottom: 6px;
             margin-bottom: 4px;
@@ -1156,9 +808,9 @@
 
         .certificate .cert-title {
             text-align: center;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             color: #b8860b;
             font-family: 'Cinzel Decorative', cursive;
             margin: 4px 0 8px;
@@ -1166,21 +818,21 @@
 
         .certificate .student-name-cert {
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #1a1a1a;
-            margin: 8px 0 12px;
+            margin: 6px 0 10px;
             font-family: 'Cinzel Decorative', cursive;
             border-bottom: 1px dashed #b8860b;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
         .certificate .grades-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2px 30px;
-            margin: 12px 0 16px;
-            font-size: 1rem;
+            gap: 2px 24px;
+            margin: 10px 0 14px;
+            font-size: 0.9rem;
         }
 
         .certificate .grade-row {
@@ -1203,161 +855,62 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 16px;
-            padding-top: 10px;
+            margin-top: 12px;
+            padding-top: 8px;
             border-top: 2px solid #b8860b;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
 
-        .certificate .footer .dean-block {
-            text-align: left;
-        }
-
-        .certificate .footer .dean-block .dean-name {
+        .certificate .footer .dean-name {
             font-weight: 600;
             color: #1a1a1a;
         }
-
-        .certificate .footer .director-block {
-            text-align: right;
-        }
-
-        .certificate .footer .director-block .director-name {
+        .certificate .footer .director-name {
             font-weight: 600;
             color: #1a1a1a;
-        }
-
-        .certificate .footer .signature {
-            font-style: italic;
-            color: #4a4a4a;
-            font-size: 0.75rem;
         }
         .certificate .footer .date {
             font-weight: 600;
             color: #1a1a1a;
+        }
+        .certificate .footer .signature {
+            font-style: italic;
+            color: #4a4a4a;
+            font-size: 0.65rem;
+        }
+
+        .cert-download {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, #1a6b47, #2e7d32);
+            color: #fff;
+            margin-top: 12px;
             font-size: 0.85rem;
         }
 
-        .export-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-            flex-wrap: wrap;
+        .cert-download:hover {
+            box-shadow: 0 0 20px rgba(46, 125, 50, 0.3);
         }
 
-        .export-actions button {
-            padding: 8px 18px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: rgba(30, 30, 50, 0.8);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: var(--transition);
-            font-weight: 500;
+        .cert-select {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(60, 60, 80, 0.25);
+            border-radius: 6px;
+            color: #e8e4d8;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 10px;
         }
 
-        .export-actions button:hover {
-            border-color: var(--gold);
-            background: var(--gold-glow);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-            }
-        }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 8px;
-            }
-            .header {
-                padding: 12px 16px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .header-brand h1 {
-                font-size: 1.2rem;
-            }
-            .header-controls {
-                justify-content: center;
-            }
-            .header-controls select,
-            .header-controls button {
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
-            .journal {
-                padding: 12px 14px;
-            }
-            .modal-content {
-                padding: 16px;
-            }
-            .login-box {
-                padding: 24px 20px;
-            }
-            .add-modal,
-            .transfer-modal {
-                padding: 20px;
-            }
-            .add-modal .form-row {
-                flex-direction: column;
-            }
-            .certificate {
-                padding: 20px;
-            }
-            .certificate .grades-grid {
-                grid-template-columns: 1fr;
-            }
-            .certificate .school-name {
-                font-size: 1rem;
-            }
-            .certificate .student-name-cert {
-                font-size: 1.3rem;
-            }
-        }
-
-        @media print {
-            .header,
-            .sidebar,
-            .modal-content .close-modal,
-            .export-actions,
-            .cert-select,
-            .btn-download {
-                display: none !important;
-            }
-            .modal-overlay {
-                position: static !important;
-                background: none !important;
-                backdrop-filter: none !important;
-                padding: 0 !important;
-            }
-            .modal-content {
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-                max-height: none !important;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-                padding: 0 !important;
-            }
-            table {
-                font-size: 0.7rem !important;
-            }
-            th {
-                background: #f0f0f0 !important;
-                color: #333 !important;
-            }
-            td {
-                border-color: #ddd !important;
-            }
+        .cert-select:focus {
+            outline: none;
+            border-color: #d4af37;
         }
     </style>
 </head>
@@ -1368,73 +921,61 @@
         <header class="header">
             <div class="header-brand">
                 <span class="crest">🏰</span>
-                <div>
-                    <h1>Hogwarts Daily</h1>
-                    <span class="subtitle">Школа Чародейства и Волшебства</span>
-                </div>
+                <h1>HOGWARTS DAILY</h1>
+                <span class="year">94 ГОД</span>
             </div>
             <div class="header-controls">
                 <select id="courseSelect">
-                    <option value="1">1 курс</option>
-                    <option value="2">2 курс</option>
-                    <option value="3">3 курс</option>
-                    <option value="4">4 курс</option>
-                    <option value="5">5 курс</option>
-                    <option value="6">6 курс</option>
-                    <option value="7" selected>7 курс</option>
+                    <option value="1">1 КУРС</option>
+                    <option value="2">2 КУРС</option>
+                    <option value="3">3 КУРС</option>
+                    <option value="4">4 КУРС</option>
+                    <option value="5">5 КУРС</option>
+                    <option value="6">6 КУРС</option>
+                    <option value="7" selected>7 КУРС</option>
                 </select>
-                <button class="btn-gold" id="loginBtn">🔑 Войти</button>
-                <button class="btn-outline" id="certBtn">🏆 Аттестат</button>
-                <button class="btn-green" id="reportBtn">📊 Отчет</button>
-                <button class="btn-purple" id="addStudentsBtn">➕ Добавить</button>
-                <button class="btn-orange" id="transferBtn">🔄 Перевод</button>
-                <div class="online-indicator">
-                    <span class="online-dot"></span>
-                    <span id="profCount">0</span>
-                </div>
-                <span class="role-badge guest" id="roleBadge">Гость</span>
-                <span class="user-name-badge" id="userNameBadge"></span>
+                <button class="btn-gold" id="loginBtn">🔑 ВОЙТИ</button>
+                <button class="btn-outline" id="certBtn">🏆 АТТЕСТАТ</button>
+                <button class="btn-green" id="reportBtn">📊 ОТЧЕТ</button>
+                <span class="role-badge guest" id="roleBadge">ГОСТЬ</span>
+                <span style="font-size:0.65rem;color:#555566;">
+                    <span class="online-dot"></span><span id="profCount">0</span>
+                </span>
             </div>
         </header>
 
         <!-- ===== MAIN ===== -->
-        <div class="main-grid" id="mainGrid">
+        <div class="main-grid">
             <!-- ===== SIDEBAR ===== -->
             <aside class="sidebar" id="sidebar">
-                <div class="sidebar-section">
-                    <div class="section-title">🦁 Факультеты</div>
-                    <div class="faculty-list" id="facultyList">
-                        <div class="faculty-item active" data-faculty="Гриффиндор">
-                            <span class="dot" style="background:#ae0000;"></span>
-                            <span class="name">Гриффиндор</span>
-                            <span class="count" id="count-gryffindor">0</span>
-                        </div>
-                        <div class="faculty-item" data-faculty="Слизерин">
-                            <span class="dot" style="background:#1a6b47;"></span>
-                            <span class="name">Слизерин</span>
-                            <span class="count" id="count-slytherin">0</span>
-                        </div>
-                        <div class="faculty-item" data-faculty="Когтевран">
-                            <span class="dot" style="background:#2a4b7c;"></span>
-                            <span class="name">Когтевран</span>
-                            <span class="count" id="count-ravenclaw">0</span>
-                        </div>
-                        <div class="faculty-item" data-faculty="Пуффендуй">
-                            <span class="dot" style="background:#e3a738;"></span>
-                            <span class="name">Пуффендуй</span>
-                            <span class="count" id="count-hufflepuff">0</span>
-                        </div>
+                <div class="title">ФАКУЛЬТЕТЫ</div>
+                <div class="faculty-list" id="facultyList">
+                    <div class="faculty-item active" data-faculty="Гриффиндор">
+                        <span class="dot" style="background:#ae0000;"></span>
+                        Гриффиндор
+                        <span class="count" id="count-gryffindor">0</span>
+                    </div>
+                    <div class="faculty-item" data-faculty="Слизерин">
+                        <span class="dot" style="background:#1a6b47;"></span>
+                        Слизерин
+                        <span class="count" id="count-slytherin">0</span>
+                    </div>
+                    <div class="faculty-item" data-faculty="Когтевран">
+                        <span class="dot" style="background:#2a4b7c;"></span>
+                        Когтевран
+                        <span class="count" id="count-ravenclaw">0</span>
+                    </div>
+                    <div class="faculty-item" data-faculty="Пуффендуй">
+                        <span class="dot" style="background:#e3a738;"></span>
+                        Пуффендуй
+                        <span class="count" id="count-hufflepuff">0</span>
                     </div>
                 </div>
 
-                <div class="sidebar-section">
-                    <div class="sidebar-hint">
-                        💾 Автосохранение · 🔄 Синхронизация<br>
-                        <span style="font-size:0.55rem;color:var(--text-muted);">
-                            "Добавить" — новые студенты<br>
-                            "Перевод" — смена курса
-                        </span>
-                    </div>
+                <div class="sidebar-actions">
+                    <button class="btn-add" id="addStudentsBtn">➕ Добавить</button>
+                    <button class="btn-transfer" id="transferBtn">🔄 Перевод</button>
+                    <button class="btn-danger" id="clearFacultyBtn">🗑️ Очистить</button>
                 </div>
             </aside>
 
@@ -1446,14 +987,14 @@
                         <span class="sub" id="journalSub">Гриффиндор · 2026–2027</span>
                     </div>
                     <div class="stats">
-                        <span>👨‍🎓 <span class="num" id="studentCount">0</span></span>
+                        👨‍🎓 <span class="num" id="studentCount">0</span>
                         <span id="profOnline"></span>
                     </div>
                 </div>
 
                 <div class="legend" id="legendContainer"></div>
 
-                <div class="table-wrap" id="tableWrap">
+                <div class="table-wrap">
                     <table>
                         <thead id="tableHead">
                             <tr>
@@ -1463,8 +1004,8 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr>
-                                <td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px;">
-                                    Нажмите "Добавить" чтобы загрузить список студентов
+                                <td colspan="10" style="text-align:center;color:#555566;padding:30px;">
+                                    Нажмите "Добавить" для загрузки списка студентов
                                 </td>
                             </tr>
                         </tbody>
@@ -1475,11 +1016,11 @@
     </div>
 
     <!-- ===== ADD STUDENTS MODAL ===== -->
-    <div class="add-modal-overlay" id="addModal">
-        <div class="add-modal">
-            <div style="display:flex; align-items:center; margin-bottom:8px;">
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>➕ Добавить студентов</h2>
-                <button class="close-add" id="closeAddBtn">✕</button>
+                <button class="close-btn" id="closeAddBtn">✕</button>
             </div>
 
             <div class="form-row">
@@ -1508,25 +1049,25 @@
 
             <div class="form-group">
                 <label>📝 Список студентов</label>
-                <textarea id="addStudentsTextarea" placeholder="Введите имена студентов, каждое с новой строки:&#10;Поттер Гарри&#10;Грейнджер Гермиона&#10;Уизли Рон"></textarea>
-                <div class="hint-text">Каждое имя на новой строке. Можно скопировать из Excel или Google Таблиц.</div>
+                <textarea id="addStudentsTextarea" placeholder="Поттер Гарри&#10;Грейнджер Гермиона&#10;Уизли Рон"></textarea>
+                <div class="hint">Каждое имя на новой строке</div>
             </div>
 
-            <div class="add-status" id="addStatus">✅ Студенты добавлены!</div>
+            <div class="status-msg" id="addStatus"></div>
 
             <div class="btn-row">
-                <button class="btn-add-students" id="addStudentsConfirmBtn">📥 Добавить студентов</button>
-                <button class="btn-cancel" id="addStudentsCancelBtn">Отмена</button>
+                <button class="btn-primary" id="addStudentsConfirmBtn">📥 Добавить</button>
+                <button class="btn-secondary" id="addStudentsCancelBtn">Отмена</button>
             </div>
         </div>
     </div>
 
     <!-- ===== TRANSFER MODAL ===== -->
-    <div class="transfer-modal-overlay" id="transferModal">
-        <div class="transfer-modal">
-            <div style="display:flex; align-items:center; margin-bottom:8px;">
+    <div class="modal-overlay" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>🔄 Перевод студента</h2>
-                <button class="close-transfer" id="closeTransferBtn">✕</button>
+                <button class="close-btn" id="closeTransferBtn">✕</button>
             </div>
 
             <div class="form-group">
@@ -1536,9 +1077,9 @@
                 </select>
             </div>
 
-            <div class="student-info" id="transferStudentInfo">
-                <div><span class="info-label">Текущий курс:</span> <span class="info-value" id="transferCurrentCourse">—</span></div>
-                <div><span class="info-label">Факультет:</span> <span class="info-value" id="transferFaculty">—</span></div>
+            <div class="info-box" id="transferInfo">
+                <div><span class="label">Текущий курс:</span> <span class="value" id="transferCurrentCourse">—</span></div>
+                <div><span class="label">Факультет:</span> <span class="value" id="transferFaculty">—</span></div>
             </div>
 
             <div class="form-group">
@@ -1554,59 +1095,62 @@
                 </select>
             </div>
 
-            <div class="transfer-status" id="transferStatus">✅ Студент переведен!</div>
+            <div class="status-msg" id="transferStatus"></div>
 
             <div class="btn-row">
-                <button class="btn-transfer" id="transferConfirmBtn">🔄 Перевести</button>
-                <button class="btn-cancel" id="transferCancelBtn">Отмена</button>
+                <button class="btn-primary" id="transferConfirmBtn">🔄 Перевести</button>
+                <button class="btn-secondary" id="transferCancelBtn">Отмена</button>
             </div>
-        </div>
-    </div>
-
-    <!-- ===== LOGIN MODAL ===== -->
-    <div class="login-overlay" id="loginModal">
-        <div class="login-box">
-            <h2>🔐 Hogwarts Daily</h2>
-            <div class="sub">Вход в систему</div>
-            <form id="loginForm" autocomplete="off">
-                <label for="loginPassword">Пароль</label>
-                <input type="password" id="loginPassword" placeholder="Введите пароль" autofocus>
-                <div class="login-error" id="loginError">❌ Неверный пароль</div>
-                <div class="btn-row">
-                    <button type="submit" class="btn-login">🔑 Войти</button>
-                    <button type="button" class="btn-logout" id="logoutBtn">🚪 Выйти</button>
-                </div>
-                <div class="role-info">
-                    👤 Текущая роль: <span class="role-name" id="currentRoleDisplay">Гость</span>
-                    <span id="currentUserDisplay" style="display:block;font-size:0.7rem;color:var(--text-muted);margin-top:4px;"></span>
-                </div>
-            </form>
         </div>
     </div>
 
     <!-- ===== REPORT MODAL ===== -->
     <div class="modal-overlay" id="reportModal">
-        <div class="modal-content">
-            <button class="close-modal" id="closeReportBtn">✕</button>
-            <h2>📊 Годовой отчет</h2>
-            <div id="reportContainer"></div>
-            <div class="export-actions">
-                <button id="exportCsvBtn">📥 Экспорт CSV</button>
-                <button id="printReportBtn">🖨️ Печать</button>
+        <div class="modal-content" style="max-width:90vw;">
+            <div class="modal-header">
+                <h2>📊 Годовой отчет</h2>
+                <button class="close-btn" id="closeReportBtn">✕</button>
+            </div>
+            <div id="reportContainer" style="overflow-x:auto;"></div>
+            <div class="btn-row" style="margin-top:12px;">
+                <button class="btn-primary" id="exportCsvBtn">📥 Экспорт CSV</button>
+                <button class="btn-secondary" id="printReportBtn">🖨️ Печать</button>
             </div>
         </div>
     </div>
 
     <!-- ===== CERTIFICATE MODAL ===== -->
     <div class="modal-overlay" id="certModal">
-        <div class="modal-content" style="max-width:800px;">
-            <button class="close-modal" id="closeCertModalBtn">✕</button>
-            <h2>🏆 Аттестат</h2>
-            <select class="cert-select" id="certStudentSelect">
-                <option value="">— Выберите ученика —</option>
-            </select>
-            <button class="btn-download" id="downloadCertBtn">📥 Скачать аттестат (PNG)</button>
+        <div class="modal-content" style="max-width:700px;background:transparent;border:none;box-shadow:none;padding:0;">
             <div id="certificateContainer"></div>
+            <div style="text-align:center;margin-top:10px;">
+                <button class="cert-download" id="downloadCertBtn">📥 Скачать аттестат (PNG)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content" style="max-width:360px;">
+            <div class="modal-header">
+                <h2>🔐 Вход</h2>
+                <button class="close-btn" id="closeLoginBtn">✕</button>
+            </div>
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите пароль">
+                </div>
+                <div class="status-msg" id="loginError"></div>
+                <div class="btn-row">
+                    <button type="submit" class="btn-primary">🔑 Войти</button>
+                    <button type="button" class="btn-secondary" id="logoutBtn">🚪 Выйти</button>
+                </div>
+                <div style="font-size:0.6rem;color:#555566;margin-top:10px;text-align:center;">
+                    👤 Текущая роль: <span id="currentRoleDisplay">Гость</span>
+                    <span id="currentUserDisplay" style="display:block;font-size:0.65rem;"></span>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1636,9 +1180,6 @@
             PASSWORD_MAP[USERS[key].password] = key;
         });
 
-        // ============================================================
-        //  SUBJECTS
-        // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
                 'Полеты на метле'
@@ -1675,7 +1216,6 @@
             'Когтевран': 'Филиус Флитвик',
             'Пуффендуй': 'Помона Стебль'
         };
-
         const DIRECTOR = 'Лана МакДауэлл';
 
         // ============================================================
@@ -1725,9 +1265,6 @@
             broadcastUpdate();
         }
 
-        // ============================================================
-        //  BROADCAST
-        // ============================================================
         function broadcastUpdate() {
             try {
                 const ch = new BroadcastChannel('hogwarts');
@@ -1743,10 +1280,6 @@
         // ============================================================
         function getAvailableGrades(course) {
             return course === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
-        }
-
-        function getGradeLabel(course, grade) {
-            return course === 7 ? GRADE_MAP_7[grade] || grade : (grade === 5 ? 'Сдал' : 'Не сдал');
         }
 
         function getAllSubjects() {
@@ -1775,7 +1308,7 @@
         }
 
         // ============================================================
-        //  ADD STUDENTS
+        //  STUDENT MANAGEMENT
         // ============================================================
         function addStudentsFromList(names, faculty, course) {
             const lines = names.split('\n').filter(l => l.trim());
@@ -1808,41 +1341,47 @@
             return null;
         }
 
-        // ============================================================
-        //  TRANSFER STUDENT
-        // ============================================================
+        function deleteStudent(id, name) {
+            if (confirm(`Удалить "${name}"?`)) {
+                students = students.filter(s => s.id !== id);
+                saveData();
+                renderAll();
+                return true;
+            }
+            return false;
+        }
+
+        function clearFaculty(faculty) {
+            const toDel = students.filter(s => s.faculty === faculty);
+            if (!toDel.length) { alert(`Нет студентов на ${faculty}`); return; }
+            if (confirm(`Удалить всех студентов с ${faculty}? (${toDel.length} чел.)`)) {
+                students = students.filter(s => s.faculty !== faculty);
+                saveData();
+                renderAll();
+                return true;
+            }
+            return false;
+        }
+
         function transferStudent(studentId, newCourse) {
             const student = students.find(s => s.id === studentId);
-            if (!student) {
-                return { error: 'Студент не найден' };
+            if (!student) return { error: 'Студент не найден' };
+
+            const currentCourse = detectCourse(student);
+            if (currentCourse === newCourse) {
+                return { error: 'Студент уже на этом курсе' };
             }
 
-            // Проверяем, есть ли уже такой студент на новом курсе с тем же факультетом
-            const existing = students.find(s => 
-                s.name === student.name && 
-                s.faculty === student.faculty && 
-                detectCourse(s) === newCourse
-            );
-            if (existing) {
-                return { error: 'Студент уже есть на этом курсе' };
-            }
-
-            // Сохраняем старые оценки
-            const oldGrades = { ...student.grades };
-            
             // Очищаем оценки (на новом курсе будут новые предметы)
             student.grades = {};
-
-            // Определяем новый факультет (оставляем тот же)
-            // Сохраняем изменения
             saveData();
             renderAll();
-            
-            return { 
-                success: true, 
-                name: student.name, 
+
+            return {
+                success: true,
+                name: student.name,
                 faculty: student.faculty,
-                fromCourse: detectCourse({ grades: oldGrades }),
+                fromCourse: currentCourse,
                 toCourse: newCourse
             };
         }
@@ -1906,14 +1445,17 @@
             const tbody = document.getElementById('tableBody');
             if (!filtered.length) {
                 tbody.innerHTML =
-                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:var(--text-muted);padding:40px;">Нет учеников на ${faculty}</td></tr>`;
+                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:#555566;padding:30px;">Нет учеников на ${faculty}</td></tr>`;
                 return;
             }
 
             let html = '';
             filtered.forEach(student => {
                 html += `<tr>`;
-                html += `<td class="student-name">${student.name}</td>`;
+                html += `<td class="student-name">
+                            ${student.name}
+                            <button class="del-btn" data-id="${student.id}" title="Удалить">✕</button>
+                        </td>`;
                 html += `<td class="student-faculty">${student.faculty}</td>`;
                 subjects.forEach(sub => {
                     const val = student.grades[sub];
@@ -1930,6 +1472,18 @@
             });
             tbody.innerHTML = html;
 
+            // Delete buttons
+            if (canManageStudents()) {
+                tbody.querySelectorAll('.del-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const student = students.find(s => s.id === id);
+                        if (student) deleteStudent(id, student.name);
+                    });
+                });
+            }
+
+            // Grade editing
             if (canEdit) {
                 tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
                     input.addEventListener('blur', function() {
@@ -1962,20 +1516,16 @@
                     });
 
                     input.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') {
-                            this.blur();
-                        }
+                        if (e.key === 'Enter') this.blur();
                     });
-
-                    input.addEventListener('focus', function() {
-                        this.select();
-                    });
+                    input.addEventListener('focus', function() { this.select(); });
                 });
             }
         }
 
         function renderCertSelect() {
             const select = document.getElementById('certStudentSelect');
+            if (!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="">— Выберите ученика —</option>`;
             const sorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
@@ -1992,6 +1542,7 @@
 
         function renderTransferSelect() {
             const select = document.getElementById('transferStudentSelect');
+            if (!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="">— Выберите студента —</option>`;
             const sorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
@@ -2012,23 +1563,16 @@
             badge.textContent = ROLE_NAMES[userRole] || 'Гость';
             badge.className = 'role-badge' + (userRole === 'guest' ? ' guest' : '');
 
-            const nameBadge = document.getElementById('userNameBadge');
-            nameBadge.textContent = userName || '';
-
             const profs = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
-            document.getElementById('profCount').textContent = `${profs.length} 👨‍🏫`;
-            document.getElementById('profOnline').innerHTML = profs.length ?
-                profs.map(() => `<span style="font-size:0.7rem;">👨‍🏫</span>`).join('') :
-                '';
+            document.getElementById('profCount').textContent = profs.length;
 
             document.getElementById('currentRoleDisplay').textContent = ROLE_NAMES[userRole];
             document.getElementById('currentUserDisplay').textContent = userName ? `👤 ${userName}` : '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.remove('show');
 
             const canManage = canManageStudents();
-            document.getElementById('addStudentsBtn').style.display = canManage ? 'inline-block' : 'none';
-            document.getElementById('transferBtn').style.display = canManage ? 'inline-block' : 'none';
+            document.getElementById('addStudentsBtn').style.display = canManage ? 'flex' : 'none';
+            document.getElementById('transferBtn').style.display = canManage ? 'flex' : 'none';
+            document.getElementById('clearFacultyBtn').style.display = canManage ? 'flex' : 'none';
         }
 
         // ============================================================
@@ -2046,11 +1590,11 @@
                 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
             ];
             const display = order.filter(s => subs.includes(s));
-
             const deanName = DEANS[student.faculty] || 'Декан факультета';
 
             let html = `
                     <div class="certificate" id="certificateDisplay">
+                        <button class="close-cert" id="closeCertBtn2">✕</button>
                         <div class="school-name">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
                         <div class="cert-title">CERTIFICATE OF COMPLETION</div>
                         <div class="student-name-cert">${studentName.toUpperCase()}</div>
@@ -2077,14 +1621,14 @@
             html += `
                         </div>
                         <div class="footer">
-                            <div class="dean-block">
-                                <div style="font-weight:700;font-size:0.7rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.65rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
                                 <div class="dean-name">${deanName}</div>
                                 <div class="signature">${student.faculty}</div>
                             </div>
-                            <div class="director-block">
+                            <div style="text-align:right;">
                                 <div class="date">${dateStr}</div>
-                                <div style="font-weight:700;font-size:0.7rem;color:#4a4a4a;">ДИРЕКТОР</div>
+                                <div style="font-weight:700;font-size:0.65rem;color:#4a4a4a;">ДИРЕКТОР</div>
                                 <div class="director-name">${DIRECTOR}</div>
                                 <div class="signature">Директор</div>
                             </div>
@@ -2093,12 +1637,13 @@
                 `;
 
             document.getElementById('certificateContainer').innerHTML = html;
-            return html;
+
+            // Close button
+            document.getElementById('closeCertBtn2').addEventListener('click', function() {
+                document.getElementById('certModal').classList.remove('open');
+            });
         }
 
-        // ============================================================
-        //  DOWNLOAD CERTIFICATE AS PNG
-        // ============================================================
         function downloadCertificate() {
             const certElement = document.getElementById('certificateDisplay');
             if (!certElement) {
@@ -2151,30 +1696,30 @@
                 const list = grouped[c];
                 const subs = SUBJECTS[parseInt(c)] || SUBJECTS[1];
 
-                html += `<h3 style="color:var(--gold);margin:16px 0 8px;">${c} курс (${subs.length} предметов)</h3>`;
-                html += `<table><thead><tr><th>Ученик</th><th>Факультет</th>`;
-                subs.forEach(s => { html += `<th style="font-size:0.6rem;">${s}</th>`; });
-                html += `<th style="color:var(--gold);">Сумма</th></tr></thead><tbody>`;
+                html += `<h3 style="color:#d4af37;margin:16px 0 8px;">${c} курс (${subs.length} предметов)</h3>`;
+                html += `<table style="font-size:0.7rem;"><thead><tr><th>Ученик</th><th>Факультет</th>`;
+                subs.forEach(s => { html += `<th style="font-size:0.55rem;">${s}</th>`; });
+                html += `<th style="color:#d4af37;">Сумма</th></tr></thead><tbody>`;
 
                 list.forEach(st => {
                     html +=
-                        `<tr><td class="student-name">${st.name}</td><td style="font-size:0.65rem;color:var(--text-secondary);">${st.faculty}</td>`;
+                        `<tr><td style="font-weight:500;">${st.name}</td><td style="color:#666688;font-size:0.6rem;">${st.faculty}</td>`;
                     let sum = 0;
                     subs.forEach(sub => {
                         const v = st.grades[sub];
                         const has = v !== undefined && v !== null;
                         html +=
-                            `<td style="text-align:center;font-weight:600;color:${has ? GRADE_COLORS[v] || 'var(--text-primary)' : 'var(--text-muted)'};">${has ? v : ''}</td>`;
+                            `<td style="text-align:center;font-weight:600;color:${has ? GRADE_COLORS[v] || '#e8e4d8' : '#555566'};">${has ? v : ''}</td>`;
                         if (has) sum += v;
                     });
-                    html += `<td style="font-weight:700;color:var(--gold);">${sum}</td></tr>`;
+                    html += `<td style="font-weight:700;color:#d4af37;text-align:center;">${sum}</td></tr>`;
                 });
 
                 html += `</tbody></table>`;
             });
 
             if (!Object.keys(grouped).length) {
-                html = `<p style="color:var(--text-muted);text-align:center;padding:40px;">Нет данных для отчета</p>`;
+                html = `<p style="color:#555566;text-align:center;padding:40px;">Нет данных для отчета</p>`;
             }
 
             return html;
@@ -2254,12 +1799,13 @@
                 const msg = `🔓 Вы вошли как ${ROLE_NAMES[userRole]}`;
                 const nameMsg = userName ? ` (${userName})` : '';
                 if (userRole === 'professor') alert(`${msg}${nameMsg}. Введите оценку в ячейку и нажмите Enter.`);
-                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять и переводить студентов.`);
+                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять, удалять и переводить студентов.`);
                 else if (userRole === 'headmaster') alert(`${msg}${nameMsg}. У вас полный доступ.`);
                 return true;
             } else {
-                document.getElementById('loginError').textContent = '❌ Неверный пароль';
-                document.getElementById('loginError').classList.add('show');
+                const el = document.getElementById('loginError');
+                el.textContent = '❌ Неверный пароль';
+                el.className = 'status-msg show error';
                 return false;
             }
         }
@@ -2318,7 +1864,11 @@
             document.getElementById('loginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.add('open');
                 document.getElementById('loginPassword').focus();
-                document.getElementById('loginError').classList.remove('show');
+                document.getElementById('loginError').className = 'status-msg';
+            });
+
+            document.getElementById('closeLoginBtn').addEventListener('click', function() {
+                document.getElementById('loginModal').classList.remove('open');
             });
 
             document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -2343,7 +1893,7 @@
                 }
             });
 
-            // ===== ADD STUDENTS =====
+            // Add students
             document.getElementById('addStudentsBtn').addEventListener('click', function() {
                 if (!canManageStudents()) {
                     alert('Доступ только у деканов и завуча');
@@ -2351,8 +1901,7 @@
                 }
                 document.getElementById('addModal').classList.add('open');
                 document.getElementById('addStudentsTextarea').value = '';
-                document.getElementById('addStatus').classList.remove('show');
-                document.getElementById('addStatus').classList.remove('error');
+                document.getElementById('addStatus').className = 'status-msg';
             });
 
             document.getElementById('closeAddBtn').addEventListener('click', function() {
@@ -2364,9 +1913,7 @@
             });
 
             document.getElementById('addModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('open');
-                }
+                if (e.target === this) this.classList.remove('open');
             });
 
             document.getElementById('addStudentsConfirmBtn').addEventListener('click', function() {
@@ -2377,31 +1924,26 @@
                 if (!names.trim()) {
                     const status = document.getElementById('addStatus');
                     status.textContent = '❌ Введите хотя бы одно имя';
-                    status.className = 'add-status show error';
+                    status.className = 'status-msg show error';
                     return;
                 }
 
                 const result = addStudentsFromList(names, faculty, course);
-
                 if (result) {
                     const status = document.getElementById('addStatus');
                     const msg = `✅ Добавлено: ${result.added} студентов`;
-                    const dupMsg = result.duplicates > 0 ? ` (${result.duplicates} пропущено, уже есть)` : '';
+                    const dupMsg = result.duplicates > 0 ? ` (${result.duplicates} пропущено)` : '';
                     status.textContent = msg + dupMsg;
-                    status.className = 'add-status show';
-                    if (result.added === 0) {
-                        status.classList.add('error');
-                    }
+                    status.className = 'status-msg show success';
                     document.getElementById('addStudentsTextarea').value = '';
-                    renderAll();
                 } else {
                     const status = document.getElementById('addStatus');
                     status.textContent = '❌ Ошибка при добавлении';
-                    status.className = 'add-status show error';
+                    status.className = 'status-msg show error';
                 }
             });
 
-            // ===== TRANSFER =====
+            // Transfer
             document.getElementById('transferBtn').addEventListener('click', function() {
                 if (!canManageStudents()) {
                     alert('Доступ только у деканов и завуча');
@@ -2412,10 +1954,8 @@
                     return;
                 }
                 document.getElementById('transferModal').classList.add('open');
-                document.getElementById('transferStatus').classList.remove('show');
-                document.getElementById('transferStatus').classList.remove('error');
+                document.getElementById('transferStatus').className = 'status-msg';
                 renderTransferSelect();
-                // Сбрасываем информацию
                 document.getElementById('transferCurrentCourse').textContent = '—';
                 document.getElementById('transferFaculty').textContent = '—';
             });
@@ -2429,9 +1969,7 @@
             });
 
             document.getElementById('transferModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('open');
-                }
+                if (e.target === this) this.classList.remove('open');
             });
 
             document.getElementById('transferStudentSelect').addEventListener('change', function() {
@@ -2442,7 +1980,6 @@
                         const course = detectCourse(student);
                         document.getElementById('transferCurrentCourse').textContent = course + ' курс';
                         document.getElementById('transferFaculty').textContent = student.faculty;
-                        // Устанавливаем следующий курс как предложение
                         const nextCourse = Math.min(parseInt(course) + 1, 7);
                         document.getElementById('transferNewCourse').value = nextCourse;
                     }
@@ -2459,7 +1996,7 @@
                 if (!studentId) {
                     const status = document.getElementById('transferStatus');
                     status.textContent = '❌ Выберите студента';
-                    status.className = 'transfer-status show error';
+                    status.className = 'status-msg show error';
                     return;
                 }
 
@@ -2467,12 +2004,11 @@
                 if (result.error) {
                     const status = document.getElementById('transferStatus');
                     status.textContent = '❌ ' + result.error;
-                    status.className = 'transfer-status show error';
+                    status.className = 'status-msg show error';
                 } else {
                     const status = document.getElementById('transferStatus');
                     status.textContent = `✅ ${result.name} переведен на ${result.toCourse} курс`;
-                    status.className = 'transfer-status show';
-                    // Обновляем список
+                    status.className = 'status-msg show success';
                     setTimeout(() => {
                         renderTransferSelect();
                         document.getElementById('transferCurrentCourse').textContent = '—';
@@ -2481,7 +2017,16 @@
                 }
             });
 
-            // ===== CERTIFICATE =====
+            // Clear faculty
+            document.getElementById('clearFacultyBtn').addEventListener('click', function() {
+                if (!canManageStudents()) {
+                    alert('Доступ только у деканов и завуча');
+                    return;
+                }
+                clearFaculty(currentFaculty);
+            });
+
+            // Certificate
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2492,10 +2037,26 @@
                     return;
                 }
                 document.getElementById('certificateContainer').innerHTML = '';
-                document.getElementById('certStudentSelect').value = '';
                 document.getElementById('certModal').classList.add('open');
                 renderCertSelect();
             });
+
+            document.getElementById('certModal').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('open');
+            });
+
+            // We need to add certStudentSelect dynamically
+            const certModalContent = document.querySelector('#certModal .modal-content');
+            const certSelectDiv = document.createElement('div');
+            certSelectDiv.className = 'form-group';
+            certSelectDiv.innerHTML = `
+                        <label>👤 Выберите ученика</label>
+                        <select class="cert-select" id="certStudentSelect">
+                            <option value="">— Выберите ученика —</option>
+                        </select>
+                    `;
+            const downloadBtn = document.querySelector('#certModal .cert-download');
+            certModalContent.insertBefore(certSelectDiv, downloadBtn);
 
             document.getElementById('certStudentSelect').addEventListener('change', function() {
                 if (this.value) {
@@ -2507,33 +2068,26 @@
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
-            // ===== REPORT =====
+            // Report
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
             });
 
-            // Close modals
-            document.getElementById('closeReportBtn').addEventListener('click', () => {
+            document.getElementById('closeReportBtn').addEventListener('click', function() {
                 document.getElementById('reportModal').classList.remove('open');
             });
+
             document.getElementById('reportModal').addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('open');
             });
 
-            document.getElementById('closeCertModalBtn').addEventListener('click', () => {
-                document.getElementById('certModal').classList.remove('open');
-            });
-            document.getElementById('certModal').addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('open');
-            });
-
-            // Export
             document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
-            document.getElementById('printReportBtn').addEventListener('click', () => window.print());
+            document.getElementById('printReportBtn').addEventListener('click', function() {
+                window.print();
+            });
 
-            // Cleanup
-            window.addEventListener('beforeunload', () => {
+            window.addEventListener('beforeunload', function() {
                 if (userRole !== 'guest') unregisterProfessor();
             });
 
