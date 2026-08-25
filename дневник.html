@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ж.А.Б.А. Дневник</title>
+    <style>
+        /* --- Импорт шрифтов --- */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+
+        /* --- Базовые стили --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #e0dcc8;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* --- Шапка --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            margin-bottom: 30px;
+            backdrop-filter: blur(8px);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #d4af37, #f9e28c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-controls select, .header-controls button {
+            padding: 10px 20px;
+            background: rgba(30, 30, 45, 0.9);
+            border: 1px solid #3a3a4a;
+            color: #e0dcc8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .header-controls select:hover, .header-controls button:hover {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .header-controls .btn-primary {
+            background: linear-gradient(135deg, #b8860b, #d4af37);
+            border: none;
+            color: #0a0a0f;
+            font-weight: 700;
+        }
+
+        .header-controls .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .header-controls .btn-secondary {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+        }
+
+        /* --- Основная сетка --- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+        }
+
+        /* --- Боковая панель --- */
+        .sidebar {
+            background: rgba(16, 16, 26, 0.9);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(60, 60, 80, 0.4);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 0.9rem;
+            color: #d4af37;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #2a2a3a;
+            padding-bottom: 12px;
+        }
+
+        .faculty-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+            border-left: 3px solid transparent;
+        }
+
+        .faculty-item:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .faculty-item.active {
+            background: rgba(212, 175, 55, 0.08);
+            border-left-color: #d4af37;
+        }
+
+        .faculty-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .faculty-item .count {
+            margin-left: auto;
+            background: #1a1a2a;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #8888aa;
+        }
+
+        /* --- Таблица --- */
+        .journal-wrapper {
+            background: rgba(16, 16, 26, 0.9);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(60, 60, 80, 0.4);
+            overflow-x: auto;
+        }
+
+        .journal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .journal-header h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .journal-header .subtitle {
+            color: #8888aa;
+            font-size: 0.85rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 800px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 10px;
+            background: rgba(30, 30, 45, 0.5);
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #2a2a3a;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 10px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.2);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .student-name {
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .grade-cell {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-radius: 4px;
+            font-weight: 600;
+            min-width: 30px;
+        }
+
+        .grade-cell:hover {
+            background: rgba(212, 175, 55, 0.15);
+            transform: scale(1.1);
+        }
+
+        .grade-cell:focus {
+            outline: 2px solid #d4af37;
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .grade-5 { color: #4caf50; }
+        .grade-4 { color: #8bc34a; }
+        .grade-3 { color: #ffb74d; }
+        .grade-2 { color: #ef5350; }
+        .grade-1 { color: #d32f2f; }
+        .grade-empty { color: #555566; }
+
+        .subject-row th:first-child {
+            width: 180px;
+        }
+
+        /* --- Аттестат (модальное окно) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .certificate {
+            background: #f5e6c8;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,215,0,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255,215,0,0.05) 0%, transparent 50%);
+            padding: 45px 50px;
+            max-width: 750px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(212,175,55,0.15);
+            color: #2a2a2a;
+            position: relative;
+            border: 2px solid #d4af37;
+            font-family: 'Times New Roman', serif;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .certificate {
+            transform: scale(1);
+        }
+
+        .certificate .school-name {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #1a1a1a;
+            letter-spacing: 4px;
+            font-weight: 700;
+            border-bottom: 2px solid #b8860b;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .certificate .cert-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #b8860b;
+            font-family: 'Cinzel Decorative', cursive;
+            margin: 10px 0 5px;
+        }
+
+        .certificate .student-name-cert {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 15px 0 20px;
+            font-family: 'Cinzel Decorative', cursive;
+            border-bottom: 1px dashed #b8860b;
+            padding-bottom: 15px;
+        }
+
+        .certificate .grades-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 30px;
+            margin: 20px 0 25px;
+            font-size: 1.1rem;
+        }
+
+        .certificate .grade-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dotted rgba(0,0,0,0.08);
+        }
+
+        .certificate .grade-row .subject {
+            font-weight: 600;
+            color: #3a3a3a;
+        }
+
+        .certificate .grade-row .mark {
+            font-weight: 700;
+            color: #b8860b;
+        }
+
+        .certificate .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #b8860b;
+            font-size: 0.9rem;
+        }
+
+        .certificate .footer .signature {
+            text-align: right;
+            font-style: italic;
+            color: #4a4a4a;
+        }
+
+        .certificate .footer .date {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .close-cert-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #4a4a4a;
+            transition: transform 0.2s;
+            font-family: serif;
+        }
+
+        .close-cert-btn:hover {
+            transform: rotate(90deg);
+            color: #b8860b;
+        }
+
+        /* --- Импорт CSV --- */
+        .import-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            border: 1px dashed #3a3a4a;
+        }
+
+        .import-area label {
+            display: block;
+            font-size: 0.8rem;
+            color: #8888aa;
+            margin-bottom: 8px;
+        }
+
+        .import-area input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            background: #1a1a2a;
+            border: 1px solid #3a3a4a;
+            border-radius: 6px;
+            color: #e0dcc8;
+            font-size: 0.8rem;
+        }
+
+        .import-area input[type="file"]::file-selector-button {
+            padding: 6px 16px;
+            background: #2a2a3a;
+            border: none;
+            border-radius: 4px;
+            color: #d4af37;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .import-area small {
+            display: block;
+            color: #666688;
+            margin-top: 6px;
+            font-size: 0.7rem;
+        }
+
+        /* --- Адаптив --- */
+        @media (max-width: 1000px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .header { flex-direction: column; gap: 15px; align-items: stretch; }
+            .header-controls { flex-wrap: wrap; justify-content: center; }
+        }
+
+        @media (max-width: 600px) {
+            .certificate { padding: 25px; }
+            .certificate .grades-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- Шапка -->
+    <header class="header">
+        <h1>📜 Ж.А.Б.А.</h1>
+        <div class="header-controls">
+            <select id="courseSelect">
+                <option value="1">1 курс</option>
+                <option value="2">2 курс</option>
+                <option value="3">3 курс</option>
+                <option value="4">4 курс</option>
+                <option value="5">5 курс</option>
+                <option value="6">6 курс</option>
+                <option value="7" selected>7 курс</option>
+            </select>
+            <button class="btn-primary" id="enterProfessorBtn">👤 Войти как профессор</button>
+            <button class="btn-secondary" id="generateCertBtn">🏆 Аттестат Ж.А.Б.А.</button>
+        </div>
+    </header>
+
+    <!-- Основная сетка -->
+    <div class="main-grid">
+        <!-- Боковая панель: факультеты -->
+        <aside class="sidebar">
+            <h3>🦁 Факультеты</h3>
+            <div id="facultyList">
+                <div class="faculty-item active" data-faculty="Гриффиндор">
+                    <span class="faculty-dot" style="background:#ae0000;"></span>
+                    Гриффиндор
+                    <span class="count" id="count-gryffindor">0</span>
+                </div>
+                <div class="faculty-item" data-faculty="Слизерин">
+                    <span class="faculty-dot" style="background:#1a6b47;"></span>
+                    Слизерин
+                    <span class="count" id="count-slytherin">0</span>
+                </div>
+                <div class="faculty-item" data-faculty="Когтевран">
+                    <span class="faculty-dot" style="background:#2a4b7c;"></span>
+                    Когтевран
+                    <span class="count" id="count-ravenclaw">0</span>
+                </div>
+                <div class="faculty-item" data-faculty="Пуффендуй">
+                    <span class="faculty-dot" style="background:#e3a738;"></span>
+                    Пуффендуй
+                    <span class="count" id="count-hufflepuff">0</span>
+                </div>
+            </div>
+
+            <!-- Импорт данных -->
+            <div class="import-area">
+                <label>📂 Импорт учеников (CSV)</label>
+                <input type="file" id="csvUpload" accept=".csv">
+                <small>Формат: Фамилия Имя,Факультет (например: Поттер Гарри,Гриффиндор)</small>
+                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn-secondary" style="padding:6px 14px; font-size:0.75rem;" id="loadExampleBtn">📥 Загрузить пример</button>
+                    <button class="btn-secondary" style="padding:6px 14px; font-size:0.75rem;" id="clearDataBtn">🗑️ Очистить</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Журнал -->
+        <section class="journal-wrapper">
+            <div class="journal-header">
+                <div>
+                    <h2 id="journalTitle">📖 Журнал: 7 курс</h2>
+                    <span class="subtitle" id="journalSubtitle">Гриффиндор · Октябрь 2026</span>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span id="studentCount" style="color:#8888aa; font-size:0.85rem;">0 учеников</span>
+                </div>
+            </div>
+
+            <div id="journalTableContainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ученик</th>
+                            <th>Факультет</th>
+                            <!-- Предметы будут добавлены JS -->
+                        </tr>
+                    </thead>
+                    <tbody id="journalBody">
+                        <tr><td colspan="10" style="text-align:center; color:#555566; padding:40px;">Загрузите учеников через CSV или нажмите "Загрузить пример"</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Модальное окно: Аттестат -->
+<div class="modal-overlay" id="certModal">
+    <div class="certificate" id="certificateContent">
+        <button class="close-cert-btn" id="closeCertBtn">✕</button>
+        <div class="school-name">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
+        <div class="cert-title">Ж.А.Б.А.</div>
+        <div class="certificate student-name-cert" id="certStudentName">Имя Фамилия</div>
+        <div class="grades-grid" id="certGradesGrid">
+            <!-- Заполняется JS -->
+        </div>
+        <div class="footer">
+            <div>
+                <div style="font-weight:700;">ДЕКАН ФАКУЛЬТЕТА</div>
+                <div style="font-style:italic;">Минерва МакГонагалл</div>
+            </div>
+            <div style="text-align:right;">
+                <div class="date" id="certDate">29 ИЮЛЯ 2026</div>
+                <div class="signature">Директор</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Конфигурация ---
+    const SUBJECTS = {
+        1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение', 'Полеты на метле'],
+        2: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        3: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        4: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        5: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        6: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание'],
+        7: ['Заклинания', 'ЗоТИ', 'Зельеварение', 'История магии', 'Травология', 'Трансфигурация', 'Маггловедение', 'УЗМС', 'Прорицание']
+    };
+
+    const FACULTIES = ['Гриффиндор', 'Слизерин', 'Когтевран', 'Пуффендуй'];
+
+    // --- Состояние ---
+    let students = []; // { id, name, faculty, grades: { subject: 0-5 } }
+    let currentCourse = 7;
+    let currentFaculty = 'Гриффиндор';
+    let isProfessor = false;
+    let nextId = 1;
+
+    // --- Загрузка / Сохранение ---
+    function loadData() {
+        const saved = localStorage.getItem('hogwartsJournalData');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                students = data.students || [];
+                nextId = data.nextId || 1;
+                currentCourse = data.currentCourse || 7;
+                currentFaculty = data.currentFaculty || 'Гриффиндор';
+                isProfessor = data.isProfessor || false;
+                // Убедимся, что у всех есть grades
+                students.forEach(s => {
+                    if (!s.grades) s.grades = {};
+                });
+                return;
+            } catch(e) {}
+        }
+        // Данные по умолчанию: пример
+        students = [
+            { id: nextId++, name: 'Поттер Гарри', faculty: 'Гриффиндор', grades: {} },
+            { id: nextId++, name: 'Грейнджер Гермиона', faculty: 'Гриффиндор', grades: {} },
+            { id: nextId++, name: 'Уизли Рон', faculty: 'Гриффиндор', grades: {} },
+            { id: nextId++, name: 'Малфой Драко', faculty: 'Слизерин', grades: {} },
+            { id: nextId++, name: 'Забини Блейз', faculty: 'Слизерин', grades: {} },
+            { id: nextId++, name: 'Долгопупс Невилл', faculty: 'Гриффиндор', grades: {} },
+            { id: nextId++, name: 'Лавгуд Луна', faculty: 'Когтевран', grades: {} },
+            { id: nextId++, name: 'Патинсон Седрик', faculty: 'Пуффендуй', grades: {} },
+        ];
+        // Проставим случайные оценки для примера
+        students.forEach(s => {
+            const subjects = SUBJECTS[currentCourse] || SUBJECTS[1];
+            subjects.forEach(sub => {
+                s.grades[sub] = Math.floor(Math.random() * 5) + 1;
+            });
+        });
+        saveData();
+    }
+
+    function saveData() {
+        localStorage.setItem('hogwartsJournalData', JSON.stringify({
+            students, nextId, currentCourse, currentFaculty, isProfessor
+        }));
+    }
+
+    // --- Рендеринг ---
+    function render() {
+        renderFaculties();
+        renderJournal();
+        document.getElementById('courseSelect').value = currentCourse;
+        // Показать/скрыть кнопку аттестата
+        const certBtn = document.getElementById('generateCertBtn');
+        if (currentCourse == 7) {
+            certBtn.style.display = 'inline-block';
+        } else {
+            certBtn.style.display = 'none';
+        }
+    }
+
+    function renderFaculties() {
+        const items = document.querySelectorAll('.faculty-item');
+        items.forEach(item => {
+            const faculty = item.dataset.faculty;
+            const count = students.filter(s => s.faculty === faculty).length;
+            const countSpan = document.getElementById(`count-${faculty.toLowerCase()}`);
+            if (countSpan) countSpan.textContent = count;
+            item.classList.toggle('active', faculty === currentFaculty);
+        });
+    }
+
+    function renderJournal() {
+        const course = currentCourse;
+        const faculty = currentFaculty;
+        const subjects = SUBJECTS[course] || SUBJECTS[1];
+        const filtered = students.filter(s => s.faculty === faculty);
+
+        // Заголовок
+        document.getElementById('journalTitle').textContent = `📖 Журнал: ${course} курс`;
+        document.getElementById('journalSubtitle').textContent = `${faculty} · Октябрь 2026`;
+        document.getElementById('studentCount').textContent = `${filtered.length} учеников`;
+
+        const tbody = document.getElementById('journalBody');
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="${subjects.length + 2}" style="text-align:center; color:#555566; padding:40px;">Нет учеников на этом факультете</td></tr>`;
+            return;
+        }
+
+        // Строим заголовок таблицы
+        const thead = document.querySelector('#journalTableContainer table thead');
+        let headerRow = `<tr><th>Ученик</th><th>Факультет</th>`;
+        subjects.forEach(sub => {
+            headerRow += `<th>${sub}</th>`;
+        });
+        headerRow += `</tr>`;
+        thead.innerHTML = headerRow;
+
+        // Строим строки
+        let html = '';
+        filtered.forEach(student => {
+            html += `<tr>`;
+            html += `<td class="student-name">${student.name}</td>`;
+            html += `<td style="font-size:0.75rem; color:#8888aa;">${student.faculty}</td>`;
+            subjects.forEach(sub => {
+                const grade = student.grades[sub] || 0;
+                const gradeClass = grade > 0 ? `grade-${grade}` : 'grade-empty';
+                const display = grade > 0 ? grade : '–';
+                const editable = isProfessor ? 'contenteditable="true"' : '';
+                html += `<td class="grade-cell ${gradeClass}" data-student-id="${student.id}" data-subject="${sub}" ${editable}>${display}</td>`;
+            });
+            html += `</tr>`;
+        });
+        tbody.innerHTML = html;
+
+        // Обработчики для редактирования оценок
+        if (isProfessor) {
+            document.querySelectorAll('.grade-cell[contenteditable="true"]').forEach(cell => {
+                cell.addEventListener('blur', function(e) {
+                    const val = this.textContent.trim();
+                    const num = parseInt(val);
+                    if (!isNaN(num) && num >= 1 && num <= 5) {
+                        const studentId = parseInt(this.dataset.studentId);
+                        const subject = this.dataset.subject;
+                        const student = students.find(s => s.id === studentId);
+                        if (student) {
+                            student.grades[subject] = num;
+                            saveData();
+                            // Обновляем класс
+                            this.className = `grade-cell grade-${num}`;
+                        }
+                    } else {
+                        // Восстанавливаем прежнее значение
+                        const studentId = parseInt(this.dataset.studentId);
+                        const subject = this.dataset.subject;
+                        const student = students.find(s => s.id === studentId);
+                        if (student) {
+                            const grade = student.grades[subject] || 0;
+                            this.textContent = grade > 0 ? grade : '–';
+                            this.className = `grade-cell ${grade > 0 ? `grade-${grade}` : 'grade-empty'}`;
+                        }
+                    }
+                });
+                // Запрещаем ввод букв
+                cell.addEventListener('keydown', function(e) {
+                    if (!/^[1-5]$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && !e.ctrlKey) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        }
+    }
+
+    // --- Генерация аттестата ---
+    function generateCertificate(studentName) {
+        const student = students.find(s => s.name === studentName);
+        if (!student) return;
+
+        const course = 7;
+        const subjects = SUBJECTS[course] || SUBJECTS[1];
+        const grades = student.grades;
+
+        // Карта оценок в текстовые эквиваленты
+        const gradeMap = {
+            5: 'Превосходно',
+            4: 'Выше ожидаемого',
+            3: 'Удовлетворительно',
+            2: 'Слабо',
+            1: 'Ужасно'
+        };
+
+        // Заполняем сетку аттестата
+        const grid = document.getElementById('certGradesGrid');
+        let html = '';
+        subjects.forEach(sub => {
+            const val = grades[sub] || 0;
+            const text = val > 0 ? gradeMap[val] || 'Не сдано' : 'Не сдано';
+            const mark = val > 0 ? val : '–';
+            html += `
+                <div class="grade-row">
+                    <span class="subject">${sub}</span>
+                    <span class="mark">${text} (${mark})</span>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+
+        // Имя студента
+        document.getElementById('certStudentName').textContent = studentName.toUpperCase();
+
+        // Дата
+        const now = new Date();
+        const months = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ'];
+        const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        document.getElementById('certDate').textContent = dateStr;
+
+        // Показываем модалку
+        document.getElementById('certModal').classList.add('open');
+    }
+
+    // --- Импорт CSV ---
+    function importCSV(text) {
+        const lines = text.split('\n').filter(line => line.trim());
+        let imported = 0;
+        lines.forEach(line => {
+            const parts = line.split(',').map(s => s.trim());
+            if (parts.length >= 2) {
+                const name = parts[0];
+                let faculty = parts[1];
+                // Проверяем факультет
+                if (!FACULTIES.includes(faculty)) {
+                    // Пробуем исправить: Гриффиндор -> Гриффиндор
+                    const found = FACULTIES.find(f => f.toLowerCase() === faculty.toLowerCase());
+                    if (found) faculty = found;
+                    else return; // пропускаем
+                }
+                // Проверяем, нет ли уже такого ученика
+                if (!students.some(s => s.name === name && s.faculty === faculty)) {
+                    students.push({
+                        id: nextId++,
+                        name: name,
+                        faculty: faculty,
+                        grades: {}
+                    });
+                    imported++;
+                }
+            }
+        });
+        if (imported > 0) {
+            saveData();
+            render();
+            alert(`Импортировано ${imported} учеников!`);
+        } else {
+            alert('Не удалось импортировать. Проверьте формат: "Фамилия Имя,Факультет"');
+        }
+    }
+
+    // --- Инициализация ---
+    function init() {
+        loadData();
+        render();
+
+        // --- События ---
+
+        // Выбор курса
+        document.getElementById('courseSelect').addEventListener('change', function() {
+            currentCourse = parseInt(this.value);
+            saveData();
+            render();
+        });
+
+        // Выбор факультета (клик по боковой панели)
+        document.querySelectorAll('.faculty-item').forEach(item => {
+            item.addEventListener('click', function() {
+                currentFaculty = this.dataset.faculty;
+                saveData();
+                render();
+            });
+        });
+
+        // Вход профессора
+        document.getElementById('enterProfessorBtn').addEventListener('click', function() {
+            isProfessor = !isProfessor;
+            this.textContent = isProfessor ? '👤 Выйти' : '👤 Войти как профессор';
+            this.classList.toggle('btn-primary', isProfessor);
+            this.classList.toggle('btn-secondary', !isProfessor);
+            saveData();
+            render();
+            if (isProfessor) {
+                alert('Вы вошли как профессор. Нажмите на оценку, чтобы изменить её (1-5).');
+            }
+        });
+
+        // Генерация аттестата
+        document.getElementById('generateCertBtn').addEventListener('click', function() {
+            if (currentCourse != 7) {
+                alert('Аттестат доступен только для 7 курса.');
+                return;
+            }
+            const filtered = students.filter(s => s.faculty === currentFaculty);
+            if (filtered.length === 0) {
+                alert('Нет учеников на этом факультете.');
+                return;
+            }
+            // Просим выбрать ученика
+            const names = filtered.map(s => s.name);
+            const choice = prompt(`Выберите ученика для аттестата:\n${names.join('\n')}`);
+            if (choice && names.includes(choice)) {
+                generateCertificate(choice);
+            } else if (choice) {
+                alert('Ученик не найден на этом факультете.');
+            }
+        });
+
+        // Закрытие аттестата
+        document.getElementById('closeCertBtn').addEventListener('click', function() {
+            document.getElementById('certModal').classList.remove('open');
+        });
+        document.getElementById('certModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('open');
+            }
+        });
+
+        // Загрузка CSV
+        document.getElementById('csvUpload').addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                importCSV(ev.target.result);
+            };
+            reader.readAsText(file);
+            this.value = ''; // сброс
+        });
+
+        // Загрузка примера
+        document.getElementById('loadExampleBtn').addEventListener('click', function() {
+            const example = `Поттер Гарри,Гриффиндор
+Грейнджер Гермиона,Гриффиндор
+Уизли Рон,Гриффиндор
+Малфой Драко,Слизерин
+Забини Блейз,Слизерин
+Долгопупс Невилл,Гриффиндор
+Лавгуд Луна,Когтевран
+Патинсон Седрик,Пуффендуй
+Браун Лаванда,Гриффиндор
+Томас Дин,Гриффиндор
+Финниган Шеймус,Гриффиндор
+Патил Парвати,Гриффиндор
+Корнер Майкл,Когтевран
+Голдштейн Энтони,Когтевран
+Беллби Терри,Когтевран
+Боунс Сьюзан,Пуффендуй
+Эббот Ханна,Пуффендуй
+Криви Деннис,Пуффендуй
+Паркинсон Панси,Слизерин
+Булстроуд Миллисента,Слизерин
+Нотт Теодор,Слизерин`;
+            importCSV(example);
+        });
+
+        // Очистка данных
+        document.getElementById('clearDataBtn').addEventListener('click', function() {
+            if (confirm('Удалить всех учеников?')) {
+                students = [];
+                nextId = 1;
+                saveData();
+                render();
+            }
+        });
+
+        // Инициализация состояния профессора на кнопке
+        if (isProfessor) {
+            const btn = document.getElementById('enterProfessorBtn');
+            btn.textContent = '👤 Выйти';
+            btn.classList.add('btn-primary');
+            btn.classList.remove('btn-secondary');
+        }
+    }
+
+    // Старт
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
