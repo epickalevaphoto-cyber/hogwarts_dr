@@ -185,6 +185,17 @@
             box-shadow: 0 0 25px rgba(123, 31, 162, 0.35);
         }
 
+        .header-controls .btn-blue {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-blue:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(21, 101, 192, 0.35);
+        }
+
         .online-indicator {
             display: flex;
             align-items: center;
@@ -481,6 +492,91 @@
             padding: 8px;
             border-top: 1px solid var(--border-color);
             margin-top: 8px;
+        }
+
+        /* ===== IMPORT SECTION ===== */
+        .import-section {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            margin-top: 12px;
+        }
+
+        .import-section .import-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .import-section .import-row input[type="file"] {
+            flex: 1;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-family: 'Inter', sans-serif;
+            min-width: 120px;
+        }
+
+        .import-section .import-row input[type="file"]::file-selector-button {
+            padding: 4px 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--border-gold);
+            border-radius: 4px;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .import-section .import-row input[type="file"]::file-selector-button:hover {
+            background: var(--gold-glow);
+        }
+
+        .import-section .import-row button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .import-section .import-row .btn-import {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            color: #fff;
+        }
+
+        .import-section .import-row .btn-import:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(21, 101, 192, 0.3);
+        }
+
+        .import-section .import-hint {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .import-section .import-status {
+            color: var(--green);
+            font-size: 0.75rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .import-section .import-status.show {
+            display: block;
+        }
+
+        .import-section .import-status.error {
+            color: var(--red);
         }
 
         /* ===== JOURNAL ===== */
@@ -1171,6 +1267,12 @@
             .mgmt-page .mgmt-grid {
                 grid-template-columns: 1fr;
             }
+            .mgmt-page .mgmt-card .row {
+                flex-wrap: wrap;
+            }
+            .import-section .import-row {
+                flex-direction: column;
+            }
         }
 
         @media print {
@@ -1277,6 +1379,22 @@
                     </div>
                 </div>
 
+                <!-- Импорт данных -->
+                <div class="sidebar-section">
+                    <div class="section-title">📥 Импорт данных</div>
+                    <div class="import-section">
+                        <div class="import-row">
+                            <input type="file" id="importFile" accept=".csv,.xlsx,.xls">
+                            <button class="btn-import" id="importBtn">📤 Загрузить</button>
+                        </div>
+                        <div class="import-hint">
+                            Поддерживаются: CSV, Excel (.xlsx, .xls)<br>
+                            Формат: Имя,Факультет,Предмет1,Оценка1,Предмет2,Оценка2,...
+                        </div>
+                        <div class="import-status" id="importStatus">✅ Импорт выполнен</div>
+                    </div>
+                </div>
+
                 <div class="sidebar-section">
                     <div class="sidebar-hint">
                         💾 Автосохранение · 🔄 Синхронизация<br>
@@ -1313,7 +1431,7 @@
                         <tbody id="tableBody">
                             <tr>
                                 <td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px;">
-                                    Загрузите учеников через раздел "Списки"
+                                    Загрузите учеников через раздел "Списки" или "Импорт данных"
                                 </td>
                             </tr>
                         </tbody>
@@ -1451,7 +1569,7 @@
         });
 
         // ============================================================
-        //  SUBJECTS — НА 7 КУРСЕ 10 ПРЕДМЕТОВ (С ПОЛЕТАМИ)
+        //  SUBJECTS
         // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
@@ -1483,9 +1601,6 @@
         const GRADE_COLORS = { 5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d', 2: '#ff9800', 1: '#ef5350', 0: '#d32f2f' };
         const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
 
-        // ============================================================
-        //  ДЕКАНЫ И ДИРЕКТОР (ВСЕ НА РУССКОМ)
-        // ============================================================
         const DEANS = {
             'Гриффиндор': 'Минерва МакГонагалл',
             'Слизерин': 'Северус Снейп',
@@ -1665,6 +1780,128 @@
             el.classList.add('show');
             clearTimeout(el._timer);
             el._timer = setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // ============================================================
+        //  IMPORT FUNCTIONS
+        // ============================================================
+        function showImportStatus(msg, isError = false) {
+            const el = document.getElementById('importStatus');
+            el.textContent = msg;
+            el.className = 'import-status show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                el.classList.remove('show');
+            }, 5000);
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function importFromCSV(text) {
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length < 2) {
+                showImportStatus('❌ Файл должен содержать заголовок и данные', true);
+                return;
+            }
+
+            // Парсим заголовок
+            const header = parseCSVLine(lines[0]);
+            // Ищем колонки
+            const nameIdx = header.findIndex(h => /имя|name|ученик|student/i.test(h));
+            const facultyIdx = header.findIndex(h => /факультет|faculty|house/i.test(h));
+
+            if (nameIdx === -1 || facultyIdx === -1) {
+                showImportStatus('❌ Не найдены колонки "Имя" и "Факультет"', true);
+                return;
+            }
+
+            // Собираем предметы из заголовка (все, кроме имени и факультета)
+            const subjectMap = {};
+            header.forEach((h, idx) => {
+                if (idx !== nameIdx && idx !== facultyIdx) {
+                    // Пытаемся сопоставить с известными предметами
+                    const clean = h.replace(/[\[\](){}]/g, '').trim();
+                    const allSubs = getAllSubjects();
+                    const match = allSubs.find(s => s.toLowerCase() === clean.toLowerCase() ||
+                        clean.toLowerCase().includes(s.toLowerCase()) ||
+                        s.toLowerCase().includes(clean.toLowerCase()));
+                    if (match) {
+                        subjectMap[idx] = match;
+                    }
+                }
+            });
+
+            const subjectColumns = Object.keys(subjectMap).map(Number);
+            if (subjectColumns.length === 0) {
+                showImportStatus('❌ Не найдены колонки с предметами', true);
+                return;
+            }
+
+            let imported = 0;
+            let errors = 0;
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (values.length < Math.max(nameIdx, facultyIdx) + 1) continue;
+
+                const name = values[nameIdx]?.trim();
+                let faculty = values[facultyIdx]?.trim();
+
+                if (!name) { errors++; continue; }
+                if (!faculty) { errors++; continue; }
+
+                // Проверяем факультет
+                if (!FACULTIES.includes(faculty)) {
+                    const found = FACULTIES.find(f => f.toLowerCase() === faculty.toLowerCase());
+                    if (found) faculty = found;
+                    else { errors++; continue; }
+                }
+
+                // Проверяем, нет ли уже такого студента
+                let student = students.find(s => s.name === name && s.faculty === faculty);
+                if (!student) {
+                    student = { id: nextId++, name, faculty, grades: {} };
+                    students.push(student);
+                    imported++;
+                }
+
+                // Добавляем оценки
+                subjectColumns.forEach(colIdx => {
+                    const subject = subjectMap[colIdx];
+                    const val = values[colIdx]?.trim();
+                    if (val && subject) {
+                        const num = parseFloat(val.replace(',', '.'));
+                        const available = getAvailableGrades(currentCourse);
+                        if (!isNaN(num) && available.includes(num)) {
+                            student.grades[subject] = num;
+                        }
+                    }
+                });
+            }
+
+            if (imported > 0 || errors > 0) {
+                saveData();
+                renderAll();
+                showImportStatus(`✅ Импортировано: ${imported} студентов, ${errors} ошибок`);
+            } else {
+                showImportStatus('❌ Не удалось импортировать данные', true);
+            }
         }
 
         // ============================================================
@@ -1886,7 +2123,6 @@
                 return;
             }
 
-            // Для аттестата используем все 10 предметов 7 курса
             const subs = SUBJECTS[7] || SUBJECTS[1];
             const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
                 'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
@@ -2129,6 +2365,11 @@
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
             document.head.appendChild(script);
 
+            // Загружаем библиотеку для работы с Excel
+            const xlsxScript = document.createElement('script');
+            xlsxScript.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+            document.head.appendChild(xlsxScript);
+
             try {
                 const ch = new BroadcastChannel('hogwarts');
                 ch.onmessage = () => { loadData();
@@ -2209,6 +2450,7 @@
                 renderAll();
             });
 
+            // MGMT: Add student
             document.getElementById('mgmtAddBtn').addEventListener('click', function() {
                 const name = document.getElementById('mgmtNameInput').value;
                 const faculty = document.getElementById('mgmtFacultySelect').value;
@@ -2220,6 +2462,7 @@
                 if (e.key === 'Enter') document.getElementById('mgmtAddBtn').click();
             });
 
+            // MGMT: Mass add
             document.getElementById('mgmtMassBtn').addEventListener('click', function() {
                 const text = document.getElementById('mgmtMassInput').value;
                 if (text.trim()) {
@@ -2230,6 +2473,7 @@
                 }
             });
 
+            // MGMT: Remove faculty
             document.getElementById('mgmtRemoveFacultyBtn').addEventListener('click', function() {
                 const faculty = prompt('Введите название факультета для удаления:');
                 if (faculty && FACULTIES.includes(faculty)) {
@@ -2239,6 +2483,7 @@
                 }
             });
 
+            // MGMT: Filter
             document.querySelectorAll('#mgmtFilter button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('#mgmtFilter button').forEach(b => b.classList.remove(
@@ -2248,6 +2493,47 @@
                 });
             });
 
+            // ===== IMPORT =====
+            document.getElementById('importBtn').addEventListener('click', function() {
+                const fileInput = document.getElementById('importFile');
+                const file = fileInput.files[0];
+                if (!file) {
+                    showImportStatus('❌ Выберите файл для загрузки', true);
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                if (file.name.endsWith('.csv')) {
+                    reader.onload = function(e) {
+                        importFromCSV(e.target.result);
+                    };
+                    reader.readAsText(file, 'UTF-8');
+                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                    if (typeof XLSX === 'undefined') {
+                        showImportStatus('❌ Библиотека Excel не загружена. Попробуйте CSV формат.', true);
+                        return;
+                    }
+                    reader.onload = function(e) {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                            const csv = XLSX.utils.sheet_to_csv(firstSheet);
+                            importFromCSV(csv);
+                        } catch (err) {
+                            showImportStatus('❌ Ошибка при чтении Excel файла: ' + err.message, true);
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    showImportStatus('❌ Неподдерживаемый формат файла. Используйте CSV или Excel.', true);
+                }
+
+                fileInput.value = '';
+            });
+
+            // Certificate
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2273,11 +2559,13 @@
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
+            // Report
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
             });
 
+            // Close modals
             document.getElementById('closeReportBtn').addEventListener('click', () => {
                 document.getElementById('reportModal').classList.remove('open');
             });
@@ -2292,6 +2580,7 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
+            // Export
             document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
             document.getElementById('printReportBtn').addEventListener('click', () => window.print());
 
