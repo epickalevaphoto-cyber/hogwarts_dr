@@ -126,16 +126,6 @@
             box-shadow: 0 0 20px rgba(46, 125, 50, 0.25);
         }
 
-        .header-controls .btn-blue {
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
-            border: none;
-            color: #fff;
-        }
-
-        .header-controls .btn-blue:hover {
-            box-shadow: 0 0 20px rgba(21, 101, 192, 0.25);
-        }
-
         .role-badge {
             font-size: 0.5rem;
             padding: 2px 10px;
@@ -1008,8 +998,7 @@
             .header,
             .sidebar,
             .modal-content .close-btn,
-            .btn-row,
-            .export-actions {
+            .btn-row {
                 display: none !important;
             }
             .modal-overlay {
@@ -1065,7 +1054,6 @@
                 <button class="btn-gold" id="loginBtn">🔑 ВОЙТИ</button>
                 <button class="btn-outline" id="certBtn">🏆 АТТЕСТАТ</button>
                 <button class="btn-green" id="reportBtn">📊 ОТЧЕТ</button>
-                <button class="btn-blue" id="exportExcelBtn">📥 EXCEL</button>
                 <span class="role-badge guest" id="roleBadge">ГОСТЬ</span>
                 <span style="font-size:0.65rem;color:#555566;">
                     <span class="online-dot"></span><span id="profCount">0</span>
@@ -1253,8 +1241,7 @@
             </div>
             <div id="reportContainer"></div>
             <div class="btn-row" style="margin-top:12px;">
-                <button class="btn-primary" id="exportCsvBtn">📥 Экспорт CSV</button>
-                <button class="btn-secondary" id="printReportBtn">🖨️ Печать</button>
+                <button class="btn-primary" id="exportExcelBtn">📥 Экспорт в Excel</button>
             </div>
         </div>
     </div>
@@ -1894,43 +1881,8 @@
             return html;
         }
 
-        function exportCSV() {
-            const allSubs = getAllSubjects().sort();
-
-            let csv = '\uFEFF';
-            csv += 'Курс,Факультет,Ученик';
-            allSubs.forEach(s => csv += `,${s}`);
-            csv += ',Сумма\n';
-
-            students.sort((a, b) => {
-                const cA = getStudentCourse(a);
-                const cB = getStudentCourse(b);
-                if (cA !== cB) return parseInt(cA) - parseInt(cB);
-                return a.name.localeCompare(b.name);
-            });
-
-            students.forEach(st => {
-                const course = getStudentCourse(st);
-                csv += `${course},${st.faculty},${st.name}`;
-                let sum = 0;
-                allSubs.forEach(sub => {
-                    const v = st.grades[sub];
-                    const val = (v !== undefined && v !== null) ? v : '';
-                    csv += `,${val}`;
-                    if (val) sum += parseInt(val);
-                });
-                csv += `,${sum}\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `HogwartsDaily_отчет_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-        }
-
         // ============================================================
-        //  EXPORT EXCEL — НОВАЯ ФУНКЦИЯ
+        //  EXPORT EXCEL — ИСПРАВЛЕНА
         // ============================================================
         function exportToExcel() {
             // Проверяем, загружена ли библиотека XLSX
@@ -1941,7 +1893,7 @@
                 script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
                 document.head.appendChild(script);
                 script.onload = function() {
-                    alert('Библиотека загружена! Нажмите кнопку EXCEL еще раз.');
+                    alert('Библиотека загружена! Нажмите кнопку "Экспорт в Excel" еще раз.');
                 };
                 return;
             }
@@ -2018,13 +1970,25 @@
                     }
                 }
 
-                // Скачиваем файл
-                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+                // Скачиваем файл с правильным типом
+                const wbout = XLSX.write(workbook, { 
+                    bookType: 'xlsx', 
+                    type: 'array',
+                    bookSST: false
+                });
+                
+                // Создаем Blob с правильным MIME-типом
+                const blob = new Blob([wbout], { 
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+                });
+                
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xlsx`;
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
 
                 alert('✅ Excel-файл успешно скачан! Каждый курс — на отдельном листе.');
 
@@ -2339,11 +2303,6 @@
 
             document.getElementById('reportModal').addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('open');
-            });
-
-            document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
-            document.getElementById('printReportBtn').addEventListener('click', function() {
-                window.print();
             });
 
             // ===== EXPORT EXCEL =====
