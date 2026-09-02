@@ -126,6 +126,16 @@
             box-shadow: 0 0 20px rgba(46, 125, 50, 0.25);
         }
 
+        .header-controls .btn-blue {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-blue:hover {
+            box-shadow: 0 0 20px rgba(21, 101, 192, 0.25);
+        }
+
         .role-badge {
             font-size: 0.5rem;
             padding: 2px 10px;
@@ -1055,6 +1065,7 @@
                 <button class="btn-gold" id="loginBtn">🔑 ВОЙТИ</button>
                 <button class="btn-outline" id="certBtn">🏆 АТТЕСТАТ</button>
                 <button class="btn-green" id="reportBtn">📊 ОТЧЕТ</button>
+                <button class="btn-blue" id="exportExcelBtn">📥 EXCEL</button>
                 <span class="role-badge guest" id="roleBadge">ГОСТЬ</span>
                 <span style="font-size:0.65rem;color:#555566;">
                     <span class="online-dot"></span><span id="profCount">0</span>
@@ -1420,9 +1431,8 @@
         }
 
         function getStudentCourse(student) {
-            // Если у студента нет поля course, определяем по его оценкам
             if (student.course) return student.course;
-            
+
             const keys = Object.keys(student.grades);
             for (let c = 1; c <= 7; c++) {
                 const subs = SUBJECTS[c] || [];
@@ -1513,7 +1523,6 @@
                 const currentCourse = getStudentCourse(student);
                 if (currentCourse === newCourse) { errors++; return; }
 
-                // Меняем курс и очищаем оценки
                 student.course = newCourse;
                 student.grades = {};
                 transferred++;
@@ -1570,7 +1579,6 @@
             const course = currentCourse;
             const faculty = currentFaculty;
             const subjects = SUBJECTS[course] || SUBJECTS[1];
-            // Фильтруем студентов по факультету и курсу
             const filtered = students.filter(s => s.faculty === faculty && getStudentCourse(s) === course);
             const canEdit = canEditGrades();
 
@@ -1668,7 +1676,6 @@
             if (!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="">— Выберите ученика —</option>`;
-            // Для аттестата показываем только студентов 7 курса
             const seventhCourseStudents = students.filter(s => getStudentCourse(s) === 7);
             const sorted = [...seventhCourseStudents].sort((a, b) => a.name.localeCompare(b.name));
             sorted.forEach(s => {
@@ -1923,6 +1930,111 @@
         }
 
         // ============================================================
+        //  EXPORT EXCEL — НОВАЯ ФУНКЦИЯ
+        // ============================================================
+        function exportToExcel() {
+            // Проверяем, загружена ли библиотека XLSX
+            if (typeof XLSX === 'undefined') {
+                alert('Библиотека Excel загружается... Пожалуйста, подождите и попробуйте снова.');
+                // Пытаемся загрузить библиотеку
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+                document.head.appendChild(script);
+                script.onload = function() {
+                    alert('Библиотека загружена! Нажмите кнопку EXCEL еще раз.');
+                };
+                return;
+            }
+
+            try {
+                const workbook = XLSX.utils.book_new();
+
+                // Группируем студентов по курсам (1-7)
+                const grouped = {};
+                students.forEach(s => {
+                    const c = getStudentCourse(s);
+                    if (!grouped[c]) grouped[c] = [];
+                    grouped[c].push(s);
+                });
+
+                // Для каждого курса создаем лист
+                for (let c = 1; c <= 7; c++) {
+                    const list = grouped[c] || [];
+                    const subjects = SUBJECTS[c] || [];
+
+                    // Создаем массив для таблицы
+                    const data = [];
+
+                    // Заголовок
+                    const header = ['Ученик', 'Факультет'];
+                    subjects.forEach(sub => header.push(sub));
+                    header.push('Сумма');
+                    data.push(header);
+
+                    // Данные студентов
+                    list.forEach(st => {
+                        const row = [st.name, st.faculty];
+                        let sum = 0;
+                        subjects.forEach(sub => {
+                            const v = st.grades[sub];
+                            const val = (v !== undefined && v !== null) ? v : '';
+                            row.push(val);
+                            if (val) sum += parseInt(val);
+                        });
+                        row.push(sum);
+                        data.push(row);
+                    });
+
+                    // Создаем лист
+                    const ws = XLSX.utils.aoa_to_sheet(data);
+
+                    // Автоширина колонок
+                    const colWidths = [];
+                    data.forEach(row => {
+                        row.forEach((cell, idx) => {
+                            const len = String(cell).length;
+                            if (!colWidths[idx] || colWidths[idx] < len) {
+                                colWidths[idx] = len;
+                            }
+                        });
+                    });
+                    ws['!cols'] = colWidths.map(w => ({ wch: Math.min(Math.max(w + 2, 12), 30) }));
+
+                    // Добавляем лист в книгу
+                    const sheetName = `${c} курс`;
+                    XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+                }
+
+                // Если нет студентов, создаем пустые листы с заголовками
+                if (students.length === 0) {
+                    for (let c = 1; c <= 7; c++) {
+                        const subjects = SUBJECTS[c] || [];
+                        const header = ['Ученик', 'Факультет'];
+                        subjects.forEach(sub => header.push(sub));
+                        header.push('Сумма');
+                        const ws = XLSX.utils.aoa_to_sheet([header]);
+                        const sheetName = `${c} курс`;
+                        XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+                    }
+                }
+
+                // Скачиваем файл
+                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xlsx`;
+                link.click();
+
+                alert('✅ Excel-файл успешно скачан! Каждый курс — на отдельном листе.');
+
+            } catch (err) {
+                alert('❌ Ошибка при создании Excel-файла: ' + err.message);
+                console.error(err);
+            }
+        }
+
+        // ============================================================
         //  PROFESSOR REGISTRATION
         // ============================================================
         function registerProfessor() {
@@ -1988,9 +2100,14 @@
         function init() {
             loadData();
 
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-            document.head.appendChild(script);
+            // Загружаем библиотеки
+            const script1 = document.createElement('script');
+            script1.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            document.head.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+            document.head.appendChild(script2);
 
             try {
                 const ch = new BroadcastChannel('hogwarts');
@@ -2228,6 +2345,9 @@
             document.getElementById('printReportBtn').addEventListener('click', function() {
                 window.print();
             });
+
+            // ===== EXPORT EXCEL =====
+            document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
 
             window.addEventListener('beforeunload', function() {
                 if (userRole !== 'guest') unregisterProfessor();
