@@ -1882,13 +1882,12 @@
         }
 
         // ============================================================
-        //  EXPORT EXCEL — ИСПРАВЛЕНА
+        //  EXPORT EXCEL — ПОЛНОСТЬЮ ПЕРЕПИСАНА
         // ============================================================
         function exportToExcel() {
             // Проверяем, загружена ли библиотека XLSX
             if (typeof XLSX === 'undefined') {
                 alert('Библиотека Excel загружается... Пожалуйста, подождите и попробуйте снова.');
-                // Пытаемся загрузить библиотеку
                 const script = document.createElement('script');
                 script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
                 document.head.appendChild(script);
@@ -1899,9 +1898,10 @@
             }
 
             try {
-                const workbook = XLSX.utils.book_new();
+                // Создаем новую книгу
+                const wb = XLSX.utils.book_new();
 
-                // Группируем студентов по курсам (1-7)
+                // Группируем студентов по курсам
                 const grouped = {};
                 students.forEach(s => {
                     const c = getStudentCourse(s);
@@ -1909,21 +1909,21 @@
                     grouped[c].push(s);
                 });
 
-                // Для каждого курса создаем лист
+                // Для каждого курса (1-7) создаем лист
                 for (let c = 1; c <= 7; c++) {
                     const list = grouped[c] || [];
                     const subjects = SUBJECTS[c] || [];
 
-                    // Создаем массив для таблицы
+                    // Строим данные для таблицы
                     const data = [];
 
-                    // Заголовок
+                    // Шапка таблицы
                     const header = ['Ученик', 'Факультет'];
                     subjects.forEach(sub => header.push(sub));
                     header.push('Сумма');
                     data.push(header);
 
-                    // Данные студентов
+                    // Строки с данными
                     list.forEach(st => {
                         const row = [st.name, st.faculty];
                         let sum = 0;
@@ -1940,7 +1940,7 @@
                     // Создаем лист
                     const ws = XLSX.utils.aoa_to_sheet(data);
 
-                    // Автоширина колонок
+                    // Автоширина
                     const colWidths = [];
                     data.forEach(row => {
                         row.forEach((cell, idx) => {
@@ -1953,8 +1953,7 @@
                     ws['!cols'] = colWidths.map(w => ({ wch: Math.min(Math.max(w + 2, 12), 30) }));
 
                     // Добавляем лист в книгу
-                    const sheetName = `${c} курс`;
-                    XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+                    XLSX.utils.book_append_sheet(wb, ws, `${c} курс`);
                 }
 
                 // Если нет студентов, создаем пустые листы с заголовками
@@ -1965,30 +1964,31 @@
                         subjects.forEach(sub => header.push(sub));
                         header.push('Сумма');
                         const ws = XLSX.utils.aoa_to_sheet([header]);
-                        const sheetName = `${c} курс`;
-                        XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+                        XLSX.utils.book_append_sheet(wb, ws, `${c} курс`);
                     }
                 }
 
-                // Скачиваем файл с правильным типом
-                const wbout = XLSX.write(workbook, { 
-                    bookType: 'xlsx', 
-                    type: 'array',
-                    bookSST: false
-                });
-                
-                // Создаем Blob с правильным MIME-типом
+                // Записываем книгу в массив байтов
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+                // Создаем Blob
                 const blob = new Blob([wbout], { 
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
-                
+
+                // Создаем ссылку для скачивания
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xlsx`;
+                const date = new Date().toISOString().slice(0, 10);
+                link.download = `HogwartsDaily_${date}.xlsx`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
+
+                // Освобождаем память
+                setTimeout(() => {
+                    URL.revokeObjectURL(link.href);
+                }, 100);
 
                 alert('✅ Excel-файл успешно скачан! Каждый курс — на отдельном листе.');
 
