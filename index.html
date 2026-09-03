@@ -2,10 +2,43 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Hogwarts Daily — Электронный дневник</title>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-primary: #0c0a0f;
+            --bg-secondary: #12121e;
+            --bg-card: rgba(18, 16, 26, 0.92);
+            --bg-hover: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(60, 60, 80, 0.3);
+            --border-gold: rgba(212, 175, 55, 0.25);
+            --text-primary: #e8e4d8;
+            --text-secondary: #8888aa;
+            --text-muted: #555566;
+            --gold: #d4af37;
+            --gold-light: #f9e28c;
+            --gold-glow: rgba(212, 175, 55, 0.15);
+            --green: #4caf50;
+            --red: #ef5350;
+            --orange: #ffb74d;
+            --blue: #4a7db5;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --radius: 14px;
+            --transition: all 0.25s ease;
+            /* Цвета факультетов */
+            --gryffindor: #ae0000;
+            --gryffindor-light: rgba(174, 0, 0, 0.15);
+            --slytherin: #1a6b47;
+            --slytherin-light: rgba(26, 107, 71, 0.15);
+            --ravenclaw: #2a4b7c;
+            --ravenclaw-light: rgba(42, 75, 124, 0.15);
+            --hufflepuff: #e3a738;
+            --hufflepuff-light: rgba(227, 167, 56, 0.15);
+        }
 
         * {
             margin: 0;
@@ -14,13 +47,14 @@
         }
 
         body {
-            background: #0c0a0f;
-            color: #e8e4d8;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .app {
@@ -28,65 +62,68 @@
             width: 100%;
         }
 
+        /* ===== HEADER ===== */
         .header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 24px;
+            padding: 12px 16px;
             background: rgba(18, 16, 26, 0.85);
             border-radius: 12px;
             border: 1px solid rgba(212, 175, 55, 0.12);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             backdrop-filter: blur(10px);
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-brand .crest {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         .header-brand h1 {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 1.2rem;
+            font-size: 1rem;
             background: linear-gradient(135deg, #d4af37, #f9e28c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         .header-brand .year {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: #666688;
-            letter-spacing: 2px;
-            margin-left: 4px;
+            letter-spacing: 1px;
+            margin-left: 2px;
         }
 
         .header-controls {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .header-controls select,
         .header-controls button {
-            padding: 5px 12px;
+            padding: 4px 10px;
             background: rgba(30, 28, 45, 0.8);
             border: 1px solid rgba(60, 60, 80, 0.25);
             color: #e8e4d8;
             border-radius: 6px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
             font-weight: 500;
+            min-height: 32px;
+            touch-action: manipulation;
         }
 
         .header-controls select:hover,
@@ -126,15 +163,26 @@
             box-shadow: 0 0 20px rgba(46, 125, 50, 0.25);
         }
 
+        .header-controls .btn-red {
+            background: linear-gradient(135deg, #7a0000, #c62828);
+            border: none;
+            color: #fff;
+        }
+
+        .header-controls .btn-red:hover {
+            box-shadow: 0 0 20px rgba(198, 40, 40, 0.25);
+        }
+
         .role-badge {
-            font-size: 0.5rem;
-            padding: 2px 10px;
+            font-size: 0.45rem;
+            padding: 2px 8px;
             border-radius: 10px;
             background: rgba(212, 175, 55, 0.1);
             color: #d4af37;
             border: 1px solid rgba(212, 175, 55, 0.12);
             text-transform: uppercase;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .role-badge.guest {
@@ -153,6 +201,11 @@
             animation: pulse 2s infinite;
         }
 
+        .online-dot.offline {
+            background: #ef5350;
+            animation: none;
+        }
+
         @keyframes pulse {
             0%,
             100% {
@@ -163,45 +216,62 @@
             }
         }
 
+        .sync-status {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ===== MAIN GRID ===== */
         .main-grid {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 16px;
         }
 
         .sidebar {
             background: rgba(18, 16, 26, 0.85);
             border-radius: 12px;
-            padding: 16px 14px;
+            padding: 12px 14px;
             border: 1px solid rgba(60, 60, 80, 0.15);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
             backdrop-filter: blur(8px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         .sidebar .title {
-            font-size: 0.55rem;
+            grid-column: 1 / -1;
+            font-size: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #555566;
             font-weight: 600;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 2px;
+            padding-bottom: 4px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.15);
+        }
+
+        .faculty-list {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
         }
 
         .faculty-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.8rem;
-            margin-bottom: 2px;
+            font-size: 0.7rem;
             border-left: 2px solid transparent;
+            touch-action: manipulation;
         }
 
         .faculty-item:hover {
@@ -222,33 +292,38 @@
 
         .faculty-item .count {
             margin-left: auto;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #555566;
         }
 
         .sidebar-actions {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(60, 60, 80, 0.15);
+            grid-column: 1 / -1;
             display: flex;
-            flex-direction: column;
             gap: 4px;
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(60, 60, 80, 0.15);
+            flex-wrap: wrap;
         }
 
         .sidebar-actions button {
+            flex: 1;
+            min-width: 60px;
             padding: 5px 10px;
             border: 1px solid rgba(60, 60, 80, 0.2);
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.02);
             color: #aaaabc;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
-            text-align: left;
+            text-align: center;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 4px;
+            touch-action: manipulation;
         }
 
         .sidebar-actions button:hover {
@@ -287,10 +362,20 @@
             border-color: #ef5350;
         }
 
+        .sidebar-actions .btn-admin {
+            border-color: rgba(212, 175, 55, 0.25);
+            color: #d4af37;
+        }
+
+        .sidebar-actions .btn-admin:hover {
+            background: rgba(212, 175, 55, 0.08);
+            border-color: #d4af37;
+        }
+
         .journal {
             background: rgba(18, 16, 26, 0.85);
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 14px;
             border: 1px solid rgba(60, 60, 80, 0.15);
             overflow-x: auto;
             backdrop-filter: blur(8px);
@@ -301,30 +386,31 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
 
         .journal-header .title-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .journal-header .title-group h2 {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 400;
             color: #e8e4d8;
         }
 
         .journal-header .title-group .sub {
             color: #666688;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
         }
 
         .journal-header .stats {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #666688;
         }
 
@@ -335,12 +421,12 @@
 
         .legend {
             display: flex;
-            gap: 10px 18px;
+            gap: 8px 14px;
             flex-wrap: wrap;
-            padding: 8px 0 12px;
+            padding: 6px 0 8px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.12);
-            margin-bottom: 12px;
-            font-size: 0.65rem;
+            margin-bottom: 8px;
+            font-size: 0.55rem;
         }
 
         .legend-item {
@@ -351,31 +437,32 @@
         }
 
         .legend-item .swatch {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 3px;
             flex-shrink: 0;
         }
 
         .table-wrap {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.78rem;
-            min-width: 700px;
+            font-size: 0.65rem;
+            min-width: 600px;
         }
 
         th {
             text-align: left;
-            padding: 8px 6px;
+            padding: 6px 4px;
             background: rgba(30, 28, 45, 0.4);
             color: #d4af37;
             font-weight: 600;
-            font-size: 0.6rem;
-            letter-spacing: 0.5px;
+            font-size: 0.5rem;
+            letter-spacing: 0.3px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.2);
             white-space: nowrap;
             position: sticky;
@@ -384,7 +471,7 @@
         }
 
         td {
-            padding: 6px 6px;
+            padding: 4px 4px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.08);
             vertical-align: middle;
         }
@@ -393,13 +480,54 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
+        /* ===== ЦВЕТА ФАКУЛЬТЕТОВ В ТАБЛИЦЕ ===== */
+        .faculty-gryffindor {
+            background: var(--gryffindor-light) !important;
+        }
+        .faculty-gryffindor:hover td {
+            background: rgba(174, 0, 0, 0.25) !important;
+        }
+        .faculty-gryffindor .student-name {
+            color: #ff6b6b;
+        }
+
+        .faculty-slytherin {
+            background: var(--slytherin-light) !important;
+        }
+        .faculty-slytherin:hover td {
+            background: rgba(26, 107, 71, 0.25) !important;
+        }
+        .faculty-slytherin .student-name {
+            color: #6bff8b;
+        }
+
+        .faculty-ravenclaw {
+            background: var(--ravenclaw-light) !important;
+        }
+        .faculty-ravenclaw:hover td {
+            background: rgba(42, 75, 124, 0.25) !important;
+        }
+        .faculty-ravenclaw .student-name {
+            color: #6bb5ff;
+        }
+
+        .faculty-hufflepuff {
+            background: var(--hufflepuff-light) !important;
+        }
+        .faculty-hufflepuff:hover td {
+            background: rgba(227, 167, 56, 0.25) !important;
+        }
+        .faculty-hufflepuff .student-name {
+            color: #ffd93d;
+        }
+
         .student-name {
             font-weight: 500;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .student-name .del-btn {
@@ -407,11 +535,12 @@
             border: none;
             color: #555566;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             padding: 0 2px;
             transition: all 0.2s;
             opacity: 0.4;
             line-height: 1;
+            touch-action: manipulation;
         }
 
         .student-name .del-btn:hover {
@@ -420,7 +549,7 @@
         }
 
         .student-faculty {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: #555566;
             white-space: nowrap;
         }
@@ -428,19 +557,19 @@
         .grade-cell {
             text-align: center;
             padding: 2px 2px;
-            min-width: 40px;
+            min-width: 32px;
         }
 
         .grade-cell .grade-input {
-            width: 32px;
-            padding: 3px 2px;
+            width: 28px;
+            padding: 2px 2px;
             text-align: center;
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(60, 60, 80, 0.2);
             border-radius: 4px;
             color: #e8e4d8;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-family: 'Inter', sans-serif;
             transition: all 0.2s;
         }
@@ -456,7 +585,7 @@
             border: none;
             cursor: default;
             pointer-events: none;
-            width: 28px;
+            width: 24px;
         }
 
         .grade-cell .grade-input.g-5 {
@@ -494,7 +623,7 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
 
         .modal-overlay.open {
@@ -504,7 +633,7 @@
         .modal-content {
             background: #1a1828;
             border-radius: 12px;
-            padding: 24px 28px;
+            padding: 20px;
             max-width: 560px;
             width: 100%;
             max-height: 90vh;
@@ -517,24 +646,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .modal-content .modal-header h2 {
             font-family: 'Cinzel Decorative', cursive;
             color: #d4af37;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 400;
         }
 
         .modal-content .modal-header .close-btn {
             background: none;
             border: none;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             cursor: pointer;
             color: #555566;
             transition: all 0.2s;
             line-height: 1;
+            touch-action: manipulation;
+            padding: 4px 8px;
         }
 
         .modal-content .modal-header .close-btn:hover {
@@ -543,14 +674,14 @@
         }
 
         .modal-content .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
 
         .modal-content .form-group label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #8888aa;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: 500;
         }
 
@@ -558,12 +689,12 @@
         .modal-content .form-group textarea,
         .modal-content .form-group input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(60, 60, 80, 0.25);
             border-radius: 6px;
             color: #e8e4d8;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-family: 'Inter', sans-serif;
             transition: all 0.2s;
         }
@@ -576,19 +707,15 @@
         }
 
         .modal-content .form-group textarea {
-            min-height: 120px;
+            min-height: 80px;
             resize: vertical;
-            font-size: 0.8rem;
-            line-height: 1.5;
-        }
-
-        .modal-content .form-group textarea::placeholder {
-            color: #555566;
+            font-size: 0.75rem;
+            line-height: 1.4;
         }
 
         .modal-content .form-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .modal-content .form-row .form-group {
@@ -597,18 +724,19 @@
 
         .modal-content .btn-row {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 10px;
         }
 
         .modal-content .btn-row button {
-            padding: 8px 20px;
+            padding: 6px 16px;
             border: none;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
 
         .modal-content .btn-row .btn-primary {
@@ -632,10 +760,19 @@
             background: rgba(212, 175, 55, 0.05);
         }
 
+        .modal-content .btn-row .btn-danger {
+            background: linear-gradient(135deg, #7a0000, #c62828);
+            color: #fff;
+        }
+
+        .modal-content .btn-row .btn-danger:hover {
+            box-shadow: 0 0 20px rgba(198, 40, 40, 0.25);
+        }
+
         .modal-content .status-msg {
-            font-size: 0.8rem;
-            margin-top: 10px;
-            padding: 8px 12px;
+            font-size: 0.7rem;
+            margin-top: 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             display: none;
         }
@@ -656,94 +793,59 @@
             border: 1px solid rgba(239, 83, 80, 0.15);
         }
 
-        .modal-content .info-box {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            padding: 10px 14px;
-            margin-bottom: 14px;
-            font-size: 0.8rem;
-            border-left: 2px solid #d4af37;
-        }
-
-        .modal-content .info-box .label {
-            color: #666688;
-            font-size: 0.65rem;
-        }
-
-        .modal-content .info-box .value {
-            color: #e8e4d8;
-            font-weight: 500;
-        }
-
-        .modal-content .hint {
-            font-size: 0.6rem;
-            color: #555566;
-            margin-top: 4px;
-        }
-
-        .modal-content .student-check-list {
+        .modal-content .user-list {
             max-height: 200px;
             overflow-y: auto;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            padding: 8px 10px;
-            border: 1px solid rgba(60, 60, 80, 0.15);
+            margin-bottom: 10px;
         }
 
-        .modal-content .student-check-list .check-item {
+        .modal-content .user-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 4px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.8rem;
+            justify-content: space-between;
+            padding: 4px 8px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.08);
+            font-size: 0.7rem;
         }
 
-        .modal-content .student-check-list .check-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .modal-content .student-check-list .check-item input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
-            accent-color: #d4af37;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .modal-content .student-check-list .check-item .check-name {
-            flex: 1;
-        }
-
-        .modal-content .student-check-list .check-item .check-course {
-            font-size: 0.6rem;
-            color: #555566;
-        }
-
-        .modal-content .select-all-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px 6px 8px 6px;
-            border-bottom: 1px solid rgba(60, 60, 80, 0.1);
-            margin-bottom: 6px;
-            font-size: 0.75rem;
+        .modal-content .user-item .user-role {
+            font-size: 0.55rem;
             color: #8888aa;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .modal-content .select-all-row input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
-            accent-color: #d4af37;
+        .modal-content .user-item .user-role.professor {
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+        .modal-content .user-item .user-role.dean {
+            color: #ffb74d;
+            border: 1px solid rgba(255, 183, 77, 0.2);
+        }
+        .modal-content .user-item .user-role.headmaster {
+            color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .modal-content .user-item .user-del {
+            background: none;
+            border: none;
+            color: #555566;
             cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .modal-content .user-item .user-del:hover {
+            color: #ef5350;
         }
 
         /* ===== CERTIFICATE ===== */
         .certificate {
             background: #f5e6c8;
-            padding: 30px 32px;
+            padding: 20px 24px;
             max-width: 660px;
             width: 100%;
             border-radius: 14px;
@@ -755,14 +857,15 @@
 
         .certificate .close-cert {
             position: absolute;
-            top: 10px;
-            right: 16px;
+            top: 8px;
+            right: 12px;
             background: none;
             border: none;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             cursor: pointer;
             color: #666;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
 
         .certificate .close-cert:hover {
@@ -772,43 +875,43 @@
 
         .certificate .school-name {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-align: center;
             color: #1a1a1a;
             letter-spacing: 2px;
             border-bottom: 2px solid #b8860b;
-            padding-bottom: 6px;
+            padding-bottom: 4px;
             margin-bottom: 4px;
             line-height: 1.2;
         }
 
         .certificate .cert-title {
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 4px;
             color: #b8860b;
             font-family: 'Cinzel Decorative', cursive;
-            margin: 4px 0 8px;
+            margin: 4px 0 6px;
         }
 
         .certificate .student-name-cert {
             text-align: center;
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #1a1a1a;
-            margin: 6px 0 10px;
+            margin: 4px 0 8px;
             font-family: 'Cinzel Decorative', cursive;
             border-bottom: 1px dashed #b8860b;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .certificate .grades-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2px 24px;
-            margin: 10px 0 14px;
-            font-size: 0.9rem;
+            gap: 2px 16px;
+            margin: 8px 0 12px;
+            font-size: 0.8rem;
         }
 
         .certificate .grade-row {
@@ -831,10 +934,10 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 12px;
-            padding-top: 8px;
+            margin-top: 10px;
+            padding-top: 6px;
             border-top: 2px solid #b8860b;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
         }
 
         .certificate .footer .dean-name {
@@ -852,11 +955,11 @@
         .certificate .footer .signature {
             font-style: italic;
             color: #4a4a4a;
-            font-size: 0.65rem;
+            font-size: 0.55rem;
         }
 
         .cert-download {
-            padding: 8px 20px;
+            padding: 6px 16px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
@@ -864,8 +967,9 @@
             transition: all 0.2s;
             background: linear-gradient(135deg, #1a6b47, #2e7d32);
             color: #fff;
-            margin-top: 12px;
-            font-size: 0.85rem;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            touch-action: manipulation;
         }
 
         .cert-download:hover {
@@ -874,14 +978,14 @@
 
         .cert-select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(60, 60, 80, 0.25);
             border-radius: 6px;
             color: #e8e4d8;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-family: 'Inter', sans-serif;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .cert-select:focus {
@@ -891,15 +995,15 @@
 
         /* ===== REPORT STYLES ===== */
         #reportContainer table {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             min-width: auto;
             width: 100%;
             border-collapse: collapse;
         }
 
         #reportContainer table th {
-            font-size: 0.55rem;
-            padding: 4px 6px;
+            font-size: 0.5rem;
+            padding: 3px 4px;
             background: rgba(30, 28, 45, 0.4);
             color: #d4af37;
             border-bottom: 1px solid rgba(60, 60, 80, 0.2);
@@ -907,90 +1011,57 @@
         }
 
         #reportContainer table td {
-            padding: 3px 6px;
-            font-size: 0.7rem;
+            padding: 2px 4px;
+            font-size: 0.6rem;
             border-bottom: 1px solid rgba(60, 60, 80, 0.08);
         }
 
         #reportContainer h3 {
             color: #d4af37;
-            margin: 16px 0 8px;
+            margin: 12px 0 6px;
             font-family: 'Cinzel Decorative', cursive;
             font-weight: 400;
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
         #reportContainer .empty-report {
             color: #555566;
             text-align: center;
-            padding: 40px;
+            padding: 30px;
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 900px) {
+        @media (min-width: 768px) {
             .main-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 220px 1fr;
+                gap: 20px;
             }
             .sidebar {
-                position: static;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .sidebar .title {
-                grid-column: 1 / -1;
-            }
-            .sidebar-actions {
-                grid-column: 1 / -1;
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            .sidebar-actions button {
-                flex: 1;
-                justify-content: center;
-                min-width: 80px;
+                display: block;
+                position: sticky;
+                top: 16px;
             }
             .faculty-list {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 2px;
+                display: block;
             }
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .header {
-                padding: 10px 14px;
+            .sidebar-actions {
+                display: flex;
                 flex-direction: column;
-                align-items: stretch;
+            }
+            .sidebar-actions button {
+                justify-content: flex-start;
+                text-align: left;
             }
             .header-brand h1 {
-                font-size: 1rem;
-            }
-            .header-controls {
-                justify-content: center;
+                font-size: 1.2rem;
             }
             .header-controls select,
             .header-controls button {
-                font-size: 0.6rem;
-                padding: 4px 10px;
+                font-size: 0.7rem;
+                padding: 6px 14px;
             }
             .journal {
-                padding: 10px 12px;
-            }
-            .modal-content {
-                padding: 16px;
-            }
-            .modal-content .form-row {
-                flex-direction: column;
-            }
-            .sidebar {
-                grid-template-columns: 1fr;
-            }
-            .faculty-list {
-                grid-template-columns: 1fr 1fr;
+                padding: 16px 20px;
             }
         }
 
@@ -1055,8 +1126,9 @@
                 <button class="btn-outline" id="certBtn">🏆 АТТЕСТАТ</button>
                 <button class="btn-green" id="reportBtn">📊 ОТЧЕТ</button>
                 <span class="role-badge guest" id="roleBadge">ГОСТЬ</span>
-                <span style="font-size:0.65rem;color:#555566;">
-                    <span class="online-dot"></span><span id="profCount">0</span>
+                <span class="sync-status" id="syncStatus">
+                    <span class="online-dot offline" id="syncDot"></span>
+                    <span id="syncText">Offline</span>
                 </span>
             </div>
         </header>
@@ -1093,6 +1165,7 @@
                     <button class="btn-add" id="addStudentsBtn">➕ Добавить</button>
                     <button class="btn-transfer" id="transferBtn">🔄 Перевод</button>
                     <button class="btn-danger" id="clearFacultyBtn">🗑️ Очистить</button>
+                    <button class="btn-admin" id="adminBtn" style="display:none;">⚙️ Админ</button>
                 </div>
             </aside>
 
@@ -1105,7 +1178,6 @@
                     </div>
                     <div class="stats">
                         👨‍🎓 <span class="num" id="studentCount">0</span>
-                        <span id="profOnline"></span>
                     </div>
                 </div>
 
@@ -1121,8 +1193,8 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr>
-                                <td colspan="10" style="text-align:center;color:#555566;padding:30px;">
-                                    Нажмите "Добавить" для загрузки списка студентов
+                                <td colspan="10" style="text-align:center;color:#555566;padding:20px;">
+                                    Загрузка данных...
                                 </td>
                             </tr>
                         </tbody>
@@ -1216,10 +1288,10 @@
                 <div class="select-all-row">
                     <input type="checkbox" id="selectAllCheck">
                     <label for="selectAllCheck" style="cursor:pointer;">Выбрать всех</label>
-                    <span style="margin-left:auto;font-size:0.65rem;color:#555566;" id="selectedCount">Выбрано: 0</span>
+                    <span style="margin-left:auto;font-size:0.55rem;color:#555566;" id="selectedCount">Выбрано: 0</span>
                 </div>
                 <div class="student-check-list" id="transferStudentList">
-                    <div style="color:#555566;text-align:center;padding:12px;font-size:0.75rem;">Нет студентов на этом факультете</div>
+                    <div style="color:#555566;text-align:center;padding:10px;font-size:0.65rem;">Нет студентов на этом факультете</div>
                 </div>
             </div>
 
@@ -1232,6 +1304,42 @@
         </div>
     </div>
 
+    <!-- ===== ADMIN MODAL ===== -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Админ-панель</h2>
+                <button class="close-btn" id="closeAdminBtn">✕</button>
+            </div>
+
+            <div class="form-group">
+                <label>👤 Новый пользователь</label>
+                <div class="form-row">
+                    <input type="text" id="adminUsername" placeholder="Имя пользователя" style="flex:1;">
+                    <input type="text" id="adminPassword" placeholder="Пароль" style="flex:1;">
+                </div>
+                <div class="form-row" style="margin-top:4px;">
+                    <select id="adminRole" style="flex:1;">
+                        <option value="professor">Профессор</option>
+                        <option value="dean">Декан</option>
+                        <option value="headmaster">Завуч</option>
+                    </select>
+                    <input type="text" id="adminDisplayName" placeholder="Отображаемое имя" style="flex:1;">
+                </div>
+                <button class="btn-primary" id="adminAddUserBtn" style="width:100%;margin-top:4px;">➕ Добавить пользователя</button>
+            </div>
+
+            <div class="status-msg" id="adminStatus"></div>
+
+            <div class="form-group">
+                <label>📋 Список пользователей</label>
+                <div class="user-list" id="userList">
+                    <div style="color:#555566;text-align:center;padding:10px;font-size:0.65rem;">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== REPORT MODAL ===== -->
     <div class="modal-overlay" id="reportModal">
         <div class="modal-content" style="max-width:90vw;">
@@ -1240,7 +1348,7 @@
                 <button class="close-btn" id="closeReportBtn">✕</button>
             </div>
             <div id="reportContainer"></div>
-            <div class="btn-row" style="margin-top:12px;">
+            <div class="btn-row" style="margin-top:10px;">
                 <button class="btn-primary" id="exportExcelBtn">📥 Экспорт в Excel</button>
             </div>
         </div>
@@ -1260,7 +1368,7 @@
                 </select>
             </div>
             <button class="btn-primary" id="generateCertBtn" style="width:100%;justify-content:center;">📜 Сгенерировать аттестат</button>
-            <div id="certificateContainer" style="margin-top:16px;"></div>
+            <div id="certificateContainer" style="margin-top:12px;"></div>
             <button class="cert-download" id="downloadCertBtn" style="display:none;width:100%;">📥 Скачать аттестат (PNG)</button>
         </div>
     </div>
@@ -1274,7 +1382,11 @@
             </div>
             <form id="loginForm" autocomplete="off">
                 <div class="form-group">
-                    <label>Пароль</label>
+                    <label>👤 Имя пользователя</label>
+                    <input type="text" id="loginUsername" placeholder="Введите логин">
+                </div>
+                <div class="form-group">
+                    <label>🔑 Пароль</label>
                     <input type="password" id="loginPassword" placeholder="Введите пароль">
                 </div>
                 <div class="status-msg" id="loginError"></div>
@@ -1282,15 +1394,27 @@
                     <button type="submit" class="btn-primary">🔑 Войти</button>
                     <button type="button" class="btn-secondary" id="logoutBtn">🚪 Выйти</button>
                 </div>
-                <div style="font-size:0.6rem;color:#555566;margin-top:10px;text-align:center;">
+                <div style="font-size:0.55rem;color:#555566;margin-top:8px;text-align:center;">
                     👤 Текущая роль: <span id="currentRoleDisplay">Гость</span>
-                    <span id="currentUserDisplay" style="display:block;font-size:0.65rem;"></span>
+                    <span id="currentUserDisplay" style="display:block;font-size:0.6rem;"></span>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+        // ============================================================
+        //  SUPABASE CONFIG (ваши данные)
+        // ============================================================
+        const SUPABASE_URL = 'https://lqmvcdkzofxziboxdxng.supabase.co';
+        const SUPABASE_ANON_KEY =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
+
+        // ============================================================
+        //  ИНИЦИАЛИЗАЦИЯ SUPABASE
+        // ============================================================
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // ============================================================
         //  CONFIG
         // ============================================================
@@ -1360,168 +1484,284 @@
         let students = [];
         let currentCourse = 7;
         let currentFaculty = 'Гриффиндор';
-        let nextId = 1;
         let userRole = 'guest';
         let userName = '';
-        let professorId = null;
+        let userId = null;
+        let currentUser = null;
 
         // ============================================================
-        //  STORAGE
+        //  СИНХРОНИЗАЦИЯ
         // ============================================================
-        function loadData() {
-            const saved = localStorage.getItem('hogwartsData');
-            if (saved) {
-                try {
-                    const d = JSON.parse(saved);
-                    students = d.students || [];
-                    nextId = d.nextId || 1;
-                    currentCourse = d.currentCourse || 7;
-                    currentFaculty = d.currentFaculty || 'Гриффиндор';
-                    return;
-                } catch (e) {}
+        function updateSyncStatus(connected) {
+            const dot = document.getElementById('syncDot');
+            const text = document.getElementById('syncText');
+            if (connected) {
+                dot.className = 'online-dot';
+                text.textContent = 'Online';
+            } else {
+                dot.className = 'online-dot offline';
+                text.textContent = 'Offline';
             }
-            students = [];
-            saveData();
         }
 
-        function saveData() {
-            localStorage.setItem('hogwartsData', JSON.stringify({
-                students,
-                nextId,
-                currentCourse,
-                currentFaculty
-            }));
-            broadcastUpdate();
-        }
-
-        function broadcastUpdate() {
+        // ============================================================
+        //  ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
+        // ============================================================
+        async function loadStudentsFromSupabase() {
             try {
-                const ch = new BroadcastChannel('hogwarts');
-                ch.postMessage({ type: 'update', ts: Date.now() });
-                ch.close();
-            } catch (e) {
-                localStorage.setItem('hogwartsUpdate', Date.now().toString());
-            }
-        }
+                const { data, error } = await supabase
+                    .from('students')
+                    .select('*')
+                    .order('id', { ascending: true });
 
-        // ============================================================
-        //  HELPERS
-        // ============================================================
-        function getAvailableGrades(course) {
-            return course === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
-        }
+                if (error) throw error;
 
-        function getAllSubjects() {
-            const s = new Set();
-            Object.values(SUBJECTS).forEach(arr => arr.forEach(x => s.add(x)));
-            return Array.from(s);
-        }
-
-        function getStudentCourse(student) {
-            if (student.course) return student.course;
-
-            const keys = Object.keys(student.grades);
-            for (let c = 1; c <= 7; c++) {
-                const subs = SUBJECTS[c] || [];
-                let match = 0;
-                subs.forEach(s => { if (keys.includes(s)) match++; });
-                if (match >= subs.length * 0.6 && subs.length > 0) {
-                    student.course = c;
-                    return c;
+                if (data) {
+                    students = data.map(s => ({
+                        id: s.id,
+                        name: s.name,
+                        faculty: s.faculty,
+                        course: s.course,
+                        grades: s.grades || {}
+                    }));
+                    updateSyncStatus(true);
+                    renderAll();
                 }
+                return data;
+            } catch (err) {
+                console.error('Ошибка загрузки студентов:', err);
+                updateSyncStatus(false);
+                // Пробуем загрузить из localStorage как fallback
+                const localData = localStorage.getItem('hogwartsData_backup');
+                if (localData) {
+                    try {
+                        const d = JSON.parse(localData);
+                        students = d.students || [];
+                        renderAll();
+                    } catch (e) {}
+                }
+                return null;
             }
-            return '?';
-        }
-
-        function canManageStudents() {
-            return userRole === 'dean' || userRole === 'headmaster';
-        }
-
-        function canEditGrades() {
-            return userRole === 'professor' || userRole === 'headmaster';
         }
 
         // ============================================================
-        //  STUDENT MANAGEMENT
+        //  СОХРАНЕНИЕ В SUPABASE
         // ============================================================
-        function addStudentsFromList(names, faculty, course) {
+        async function saveStudentToSupabase(student) {
+            try {
+                const { data, error } = await supabase
+                    .from('students')
+                    .upsert({
+                        id: student.id,
+                        name: student.name,
+                        faculty: student.faculty,
+                        course: student.course,
+                        grades: student.grades || {}
+                    }, { onConflict: 'id' });
+
+                if (error) throw error;
+                updateSyncStatus(true);
+                return data;
+            } catch (err) {
+                console.error('Ошибка сохранения студента:', err);
+                updateSyncStatus(false);
+                return null;
+            }
+        }
+
+        async function deleteStudentFromSupabase(id) {
+            try {
+                const { error } = await supabase
+                    .from('students')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                updateSyncStatus(true);
+                return true;
+            } catch (err) {
+                console.error('Ошибка удаления студента:', err);
+                updateSyncStatus(false);
+                return false;
+            }
+        }
+
+        // ============================================================
+        //  ФУНКЦИЯ ПОЛУЧЕНИЯ ХЕША ПАРОЛЯ (SHA-256)
+        // ============================================================
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ============================================================
+        //  РАБОТА С ПОЛЬЗОВАТЕЛЯМИ
+        // ============================================================
+        async function loadUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+                return data;
+            } catch (err) {
+                console.error('Ошибка загрузки пользователей:', err);
+                return [];
+            }
+        }
+
+        async function addUser(username, password, role, displayName) {
+            try {
+                const hashedPassword = await hashPassword(password);
+                const { data, error } = await supabase
+                    .from('users')
+                    .insert({
+                        username: username,
+                        password: hashedPassword,
+                        role: role,
+                        display_name: displayName
+                    })
+                    .select();
+
+                if (error) throw error;
+                return data;
+            } catch (err) {
+                console.error('Ошибка добавления пользователя:', err);
+                throw err;
+            }
+        }
+
+        async function deleteUser(id) {
+            try {
+                const { error } = await supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                return true;
+            } catch (err) {
+                console.error('Ошибка удаления пользователя:', err);
+                return false;
+            }
+        }
+
+        async function loginUser(username, password) {
+            try {
+                const hashedPassword = await hashPassword(password);
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', hashedPassword)
+                    .maybeSingle();
+
+                if (error) throw error;
+                return data;
+            } catch (err) {
+                console.error('Ошибка входа:', err);
+                return null;
+            }
+        }
+
+        // ============================================================
+        //  СТУДЕНТ МЕНЕДЖМЕНТ
+        // ============================================================
+        async function addStudentsFromList(names, faculty, course) {
             const lines = names.split('\n').filter(l => l.trim());
             let added = 0;
             let duplicates = 0;
 
-            lines.forEach(line => {
+            for (const line of lines) {
                 const name = line.trim();
-                if (!name) return;
+                if (!name) continue;
 
                 if (students.some(s => s.name === name && s.faculty === faculty && s.course === course)) {
                     duplicates++;
-                    return;
+                    continue;
                 }
 
-                students.push({
-                    id: nextId++,
+                const newStudent = {
+                    id: Date.now() + Math.random() * 1000 + added,
                     name: name,
                     faculty: faculty,
                     course: course,
                     grades: {}
-                });
-                added++;
-            });
+                };
+
+                const saved = await saveStudentToSupabase(newStudent);
+                if (saved) {
+                    students.push(newStudent);
+                    added++;
+                }
+            }
 
             if (added > 0 || duplicates > 0) {
-                saveData();
                 renderAll();
                 return { added, duplicates };
             }
             return null;
         }
 
-        function deleteStudent(id, name) {
-            if (confirm(`Удалить "${name}"?`)) {
+        async function deleteStudent(id, name) {
+            if (!confirm(`Удалить "${name}"?`)) return false;
+
+            const success = await deleteStudentFromSupabase(id);
+            if (success) {
                 students = students.filter(s => s.id !== id);
-                saveData();
                 renderAll();
                 return true;
             }
             return false;
         }
 
-        function clearFaculty(faculty) {
+        async function clearFaculty(faculty) {
             const toDel = students.filter(s => s.faculty === faculty);
             if (!toDel.length) { alert(`Нет студентов на ${faculty}`); return; }
-            if (confirm(`Удалить всех студентов с ${faculty}? (${toDel.length} чел.)`)) {
-                students = students.filter(s => s.faculty !== faculty);
-                saveData();
-                renderAll();
-                return true;
+            if (!confirm(`Удалить всех студентов с ${faculty}? (${toDel.length} чел.)`)) return;
+
+            let deleted = 0;
+            for (const s of toDel) {
+                const success = await deleteStudentFromSupabase(s.id);
+                if (success) deleted++;
             }
-            return false;
+
+            if (deleted > 0) {
+                students = students.filter(s => s.faculty !== faculty);
+                renderAll();
+                showSuccess(`🗑️ Удалены все с ${faculty}`);
+            }
         }
 
-        function transferStudents(studentIds, newCourse) {
+        async function transferStudents(studentIds, newCourse) {
             let transferred = 0;
             let errors = 0;
-            let names = [];
 
-            studentIds.forEach(id => {
+            for (const id of studentIds) {
                 const student = students.find(s => s.id === id);
-                if (!student) { errors++; return; }
+                if (!student) { errors++; continue; }
 
-                const currentCourse = getStudentCourse(student);
-                if (currentCourse === newCourse) { errors++; return; }
+                const currentCourse = student.course;
+                if (currentCourse === newCourse) { errors++; continue; }
 
                 student.course = newCourse;
                 student.grades = {};
-                transferred++;
-                names.push(student.name);
-            });
+
+                const saved = await saveStudentToSupabase(student);
+                if (saved) transferred++;
+                else errors++;
+            }
 
             if (transferred > 0) {
-                saveData();
                 renderAll();
             }
 
-            return { transferred, errors, names };
+            return { transferred, errors };
         }
 
         // ============================================================
@@ -1532,6 +1772,7 @@
             renderJournal();
             renderLegend();
             renderCertSelect();
+            renderTransferList();
             updateUI();
         }
 
@@ -1548,7 +1789,7 @@
 
         function renderLegend() {
             const container = document.getElementById('legendContainer');
-            const grades = getAvailableGrades(currentCourse);
+            const grades = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
             let html = '';
             grades.forEach(g => {
                 const label = currentCourse === 7 ? GRADE_MAP_7[g] : (g === 5 ? 'Сдал' : 'Не сдал');
@@ -1562,12 +1803,22 @@
             container.innerHTML = html;
         }
 
+        function getFacultyClass(faculty) {
+            const map = {
+                'Гриффиндор': 'faculty-gryffindor',
+                'Слизерин': 'faculty-slytherin',
+                'Когтевран': 'faculty-ravenclaw',
+                'Пуффендуй': 'faculty-hufflepuff'
+            };
+            return map[faculty] || '';
+        }
+
         function renderJournal() {
             const course = currentCourse;
             const faculty = currentFaculty;
             const subjects = SUBJECTS[course] || SUBJECTS[1];
-            const filtered = students.filter(s => s.faculty === faculty && getStudentCourse(s) === course);
-            const canEdit = canEditGrades();
+            const filtered = students.filter(s => s.faculty === faculty && s.course === course);
+            const canEdit = userRole === 'professor' || userRole === 'headmaster';
 
             document.getElementById('journalTitle').textContent = `📖 Журнал: ${course} курс`;
             document.getElementById('journalSub').textContent = `${faculty} · 2026–2027`;
@@ -1582,13 +1833,14 @@
             const tbody = document.getElementById('tableBody');
             if (!filtered.length) {
                 tbody.innerHTML =
-                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:#555566;padding:30px;">Нет учеников на ${faculty} на ${course} курсе</td></tr>`;
+                    `<tr><td colspan="${subjects.length+2}" style="text-align:center;color:#555566;padding:20px;">Нет учеников на ${faculty} на ${course} курсе</td></tr>`;
                 return;
             }
 
             let html = '';
             filtered.forEach(student => {
-                html += `<tr>`;
+                const facultyClass = getFacultyClass(student.faculty);
+                html += `<tr class="${facultyClass}">`;
                 html += `<td class="student-name">
                             ${student.name}
                             <button class="del-btn" data-id="${student.id}" title="Удалить">✕</button>
@@ -1609,7 +1861,7 @@
             });
             tbody.innerHTML = html;
 
-            if (canManageStudents()) {
+            if (userRole === 'dean' || userRole === 'headmaster') {
                 tbody.querySelectorAll('.del-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
@@ -1621,18 +1873,19 @@
 
             if (canEdit) {
                 tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
-                    input.addEventListener('blur', function() {
+                    input.addEventListener('blur', async function() {
                         const val = this.value.trim();
                         const studentId = parseInt(this.dataset.id);
                         const subject = this.dataset.sub;
                         const student = students.find(s => s.id === studentId);
                         if (!student) return;
 
+                        const available = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
+
                         if (val === '') {
                             delete student.grades[subject];
                         } else {
                             const num = parseInt(val);
-                            const available = getAvailableGrades(currentCourse);
                             if (!isNaN(num) && available.includes(num)) {
                                 student.grades[subject] = num;
                             } else {
@@ -1646,7 +1899,7 @@
                                 return;
                             }
                         }
-                        saveData();
+                        await saveStudentToSupabase(student);
                         renderJournal();
                     });
 
@@ -1663,7 +1916,7 @@
             if (!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="">— Выберите ученика —</option>`;
-            const seventhCourseStudents = students.filter(s => getStudentCourse(s) === 7);
+            const seventhCourseStudents = students.filter(s => s.course === 7);
             const sorted = [...seventhCourseStudents].sort((a, b) => a.name.localeCompare(b.name));
             sorted.forEach(s => {
                 const opt = document.createElement('option');
@@ -1683,7 +1936,7 @@
 
             if (!filtered.length) {
                 container.innerHTML =
-                    `<div style="color:#555566;text-align:center;padding:12px;font-size:0.75rem;">Нет студентов на этом факультете</div>`;
+                    `<div style="color:#555566;text-align:center;padding:10px;font-size:0.65rem;">Нет студентов на этом факультете</div>`;
                 document.getElementById('selectAllCheck').checked = false;
                 document.getElementById('selectedCount').textContent = 'Выбрано: 0';
                 return;
@@ -1691,12 +1944,11 @@
 
             let html = '';
             filtered.forEach(s => {
-                const course = getStudentCourse(s);
                 html += `
                         <div class="check-item">
                             <input type="checkbox" class="student-check" value="${s.id}">
                             <span class="check-name">${s.name}</span>
-                            <span class="check-course">${course} курс</span>
+                            <span class="check-course">${s.course} курс</span>
                         </div>
                     `;
             });
@@ -1725,16 +1977,26 @@
             badge.textContent = ROLE_NAMES[userRole] || 'Гость';
             badge.className = 'role-badge' + (userRole === 'guest' ? ' guest' : '');
 
-            const profs = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
-            document.getElementById('profCount').textContent = profs.length;
-
             document.getElementById('currentRoleDisplay').textContent = ROLE_NAMES[userRole];
             document.getElementById('currentUserDisplay').textContent = userName ? `👤 ${userName}` : '';
 
-            const canManage = canManageStudents();
+            const canManage = userRole === 'dean' || userRole === 'headmaster';
             document.getElementById('addStudentsBtn').style.display = canManage ? 'flex' : 'none';
             document.getElementById('transferBtn').style.display = canManage ? 'flex' : 'none';
             document.getElementById('clearFacultyBtn').style.display = canManage ? 'flex' : 'none';
+
+            const isAdmin = userRole === 'headmaster';
+            document.getElementById('adminBtn').style.display = isAdmin ? 'flex' : 'none';
+
+            // Блокировка ввода оценок для деканов
+            // (оценки редактируют только профессора и завуч)
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('addStatus');
+            el.textContent = msg;
+            el.className = 'status-msg show success';
+            setTimeout(() => el.classList.remove('show'), 3000);
         }
 
         // ============================================================
@@ -1783,13 +2045,13 @@
                         </div>
                         <div class="footer">
                             <div>
-                                <div style="font-weight:700;font-size:0.65rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
+                                <div style="font-weight:700;font-size:0.55rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
                                 <div class="dean-name">${deanName}</div>
                                 <div class="signature">${student.faculty}</div>
                             </div>
                             <div style="text-align:right;">
                                 <div class="date">${dateStr}</div>
-                                <div style="font-weight:700;font-size:0.65rem;color:#4a4a4a;">ДИРЕКТОР</div>
+                                <div style="font-weight:700;font-size:0.55rem;color:#4a4a4a;">ДИРЕКТОР</div>
                                 <div class="director-name">${DIRECTOR}</div>
                                 <div class="signature">Директор</div>
                             </div>
@@ -1836,7 +2098,7 @@
         function generateReport() {
             const grouped = {};
             students.forEach(s => {
-                const c = getStudentCourse(s);
+                const c = s.course || '?';
                 if (!grouped[c]) grouped[c] = [];
                 grouped[c].push(s);
             });
@@ -1858,8 +2120,9 @@
                 html += `<th>Сумма</th></tr></thead><tbody>`;
 
                 list.forEach(st => {
+                    const fClass = getFacultyClass(st.faculty);
                     html +=
-                        `<tr><td><strong>${st.name}</strong></td><td style="color:#666688;font-size:0.6rem;">${st.faculty}</td>`;
+                        `<tr class="${fClass}"><td><strong>${st.name}</strong></td><td style="color:#666688;font-size:0.5rem;">${st.faculty}</td>`;
                     let sum = 0;
                     subs.forEach(sub => {
                         const v = st.grades[sub];
@@ -1881,116 +2144,92 @@
             return html;
         }
 
-        // ============================================================
-        //  EXPORT EXCEL — ПОЛНОСТЬЮ ПЕРЕПИСАНА
-        // ============================================================
         function exportToExcel() {
-            // Проверяем, загружена ли библиотека XLSX
-            if (typeof XLSX === 'undefined') {
-                alert('Библиотека Excel загружается... Пожалуйста, подождите и попробуйте снова.');
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-                document.head.appendChild(script);
-                script.onload = function() {
-                    alert('Библиотека загружена! Нажмите кнопку "Экспорт в Excel" еще раз.');
-                };
-                return;
-            }
-
             try {
-                // Создаем новую книгу
-                const wb = XLSX.utils.book_new();
-
-                // Группируем студентов по курсам
                 const grouped = {};
                 students.forEach(s => {
-                    const c = getStudentCourse(s);
+                    const c = s.course || '?';
                     if (!grouped[c]) grouped[c] = [];
                     grouped[c].push(s);
                 });
 
-                // Для каждого курса (1-7) создаем лист
+                let excelHTML = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                          xmlns="http://www.w3.org/TR/REC-html40">
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12px; }
+                            th { background: #d4af37; color: #000; font-weight: bold; padding: 6px 8px; border: 1px solid #000; }
+                            td { padding: 4px 8px; border: 1px solid #999; }
+                            .course-title { font-size: 16px; font-weight: bold; padding: 10px 0; }
+                            .sum { font-weight: bold; color: #b8860b; }
+                            .gryffindor { background: #ffcccc; }
+                            .slytherin { background: #ccffcc; }
+                            .ravenclaw { background: #ccccff; }
+                            .hufflepuff { background: #ffffcc; }
+                        </style>
+                    </head>
+                    <body>
+                `;
+
                 for (let c = 1; c <= 7; c++) {
                     const list = grouped[c] || [];
                     const subjects = SUBJECTS[c] || [];
 
-                    // Строим данные для таблицы
-                    const data = [];
-
-                    // Шапка таблицы
-                    const header = ['Ученик', 'Факультет'];
-                    subjects.forEach(sub => header.push(sub));
-                    header.push('Сумма');
-                    data.push(header);
-
-                    // Строки с данными
-                    list.forEach(st => {
-                        const row = [st.name, st.faculty];
-                        let sum = 0;
-                        subjects.forEach(sub => {
-                            const v = st.grades[sub];
-                            const val = (v !== undefined && v !== null) ? v : '';
-                            row.push(val);
-                            if (val) sum += parseInt(val);
-                        });
-                        row.push(sum);
-                        data.push(row);
+                    excelHTML += `<div class="course-title">${c} курс (${subjects.length} предметов)</div>`;
+                    excelHTML += `<table>`;
+                    excelHTML += `<tr><th>Ученик</th><th>Факультет</th>`;
+                    subjects.forEach(sub => {
+                        excelHTML += `<th>${sub}</th>`;
                     });
+                    excelHTML += `<th>Сумма</th></tr>`;
 
-                    // Создаем лист
-                    const ws = XLSX.utils.aoa_to_sheet(data);
-
-                    // Автоширина
-                    const colWidths = [];
-                    data.forEach(row => {
-                        row.forEach((cell, idx) => {
-                            const len = String(cell).length;
-                            if (!colWidths[idx] || colWidths[idx] < len) {
-                                colWidths[idx] = len;
-                            }
+                    if (list.length === 0) {
+                        excelHTML +=
+                            `<tr><td colspan="${subjects.length + 3}" style="text-align:center;color:#999;">Нет студентов</td></tr>`;
+                    } else {
+                        list.forEach(st => {
+                            const fClass = st.faculty === 'Гриффиндор' ? 'gryffindor' :
+                                st.faculty === 'Слизерин' ? 'slytherin' :
+                                st.faculty === 'Когтевран' ? 'ravenclaw' :
+                                'hufflepuff';
+                            excelHTML += `<tr class="${fClass}"><td>${st.name}</td><td>${st.faculty}</td>`;
+                            let sum = 0;
+                            subjects.forEach(sub => {
+                                const v = st.grades[sub];
+                                const val = (v !== undefined && v !== null) ? v : '';
+                                excelHTML += `<td style="text-align:center;">${val}</td>`;
+                                if (val) sum += parseInt(val);
+                            });
+                            excelHTML +=
+                                `<td style="text-align:center;font-weight:bold;color:#b8860b;">${sum}</td></tr>`;
                         });
-                    });
-                    ws['!cols'] = colWidths.map(w => ({ wch: Math.min(Math.max(w + 2, 12), 30) }));
-
-                    // Добавляем лист в книгу
-                    XLSX.utils.book_append_sheet(wb, ws, `${c} курс`);
-                }
-
-                // Если нет студентов, создаем пустые листы с заголовками
-                if (students.length === 0) {
-                    for (let c = 1; c <= 7; c++) {
-                        const subjects = SUBJECTS[c] || [];
-                        const header = ['Ученик', 'Факультет'];
-                        subjects.forEach(sub => header.push(sub));
-                        header.push('Сумма');
-                        const ws = XLSX.utils.aoa_to_sheet([header]);
-                        XLSX.utils.book_append_sheet(wb, ws, `${c} курс`);
                     }
+
+                    excelHTML += `</table><br><br>`;
                 }
 
-                // Записываем книгу в массив байтов
-                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                excelHTML += `
+                    </body>
+                    </html>
+                `;
 
-                // Создаем Blob
-                const blob = new Blob([wbout], { 
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                });
-
-                // Создаем ссылку для скачивания
+                const blob = new Blob([excelHTML], { type: 'application/vnd.ms-excel' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 const date = new Date().toISOString().slice(0, 10);
-                link.download = `HogwartsDaily_${date}.xlsx`;
+                link.download = `HogwartsDaily_${date}.xls`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
 
-                // Освобождаем память
                 setTimeout(() => {
                     URL.revokeObjectURL(link.href);
                 }, 100);
 
-                alert('✅ Excel-файл успешно скачан! Каждый курс — на отдельном листе.');
+                alert('✅ Excel-файл успешно скачан!');
 
             } catch (err) {
                 alert('❌ Ошибка при создании Excel-файла: ' + err.message);
@@ -1999,116 +2238,92 @@
         }
 
         // ============================================================
-        //  PROFESSOR REGISTRATION
+        //  ADMIN PANEL
         // ============================================================
-        function registerProfessor() {
-            if (!professorId) {
-                professorId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-            }
-            let profs = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
-            if (!profs.includes(professorId)) {
-                profs.push(professorId);
-                localStorage.setItem('hogwartsProfessors', JSON.stringify(profs));
-            }
-            updateUI();
-        }
+        async function renderAdminPanel() {
+            const userList = document.getElementById('userList');
+            try {
+                const users = await loadUsers();
+                if (!users || users.length === 0) {
+                    userList.innerHTML =
+                    `<div style="color:#555566;text-align:center;padding:10px;font-size:0.65rem;">Нет пользователей</div>`;
+                    return;
+                }
 
-        function unregisterProfessor() {
-            if (professorId) {
-                let profs = JSON.parse(localStorage.getItem('hogwartsProfessors') || '[]');
-                profs = profs.filter(id => id !== professorId);
-                localStorage.setItem('hogwartsProfessors', JSON.stringify(profs));
-                professorId = null;
-                updateUI();
+                let html = '';
+                users.forEach(u => {
+                    const roleClass = u.role || 'professor';
+                    html += `
+                            <div class="user-item">
+                                <span><strong>${u.display_name || u.username}</strong> (@${u.username})</span>
+                                <span class="user-role ${roleClass}">${ROLE_NAMES[u.role] || u.role}</span>
+                                ${u.username !== 'headmaster' ? `<button class="user-del" data-id="${u.id}">✕</button>` : ''}
+                            </div>
+                        `;
+                });
+                userList.innerHTML = html;
+
+                userList.querySelectorAll('.user-del').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const id = parseInt(this.dataset.id);
+                        if (confirm('Удалить этого пользователя?')) {
+                            const success = await deleteUser(id);
+                            if (success) {
+                                document.getElementById('adminStatus').textContent = '✅ Пользователь удален';
+                                document.getElementById('adminStatus').className = 'status-msg show success';
+                                renderAdminPanel();
+                            }
+                        }
+                    });
+                });
+            } catch (err) {
+                userList.innerHTML =
+                    `<div style="color:#ef5350;text-align:center;padding:10px;font-size:0.65rem;">Ошибка загрузки</div>`;
             }
-        }
-
-        // ============================================================
-        //  LOGIN SYSTEM
-        // ============================================================
-        function login(password) {
-            const userId = PASSWORD_MAP[password];
-            if (userId && USERS[userId]) {
-                const user = USERS[userId];
-                userRole = user.role;
-                userName = user.name;
-                registerProfessor();
-                document.getElementById('loginModal').classList.remove('open');
-                renderAll();
-
-                const msg = `🔓 Вы вошли как ${ROLE_NAMES[userRole]}`;
-                const nameMsg = userName ? ` (${userName})` : '';
-                if (userRole === 'professor') alert(`${msg}${nameMsg}. Введите оценку в ячейку и нажмите Enter.`);
-                else if (userRole === 'dean') alert(`${msg}${nameMsg}. Вы можете добавлять, удалять и переводить студентов.`);
-                else if (userRole === 'headmaster') alert(`${msg}${nameMsg}. У вас полный доступ.`);
-                return true;
-            } else {
-                const el = document.getElementById('loginError');
-                el.textContent = '❌ Неверный пароль';
-                el.className = 'status-msg show error';
-                return false;
-            }
-        }
-
-        function logout() {
-            unregisterProfessor();
-            userRole = 'guest';
-            userName = '';
-            document.getElementById('loginModal').classList.remove('open');
-            renderAll();
         }
 
         // ============================================================
         //  INIT
         // ============================================================
-        function init() {
-            loadData();
+        async function init() {
+            // Загружаем html2canvas для аттестата
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            document.head.appendChild(script);
 
-            // Загружаем библиотеки
-            const script1 = document.createElement('script');
-            script1.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-            document.head.appendChild(script1);
+            // Загружаем данные
+            await loadStudentsFromSupabase();
 
-            const script2 = document.createElement('script');
-            script2.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-            document.head.appendChild(script2);
-
-            try {
-                const ch = new BroadcastChannel('hogwarts');
-                ch.onmessage = () => { loadData();
-                    renderAll(); };
-            } catch (e) {
-                window.addEventListener('storage', (e) => {
-                    if (e.key === 'hogwartsUpdate' || e.key === 'hogwartsData') {
-                        loadData();
-                        renderAll();
-                    }
-                });
-            }
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'hogwartsProfessors') updateUI();
-            });
+            // Подписываемся на изменения в реальном времени
+            supabase
+                .channel('students-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'students'
+                }, (payload) => {
+                    console.log('Изменение в БД:', payload);
+                    loadStudentsFromSupabase();
+                })
+                .subscribe();
 
             // ===== EVENTS =====
 
             document.getElementById('courseSelect').addEventListener('change', function() {
                 currentCourse = parseInt(this.value);
-                saveData();
                 renderAll();
             });
 
             document.querySelectorAll('.faculty-item').forEach(el => {
                 el.addEventListener('click', function() {
                     currentFaculty = this.dataset.faculty;
-                    saveData();
                     renderAll();
                 });
             });
 
-            // Login
+            // === LOGIN ===
             document.getElementById('loginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.add('open');
-                document.getElementById('loginPassword').focus();
                 document.getElementById('loginError').className = 'status-msg';
             });
 
@@ -2116,19 +2331,43 @@
                 document.getElementById('loginModal').classList.remove('open');
             });
 
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const pwd = document.getElementById('loginPassword').value;
-                login(pwd);
-            });
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
 
-            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
+                if (!username || !password) {
+                    const el = document.getElementById('loginError');
+                    el.textContent = '❌ Введите логин и пароль';
+                    el.className = 'status-msg show error';
+                    return;
+                }
+
+                const user = await loginUser(username, password);
+                if (user) {
+                    userRole = user.role;
+                    userName = user.display_name || user.username;
+                    userId = user.id;
+                    currentUser = user;
                     document.getElementById('loginModal').classList.remove('open');
+                    renderAll();
+                    alert(`🔓 Добро пожаловать, ${userName}! (${ROLE_NAMES[userRole]})`);
+                } else {
+                    const el = document.getElementById('loginError');
+                    el.textContent = '❌ Неверный логин или пароль';
+                    el.className = 'status-msg show error';
                 }
             });
 
-            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                userRole = 'guest';
+                userName = '';
+                userId = null;
+                currentUser = null;
+                document.getElementById('loginModal').classList.remove('open');
+                renderAll();
+                alert('🚪 Вы вышли из системы');
+            });
 
             document.getElementById('loginModal').addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -2138,9 +2377,9 @@
                 }
             });
 
-            // Add students
+            // === ADD STUDENTS ===
             document.getElementById('addStudentsBtn').addEventListener('click', function() {
-                if (!canManageStudents()) {
+                if (userRole !== 'dean' && userRole !== 'headmaster') {
                     alert('Доступ только у деканов и завуча');
                     return;
                 }
@@ -2161,7 +2400,7 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            document.getElementById('addStudentsConfirmBtn').addEventListener('click', function() {
+            document.getElementById('addStudentsConfirmBtn').addEventListener('click', async function() {
                 const names = document.getElementById('addStudentsTextarea').value;
                 const faculty = document.getElementById('addFacultySelect').value;
                 const course = parseInt(document.getElementById('addCourseSelect').value);
@@ -2173,7 +2412,7 @@
                     return;
                 }
 
-                const result = addStudentsFromList(names, faculty, course);
+                const result = await addStudentsFromList(names, faculty, course);
                 if (result) {
                     const status = document.getElementById('addStatus');
                     const msg = `✅ Добавлено: ${result.added} студентов`;
@@ -2188,9 +2427,9 @@
                 }
             });
 
-            // Transfer
+            // === TRANSFER ===
             document.getElementById('transferBtn').addEventListener('click', function() {
-                if (!canManageStudents()) {
+                if (userRole !== 'dean' && userRole !== 'headmaster') {
                     alert('Доступ только у деканов и завуча');
                     return;
                 }
@@ -2219,7 +2458,7 @@
                 renderTransferList();
             });
 
-            document.getElementById('transferConfirmBtn').addEventListener('click', function() {
+            document.getElementById('transferConfirmBtn').addEventListener('click', async function() {
                 const checks = document.querySelectorAll('.student-check:checked');
                 if (!checks.length) {
                     const status = document.getElementById('transferStatus');
@@ -2231,7 +2470,7 @@
                 const ids = Array.from(checks).map(cb => parseInt(cb.value));
                 const newCourse = parseInt(document.getElementById('transferNewCourse').value);
 
-                const result = transferStudents(ids, newCourse);
+                const result = await transferStudents(ids, newCourse);
                 if (result.transferred > 0) {
                     const status = document.getElementById('transferStatus');
                     status.textContent = `✅ Переведено: ${result.transferred} студентов на ${newCourse} курс`;
@@ -2247,16 +2486,64 @@
                 }
             });
 
-            // Clear faculty
+            // === CLEAR FACULTY ===
             document.getElementById('clearFacultyBtn').addEventListener('click', function() {
-                if (!canManageStudents()) {
+                if (userRole !== 'dean' && userRole !== 'headmaster') {
                     alert('Доступ только у деканов и завуча');
                     return;
                 }
                 clearFaculty(currentFaculty);
             });
 
-            // ===== CERTIFICATE =====
+            // === ADMIN ===
+            document.getElementById('adminBtn').addEventListener('click', function() {
+                if (userRole !== 'headmaster') {
+                    alert('Доступ только у завуча');
+                    return;
+                }
+                document.getElementById('adminModal').classList.add('open');
+                document.getElementById('adminStatus').className = 'status-msg';
+                renderAdminPanel();
+            });
+
+            document.getElementById('closeAdminBtn').addEventListener('click', function() {
+                document.getElementById('adminModal').classList.remove('open');
+            });
+
+            document.getElementById('adminModal').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('open');
+            });
+
+            document.getElementById('adminAddUserBtn').addEventListener('click', async function() {
+                const username = document.getElementById('adminUsername').value.trim();
+                const password = document.getElementById('adminPassword').value.trim();
+                const role = document.getElementById('adminRole').value;
+                const displayName = document.getElementById('adminDisplayName').value.trim() || username;
+
+                if (!username || !password) {
+                    const status = document.getElementById('adminStatus');
+                    status.textContent = '❌ Заполните логин и пароль';
+                    status.className = 'status-msg show error';
+                    return;
+                }
+
+                try {
+                    await addUser(username, password, role, displayName);
+                    const status = document.getElementById('adminStatus');
+                    status.textContent = `✅ Пользователь ${username} добавлен!`;
+                    status.className = 'status-msg show success';
+                    document.getElementById('adminUsername').value = '';
+                    document.getElementById('adminPassword').value = '';
+                    document.getElementById('adminDisplayName').value = '';
+                    renderAdminPanel();
+                } catch (err) {
+                    const status = document.getElementById('adminStatus');
+                    status.textContent = '❌ ' + (err.message || 'Ошибка добавления');
+                    status.className = 'status-msg show error';
+                }
+            });
+
+            // === CERTIFICATE ===
             document.getElementById('certBtn').addEventListener('click', function() {
                 if (currentCourse !== 7) {
                     alert('Аттестат доступен только для 7 курса');
@@ -2291,7 +2578,7 @@
 
             document.getElementById('downloadCertBtn').addEventListener('click', downloadCertificate);
 
-            // ===== REPORT =====
+            // === REPORT ===
             document.getElementById('reportBtn').addEventListener('click', function() {
                 document.getElementById('reportContainer').innerHTML = generateReport();
                 document.getElementById('reportModal').classList.add('open');
@@ -2305,19 +2592,12 @@
                 if (e.target === this) this.classList.remove('open');
             });
 
-            // ===== EXPORT EXCEL =====
             document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
 
-            window.addEventListener('beforeunload', function() {
-                if (userRole !== 'guest') unregisterProfessor();
-            });
-
             renderAll();
-            updateUI();
         }
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
-
 </body>
 </html>
