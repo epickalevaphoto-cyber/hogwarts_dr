@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hogwarts Daily</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
     <style>
         * {
             margin: 0;
@@ -473,6 +474,7 @@
             border-radius: 6px;
             color: #e8e4d8;
             font-size: 0.85rem;
+            font-family: inherit;
         }
 
         .form-group textarea {
@@ -699,6 +701,7 @@
             color: #e8e4d8;
             font-size: 0.85rem;
             margin-bottom: 8px;
+            font-family: inherit;
         }
 
         /* REPORT */
@@ -811,10 +814,15 @@
                 <div class="table-wrap">
                     <table>
                         <thead id="tableHead">
-                            <tr><th>Ученик</th><th>Факультет</th></tr>
+                            <tr>
+                                <th>Ученик</th>
+                                <th>Факультет</th>
+                            </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <tr><td colspan="10" style="text-align:center;color:#555566;padding:20px;">Загрузка...</td></tr>
+                            <tr>
+                                <td colspan="10" style="text-align:center;color:#555566;padding:20px;">Загрузка...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -833,9 +841,12 @@
                 <div class="form-group">
                     <label>Курс</label>
                     <select id="addCourseSelect">
-                        <option value="1">1</option><option value="2">2</option>
-                        <option value="3">3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
                         <option value="7" selected>7</option>
                     </select>
                 </div>
@@ -881,9 +892,12 @@
                 <div class="form-group">
                     <label>На курс</label>
                     <select id="transferNewCourse">
-                        <option value="1">1</option><option value="2">2</option>
-                        <option value="3">3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
                         <option value="7">7</option>
                     </select>
                 </div>
@@ -916,8 +930,8 @@
             <div class="form-group">
                 <label>Новый пользователь</label>
                 <div class="form-row">
-                    <input type="text" id="adminUsername" placeholder="Логин">
-                    <input type="text" id="adminPassword" placeholder="Пароль">
+                    <input type="text" id="adminUsername" placeholder="Логин" autocomplete="username">
+                    <input type="text" id="adminPassword" placeholder="Пароль" autocomplete="new-password">
                 </div>
                 <div class="form-row" style="margin-top:4px;">
                     <select id="adminRole" style="flex:1;">
@@ -925,14 +939,16 @@
                         <option value="dean">Декан</option>
                         <option value="headmaster">Завуч</option>
                     </select>
-                    <input type="text" id="adminDisplayName" placeholder="Имя" style="flex:1;">
+                    <input type="text" id="adminDisplayName" placeholder="Имя" style="flex:1;" autocomplete="off">
                 </div>
                 <button class="btn-primary" id="adminAddUserBtn" style="width:100%;margin-top:4px;">➕ Добавить</button>
             </div>
             <div class="status-msg" id="adminStatus"></div>
             <div class="form-group">
                 <label>Пользователи</label>
-                <div class="user-list" id="userList"><div style="color:#555566;padding:10px;">Загрузка...</div></div>
+                <div class="user-list" id="userList">
+                    <div style="color:#555566;padding:10px;">Загрузка...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -974,14 +990,14 @@
                 <h2>🔐 Вход</h2>
                 <button class="close-btn" id="closeLoginBtn">✕</button>
             </div>
-            <form id="loginForm">
+            <form id="loginForm" autocomplete="off">
                 <div class="form-group">
                     <label>Логин</label>
-                    <input type="text" id="loginUsername" placeholder="Введите логин">
+                    <input type="text" id="loginUsername" placeholder="Введите логин" autocomplete="username">
                 </div>
                 <div class="form-group">
                     <label>Пароль</label>
-                    <input type="password" id="loginPassword" placeholder="Введите пароль">
+                    <input type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
                 </div>
                 <div class="status-msg" id="loginError"></div>
                 <div class="btn-row">
@@ -998,16 +1014,16 @@
 
     <script>
         // ============================================================
-        // SUPABASE
+        //  SUPABASE CONFIG
         // ============================================================
-        const SUPABASE_URL = 'https://lqmvcdkzofxziboxdxng.supabase.co';
-        const SUPABASE_ANON_KEY =
+        const supabaseUrl = 'https://lqmvcdkzofxziboxdxng.supabase.co';
+        const supabaseKey =
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const _supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // ============================================================
-        // CONFIG
+        //  CONFIG
         // ============================================================
         const SUBJECTS = {
             1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
@@ -1043,16 +1059,17 @@
         const DIRECTOR = 'Лана МакДауэлл';
 
         // ============================================================
-        // STATE
+        //  STATE
         // ============================================================
         let students = [];
         let currentCourse = 7;
         let currentFaculty = 'Гриффиндор';
         let userRole = 'guest';
         let userName = '';
+        let userId = null;
 
         // ============================================================
-        // UTILITY
+        //  UTILITY
         // ============================================================
         function getFacultyClass(faculty) {
             const map = { 'Гриффиндор': 'faculty-gryffindor', 'Слизерин': 'faculty-slytherin',
@@ -1068,7 +1085,7 @@
         }
 
         // ============================================================
-        // HASH PASSWORD
+        //  HASH PASSWORD
         // ============================================================
         async function hashPassword(password) {
             const encoder = new TextEncoder();
@@ -1079,11 +1096,11 @@
         }
 
         // ============================================================
-        // SUPABASE OPERATIONS
+        //  SUPABASE OPERATIONS
         // ============================================================
         async function loadStudents() {
             try {
-                const { data, error } = await supabase.from('students').select('*').order('id', { ascending: true });
+                const { data, error } = await _supabase.from('students').select('*').order('id', { ascending: true });
                 if (error) throw error;
                 students = data.map(s => ({ id: s.id, name: s.name, faculty: s.faculty, course: s.course, grades: s
                         .grades || {} }));
@@ -1100,7 +1117,7 @@
 
         async function saveStudent(student) {
             try {
-                const { error } = await supabase.from('students').upsert({
+                const { error } = await _supabase.from('students').upsert({
                     id: student.id,
                     name: student.name,
                     faculty: student.faculty,
@@ -1117,7 +1134,7 @@
 
         async function deleteStudentDB(id) {
             try {
-                const { error } = await supabase.from('students').delete().eq('id', id);
+                const { error } = await _supabase.from('students').delete().eq('id', id);
                 if (error) throw error;
                 return true;
             } catch (err) {
@@ -1129,7 +1146,7 @@
         async function loginUser(username, password) {
             try {
                 const hashed = await hashPassword(password);
-                const { data, error } = await supabase.from('users').select('*')
+                const { data, error } = await _supabase.from('users').select('*')
                     .eq('username', username).eq('password', hashed).maybeSingle();
                 if (error) throw error;
                 return data;
@@ -1141,7 +1158,7 @@
 
         async function loadUsers() {
             try {
-                const { data, error } = await supabase.from('users').select('*').order('id');
+                const { data, error } = await _supabase.from('users').select('*').order('id');
                 if (error) throw error;
                 return data;
             } catch (err) { return []; }
@@ -1149,7 +1166,7 @@
 
         async function addUserDB(username, password, role, displayName) {
             const hashed = await hashPassword(password);
-            const { error } = await supabase.from('users').insert({
+            const { error } = await _supabase.from('users').insert({
                 username,
                 password: hashed,
                 role,
@@ -1159,12 +1176,12 @@
         }
 
         async function deleteUserDB(id) {
-            const { error } = await supabase.from('users').delete().eq('id', id);
+            const { error } = await _supabase.from('users').delete().eq('id', id);
             if (error) throw error;
         }
 
         // ============================================================
-        // STUDENT MANAGEMENT
+        //  STUDENT MANAGEMENT
         // ============================================================
         async function addStudentsFromList(names, faculty, course) {
             const lines = names.split('\n').filter(l => l.trim());
@@ -1219,7 +1236,7 @@
         }
 
         // ============================================================
-        // RENDER
+        //  RENDER
         // ============================================================
         function renderAll() {
             renderFaculties();
@@ -1402,7 +1419,7 @@
         }
 
         // ============================================================
-        // CERTIFICATE
+        //  CERTIFICATE
         // ============================================================
         function generateCertificate(name) {
             const student = students.find(s => s.name === name);
@@ -1461,7 +1478,7 @@
         }
 
         // ============================================================
-        // REPORT
+        //  REPORT
         // ============================================================
         function generateReport() {
             const grouped = {};
@@ -1535,14 +1552,14 @@
                 const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xls`;
+                link.download = `HogwartsDaily_${new Date().toISOString().slice(0, 10)}.xls`;
                 link.click();
                 alert('✅ Excel скачан!');
             } catch (err) { alert('❌ Ошибка: ' + err.message); }
         }
 
         // ============================================================
-        // ADMIN
+        //  ADMIN
         // ============================================================
         async function renderAdminPanel() {
             const container = document.getElementById('userList');
@@ -1579,7 +1596,7 @@
         }
 
         // ============================================================
-        // INIT
+        //  INIT
         // ============================================================
         async function init() {
             // Load html2canvas
@@ -1591,7 +1608,7 @@
             await loadStudents();
 
             // Realtime subscription
-            supabase.channel('students-changes')
+            _supabase.channel('students-changes')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, () => {
                     console.log('🔄 Обновление...');
                     loadStudents();
@@ -1615,6 +1632,7 @@
             // Login
             document.getElementById('loginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.add('open');
+                document.getElementById('loginError').className = 'status-msg';
             });
             document.getElementById('closeLoginBtn').addEventListener('click', function() {
                 document.getElementById('loginModal').classList.remove('open');
@@ -1632,6 +1650,7 @@
                 if (user) {
                     userRole = user.role;
                     userName = user.display_name || user.username;
+                    userId = user.id;
                     document.getElementById('loginModal').classList.remove('open');
                     renderAll();
                     alert(`🔓 Добро пожаловать, ${userName}!`);
@@ -1643,9 +1662,15 @@
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 userRole = 'guest';
                 userName = '';
+                userId = null;
                 document.getElementById('loginModal').classList.remove('open');
                 renderAll();
                 alert('🚪 Вы вышли');
+            });
+            document.getElementById('loginModal').addEventListener('click', function(e) {
+                if (e.target === this && userRole !== 'guest') {
+                    this.classList.remove('open');
+                }
             });
 
             // Add students
