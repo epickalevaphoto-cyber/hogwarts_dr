@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hogwarts Daily</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -74,10 +75,6 @@
             border-color: #d4af37 !important;
             color: #d4af37 !important;
         }
-        .btn-blue {
-            background: #0d47a1 !important;
-            color: #fff !important;
-        }
 
         .role-badge {
             font-size: 0.6rem;
@@ -86,12 +83,6 @@
             background: rgba(212, 175, 55, 0.1);
             color: #d4af37;
             border: 1px solid rgba(212, 175, 55, 0.12);
-        }
-
-        .role-badge.guest {
-            background: rgba(255, 255, 255, 0.03);
-            color: #555566;
-            border-color: rgba(255, 255, 255, 0.05);
         }
 
         .main-grid {
@@ -429,49 +420,24 @@
             background: #ef5350;
         }
 
-        /* Admin panel */
-        .user-list {
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            padding: 6px;
+        .grade-input {
+            width: 42px;
+            text-align: center;
+            font-weight: 700;
         }
-        .user-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 6px;
-            border-bottom: 1px solid rgba(60, 60, 80, 0.08);
-            font-size: 0.8rem;
-        }
-        .user-item .user-role {
-            font-size: 0.6rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .user-item .user-del {
-            background: none;
-            border: none;
-            color: #555;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .user-item .user-del:hover {
-            color: #ef5350;
-        }
-        .user-role-headmaster {
-            color: #d4af37;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-        .user-role-dean {
-            color: #ffb74d;
-            border: 1px solid rgba(255, 183, 77, 0.2);
-        }
-        .user-role-professor {
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.2);
+        .grade-input.g-5 { color:#4caf50; }
+        .grade-input.g-4 { color:#8bc34a; }
+        .grade-input.g-3 { color:#ffb74d; }
+        .grade-input.g-2 { color:#ff9800; }
+        .grade-input.g-1 { color:#ef5350; }
+        .grade-input.g-0 { color:#d32f2f; }
+        .del-btn {
+            float:right;
+            border:0;
+            background:transparent;
+            color:#ef5350;
+            cursor:pointer;
+            font-weight:700;
         }
     </style>
 </head>
@@ -494,8 +460,8 @@
                 <button class="btn-gold" id="loginBtn">🔑 Войти</button>
                 <button class="btn-outline" id="certBtn">🏆 Аттестат</button>
                 <button class="btn-green" id="reportBtn">📊 Отчет</button>
-                <button class="btn-blue" id="adminBtn" style="display:none;">⚙️ Админ</button>
-                <span class="role-badge guest" id="roleBadge">Гость</span>
+                <button class="btn-outline" id="adminBtn" style="display:none;">⚙️ Админ</button>
+                <span class="role-badge" id="roleBadge">Гость</span>
                 <span class="sync-status">
                     <span class="online-dot offline" id="syncDot"></span>
                     <span id="syncText">Offline</span>
@@ -672,39 +638,6 @@
         </div>
     </div>
 
-    <!-- ADMIN MODAL -->
-    <div class="modal" id="adminModal">
-        <div class="modal-content" style="max-width:500px;">
-            <div class="modal-header">
-                <h2>⚙️ Админ-панель</h2>
-                <button class="close-btn" id="closeAdminBtn">✕</button>
-            </div>
-            <div class="form-group">
-                <label>Новый пользователь</label>
-                <div class="form-row">
-                    <input type="text" id="adminUsername" placeholder="Логин" style="flex:1;">
-                    <input type="text" id="adminPassword" placeholder="Пароль" style="flex:1;">
-                </div>
-                <div class="form-row" style="margin-top:4px;">
-                    <select id="adminRole" style="flex:1;">
-                        <option value="professor">Профессор</option>
-                        <option value="dean">Декан</option>
-                        <option value="headmaster">Завуч</option>
-                    </select>
-                    <input type="text" id="adminDisplayName" placeholder="Имя" style="flex:1;">
-                </div>
-                <button class="btn-primary" id="adminAddBtn" style="width:100%;margin-top:4px;">➕ Добавить</button>
-            </div>
-            <div class="status-msg" id="adminStatus"></div>
-            <div class="form-group">
-                <label>Пользователи</label>
-                <div class="user-list" id="userList">
-                    <div style="color:#555;padding:10px;">Загрузка...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- CERTIFICATE MODAL -->
     <div class="modal" id="certModal">
         <div class="modal-content" style="max-width:700px;">
@@ -723,6 +656,43 @@
         </div>
     </div>
 
+
+    <!-- ADMIN MODAL -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content" style="max-width:760px;">
+            <div class="modal-header">
+                <h2>⚙️ Админ-панель</h2>
+                <button class="close-btn" id="closeAdminBtn">✕</button>
+            </div>
+            <div class="form-group">
+                <label>Новый пользователь</label>
+                <div class="form-row">
+                    <input type="text" id="newUsername" placeholder="Логин">
+                    <input type="text" id="newDisplayName" placeholder="Отображаемое имя">
+                </div>
+                <div class="form-row" style="margin-top:8px;">
+                    <input type="password" id="newPassword" placeholder="Пароль">
+                    <select id="newRole">
+                        <option value="professor">Профессор</option>
+                        <option value="dean">Декан</option>
+                        <option value="headmaster">Завуч</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-primary" id="createUserBtn">➕ Создать пользователя</button>
+                <button class="btn-secondary" id="refreshUsersBtn">🔄 Обновить</button>
+            </div>
+            <div class="status-msg" id="adminStatus"></div>
+            <div class="table-wrap" style="margin-top:12px;">
+                <table>
+                    <thead><tr><th>Логин</th><th>Имя</th><th>Роль</th><th>Действие</th></tr></thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- REPORT MODAL -->
     <div class="modal" id="reportModal">
         <div class="modal-content" style="max-width:90vw;">
@@ -737,790 +707,781 @@
         </div>
     </div>
 
-    <script>
-        // ============================================================
-        // SUPABASE CONFIG
-        // ============================================================
-        const supabaseUrl = 'https://lqmvcdkzofxziboxdxng.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
-        const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+<script>
+'use strict';
 
-        // ============================================================
-        // CONFIG
-        // ============================================================
-        const FACULTIES = ['Гриффиндор', 'Слизерин', 'Когтевран', 'Пуффендуй'];
-        const SUBJECTS = {
-            1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле'
-            ],
-            2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            4: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            5: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            6: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'УЗМС'
-            ]
-        };
-        const GRADE_COLORS = { 5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d', 2: '#ff9800', 1: '#ef5350', 0: '#d32f2f' };
-        const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
-        const DEANS = { 'Гриффиндор': 'Минерва МакГонагалл', 'Слизерин': 'Северус Снейп', 'Когтевран': 'Филиус Флитвик',
-            'Пуффендуй': 'Помона Стебль' };
-        const DIRECTOR = 'Лана МакДауэлл';
+const SUPABASE_URL = 'https://lqmvcdkzofxziboxdxng.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let students = [];
-        let currentCourse = 7;
-        let currentFaculty = 'Гриффиндор';
-        let userRole = 'guest';
-        let userName = '';
+let db = null;
+let students = [];
+let currentCourse = 7;
+let currentFaculty = 'Гриффиндор';
+let userRole = 'guest';
+let userName = '';
 
-        // ============================================================
-        // UTILITY
-        // ============================================================
-        function $(id) { return document.getElementById(id); }
+const SUBJECTS = {
+    1: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','Полеты на метле'],
+    2: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    3: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    4: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    5: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    6: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    7: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','Полеты на метле','Прорицание','УЗМС']
+};
 
-        function showStatus(id, msg, type) {
-            const el = $(id);
-            if (!el) return;
-            el.textContent = msg;
-            el.className = 'status-msg show ' + type;
-            setTimeout(() => { if (el) el.className = 'status-msg'; }, 3000);
-        }
+const FACULTIES = ['Гриффиндор','Слизерин','Когтевран','Пуффендуй'];
+const FACULTY_IDS = {
+    'Гриффиндор':'gryffindor',
+    'Слизерин':'slytherin',
+    'Когтевран':'ravenclaw',
+    'Пуффендуй':'hufflepuff'
+};
+const GRADE_COLORS = {5:'#4caf50',4:'#8bc34a',3:'#ffb74d',2:'#ff9800',1:'#ef5350',0:'#d32f2f'};
+const ROLE_NAMES = {guest:'Гость', professor:'Профессор', dean:'Декан', headmaster:'Завуч'};
 
-        function getFacultyClass(faculty) {
-            const map = { 'Гриффиндор': 'faculty-gryffindor', 'Слизерин': 'faculty-slytherin',
-                'Когтевран': 'faculty-ravenclaw', 'Пуффендуй': 'faculty-hufflepuff' };
-            return map[faculty] || '';
-        }
+function $(id) { return document.getElementById(id); }
 
-        function setSync(text, online) {
-            const dot = $('syncDot');
-            const syncText = $('syncText');
-            if (dot) dot.className = online ? 'online-dot' : 'online-dot offline';
-            if (syncText) syncText.textContent = text;
-        }
+function setSync(text, online) {
+    if ($('syncText')) $('syncText').textContent = text;
+    if ($('syncDot')) $('syncDot').className = online ? 'online-dot' : 'online-dot offline';
+}
 
-        // ============================================================
-        // SHA-256
-        // ============================================================
-        async function sha256(text) {
-            const bytes = new TextEncoder().encode(text);
-            const hash = await crypto.subtle.digest('SHA-256', bytes);
-            return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+function showTableMessage(message, error = false) {
+    const body = $('tableBody');
+    if (!body) return;
+    const cols = (SUBJECTS[currentCourse] || SUBJECTS[1]).length + 2;
+    body.innerHTML = `<tr><td colspan="${cols}" style="text-align:center;padding:20px;color:${error ? '#ef5350' : '#777'};">${escapeHtml(message)}</td></tr>`;
+}
 
-        // ============================================================
-        // SUPABASE OPERATIONS
-        // ============================================================
-        async function loadStudents() {
-            try {
-                const { data, error } = await db.from('students').select('*').order('name');
-                if (error) throw error;
-                students = data || [];
-                setSync(students.length + ' студентов', true);
-                renderAll();
-                return data;
-            } catch (err) {
-                console.error(err);
-                setSync('Ошибка', false);
-                return null;
-            }
-        }
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+}
 
-        async function saveStudent(student) {
-            try {
-                const { error } = await db.from('students').upsert(student);
-                if (error) throw error;
-                return true;
-            } catch (err) {
-                console.error(err);
-                return false;
-            }
-        }
+function facultyClass(faculty) {
+    return {
+        'Гриффиндор':'faculty-gryffindor',
+        'Слизерин':'faculty-slytherin',
+        'Когтевран':'faculty-ravenclaw',
+        'Пуффендуй':'faculty-hufflepuff'
+    }[faculty] || '';
+}
 
-        async function deleteStudent(id) {
-            try {
-                const { error } = await db.from('students').delete().eq('id', id);
-                if (error) throw error;
-                return true;
-            } catch (err) {
-                console.error(err);
-                return false;
-            }
-        }
+async function sha256(text) {
+    const bytes = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
-        async function loadUsers() {
-            try {
-                const { data, error } = await db.from('users').select('*').order('id');
-                if (error) throw error;
-                return data;
-            } catch (err) {
-                console.error(err);
-                return [];
-            }
-        }
+function normalizeStudent(s) {
+    return {
+        ...s,
+        course: Number(s.course),
+        grades: (s.grades && typeof s.grades === 'object') ? s.grades : {}
+    };
+}
 
-        async function addUserDB(username, password, role, displayName) {
-            const hashed = await sha256(password);
-            const { error } = await db.from('users').insert({
-                username,
-                password: hashed,
-                role,
-                display_name: displayName || username
-            });
-            if (error) throw error;
-        }
+async function loadStudents() {
+    if (!db) return;
 
-        async function deleteUserDB(id) {
-            const { error } = await db.from('users').delete().eq('id', id);
-            if (error) throw error;
-        }
+    setSync('Загрузка…', false);
+    showTableMessage('Подключение к Supabase…');
 
-        // ============================================================
-        // RENDER
-        // ============================================================
-        function renderAll() {
-            renderFaculties();
-            renderLegend();
-            renderJournal();
-            renderCertSelect();
-            renderTransferList();
-            updateUI();
-        }
+    const { data, error } = await db
+        .from('students')
+        .select('id,name,faculty,course,grades,created_at')
+        .order('name', { ascending: true });
 
-        function renderFaculties() {
-            document.querySelectorAll('.faculty-item').forEach(el => {
-                const f = el.dataset.faculty;
-                const count = students.filter(s => s.faculty === f).length;
-                const badge = $(`count-${f.toLowerCase()}`);
-                if (badge) badge.textContent = count;
-                el.classList.toggle('active', f === currentFaculty);
-            });
-            $('courseSelect').value = currentCourse;
-        }
+    if (error) {
+        console.error('Supabase students error:', error);
+        setSync('Ошибка', false);
+        showTableMessage('Ошибка Supabase: ' + error.message, true);
+        return;
+    }
 
-        function renderLegend() {
-            const box = $('legend');
-            if (!box) return;
-            const grades = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
-            box.innerHTML = grades.map(g =>
-                `<span><span class="swatch" style="background:${GRADE_COLORS[g]}"></span> ${g}</span>`
-            ).join('');
-        }
+    students = (data || []).map(normalizeStudent);
+    setSync('Online • ' + students.length, true);
+    renderAll();
+}
 
-        function renderJournal() {
-            const subjects = SUBJECTS[currentCourse] || SUBJECTS[1];
-            const filtered = students.filter(s => s.faculty === currentFaculty && s.course === currentCourse);
-            const canEdit = userRole === 'professor' || userRole === 'headmaster';
+async function insertStudent(name, faculty, course) {
+    const { data, error } = await db
+        .from('students')
+        .insert([{ name, faculty, course, grades: {} }])
+        .select('id,name,faculty,course,grades,created_at')
+        .single();
 
-            $('journalTitle').textContent = `📖 Журнал: ${currentCourse} курс`;
-            $('studentCount').textContent = `👨‍🎓 ${filtered.length}`;
+    if (error) throw error;
+    return normalizeStudent(data);
+}
 
-            const thead = $('tableHead');
-            thead.innerHTML =
-                `<tr><th>Ученик</th><th>Факультет</th>${subjects.map(s => `<th>${s}</th>`).join('')}</tr>`;
+async function updateStudent(student) {
+    const { data, error } = await db
+        .from('students')
+        .update({
+            name: student.name,
+            faculty: student.faculty,
+            course: Number(student.course),
+            grades: student.grades || {}
+        })
+        .eq('id', student.id)
+        .select('id,name,faculty,course,grades,created_at')
+        .single();
 
-            const tbody = $('tableBody');
-            if (!filtered.length) {
-                tbody.innerHTML =
-                    `<tr><td colspan="${subjects.length + 2}" style="text-align:center;color:#555;padding:20px;">Нет учеников</td></tr>`;
-                return;
-            }
+    if (error) throw error;
+    return normalizeStudent(data);
+}
 
-            tbody.innerHTML = filtered.map(s => `
-                    <tr class="${getFacultyClass(s.faculty)}">
-                        <td class="student-name">
-                            ${s.name}
-                            ${(userRole === 'dean' || userRole === 'headmaster') ? `<button class="del-btn" data-id="${s.id}">✕</button>` : ''}
-                        </td>
-                        <td class="student-faculty">${s.faculty}</td>
-                        ${subjects.map(sub => {
-                            const val = s.grades?.[sub];
-                            const has = val !== undefined && val !== null;
-                            const display = has ? val : '';
-                            const cls = has ? `g-${val}` : '';
-                            const readonly = !canEdit ? 'readonly' : '';
-                            return `<td><input class="grade-input ${cls} ${readonly}" type="text" value="${display}" data-id="${s.id}" data-sub="${sub}" ${readonly ? 'readonly' : ''} placeholder="–"></td>`;
-                        }).join('')}
-                    </tr>
-                `).join('');
+async function deleteStudent(id) {
+    const { error } = await db.from('students').delete().eq('id', id);
+    if (error) throw error;
+}
 
-            // Delete buttons
-            if (userRole === 'dean' || userRole === 'headmaster') {
-                tbody.querySelectorAll('.del-btn').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                        const id = parseInt(this.dataset.id);
-                        const student = students.find(s => s.id === id);
-                        if (student && confirm(`Удалить "${student.name}"?`)) {
-                            if (await deleteStudent(id)) {
-                                students = students.filter(s => s.id !== id);
-                                renderAll();
-                            }
-                        }
-                    });
-                });
-            }
+function renderFaculties() {
+    document.querySelectorAll('.faculty-item').forEach(el => {
+        const faculty = el.dataset.faculty;
+        const count = students.filter(s => s.faculty === faculty).length;
+        const id = FACULTY_IDS[faculty];
+        const badge = id ? $('count-' + id) : null;
+        if (badge) badge.textContent = count;
+        el.classList.toggle('active', faculty === currentFaculty);
+    });
+    if ($('courseSelect')) $('courseSelect').value = String(currentCourse);
+}
 
-            // Grade editing
-            if (canEdit) {
-                tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
-                    input.addEventListener('blur', async function() {
-                        const val = this.value.trim();
-                        const id = parseInt(this.dataset.id);
-                        const sub = this.dataset.sub;
-                        const student = students.find(s => s.id === id);
-                        if (!student) return;
+function renderLegend() {
+    const box = $('legend');
+    if (!box) return;
 
-                        const available = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
+    const grades = currentCourse === 7 ? [5,4,3,2,1,0] : [5,0];
+    const labels = {
+        5:'Превосходно',
+        4:'Выше ожидаемого',
+        3:'Удовлетворительно',
+        2:'Слабо',
+        1:'Отвратительно',
+        0:'Тролль'
+    };
 
-                        if (val === '') {
-                            if (student.grades) delete student.grades[sub];
-                        } else {
-                            const num = parseInt(val);
-                            if (!isNaN(num) && available.includes(num)) {
-                                if (!student.grades) student.grades = {};
-                                student.grades[sub] = num;
-                            } else {
-                                const prev = student.grades?.[sub];
-                                this.value = prev !== undefined && prev !== null ? prev : '';
-                                return;
-                            }
-                        }
-                        if (await saveStudent(student)) {
-                            renderJournal();
-                        }
-                    });
-                    input.addEventListener('keydown', function(e) { if (e.key === 'Enter') this.blur(); });
-                });
-            }
-        }
+    box.innerHTML = grades.map(g =>
+        `<span><span class="swatch" style="background:${GRADE_COLORS[g]}"></span> ${g} — ${currentCourse === 7 ? labels[g] : (g === 5 ? 'Сдал' : 'Не сдал')}</span>`
+    ).join('');
+}
 
-        function renderCertSelect() {
-            const select = $('certStudent');
-            if (!select) return;
-            const val = select.value;
-            select.innerHTML = '<option value="">— Выберите ученика —</option>';
-            const seventh = students.filter(s => s.course === 7).sort((a, b) => a.name.localeCompare(b.name));
-            seventh.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.textContent = `${s.name} (${s.faculty})`;
-                select.appendChild(opt);
-            });
-            if (val && seventh.some(s => s.id == val)) select.value = val;
-        }
+function renderJournal() {
+    const subjects = SUBJECTS[currentCourse] || SUBJECTS[1];
+    const filtered = students.filter(s =>
+        s.faculty === currentFaculty && Number(s.course) === Number(currentCourse)
+    );
+    const canEdit = ['professor','dean','headmaster'].includes(userRole);
 
-        function renderTransferList() {
-            const faculty = $('transferFaculty').value;
-            const filtered = students.filter(s => s.faculty === faculty);
-            const container = $('transferList');
-            if (!container) return;
+    if ($('journalTitle')) $('journalTitle').textContent = `📖 Журнал: ${currentCourse} курс`;
+    if ($('studentCount')) $('studentCount').textContent = `👨‍🎓 ${filtered.length}`;
 
-            if (!filtered.length) {
-                container.innerHTML = '<div style="color:#555;padding:8px;">Нет студентов</div>';
-                return;
-            }
+    $('tableHead').innerHTML =
+        `<tr><th>Ученик</th><th>Факультет</th>${subjects.map(s => `<th>${escapeHtml(s)}</th>`).join('')}</tr>`;
 
-            container.innerHTML = filtered.map(s =>
-                `<div><input type="checkbox" class="transfer-check" value="${s.id}"> ${s.name} (${s.course} курс)</div>`
-            ).join('');
-        }
+    const body = $('tableBody');
 
-        function updateUI() {
-            const badge = $('roleBadge');
-            if (badge) {
-                badge.textContent = ROLE_NAMES[userRole] || 'Гость';
-                badge.className = 'role-badge' + (userRole === 'guest' ? ' guest' : '');
-            }
-            $('currentRoleDisplay').textContent = ROLE_NAMES[userRole];
+    if (!filtered.length) {
+        body.innerHTML = `<tr><td colspan="${subjects.length + 2}" style="text-align:center;color:#555;padding:20px;">Нет учеников</td></tr>`;
+        return;
+    }
 
-            const canManage = userRole === 'dean' || userRole === 'headmaster';
-            $('addBtn').style.display = canManage ? 'block' : 'none';
-            $('transferBtn').style.display = canManage ? 'block' : 'none';
-            $('clearBtn').style.display = canManage ? 'block' : 'none';
+    body.innerHTML = filtered.map(student => {
+        const del = (userRole === 'dean' || userRole === 'headmaster')
+            ? `<button class="del-btn" data-id="${escapeHtml(student.id)}">✕</button>` : '';
 
-            const isAdmin = userRole === 'headmaster';
-            $('adminBtn').style.display = isAdmin ? 'inline-block' : 'none';
-        }
+        const cells = subjects.map(subject => {
+            const value = student.grades?.[subject];
+            const has = value !== undefined && value !== null && value !== '';
+            const cls = has ? `g-${value}` : '';
+            return `<td><input class="grade-input ${cls}" type="text"
+                value="${has ? escapeHtml(value) : ''}"
+                data-id="${escapeHtml(student.id)}"
+                data-sub="${escapeHtml(subject)}"
+                ${canEdit ? '' : 'readonly'}
+                placeholder="–"></td>`;
+        }).join('');
 
-        // ============================================================
-        // ADMIN PANEL
-        // ============================================================
-        async function renderAdminPanel() {
-            const container = $('userList');
-            try {
-                const users = await loadUsers();
-                if (!users || !users.length) {
-                    container.innerHTML = '<div style="color:#555;padding:10px;">Нет пользователей</div>';
-                    return;
-                }
-                container.innerHTML = users.map(u => `
-                        <div class="user-item">
-                            <span><strong>${u.display_name || u.username}</strong> (@${u.username})</span>
-                            <span class="user-role user-role-${u.role}">${ROLE_NAMES[u.role] || u.role}</span>
-                            ${u.username !== 'headmaster' ? `<button class="user-del" data-id="${u.id}">✕</button>` : ''}
-                        </div>
-                    `).join('');
+        return `<tr class="${facultyClass(student.faculty)}">
+            <td class="student-name">${escapeHtml(student.name)} ${del}</td>
+            <td class="student-faculty">${escapeHtml(student.faculty)}</td>
+            ${cells}
+        </tr>`;
+    }).join('');
 
-                container.querySelectorAll('.user-del').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                        const id = parseInt(this.dataset.id);
-                        if (confirm('Удалить пользователя?')) {
-                            await deleteUserDB(id);
-                            showStatus('adminStatus', '✅ Удален', 'success');
-                            renderAdminPanel();
-                        }
-                    });
-                });
-            } catch (err) {
-                container.innerHTML = '<div style="color:#ef5350;padding:10px;">Ошибка</div>';
-            }
-        }
+    if (userRole === 'dean' || userRole === 'headmaster') {
+        body.querySelectorAll('.del-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const student = students.find(s => String(s.id) === String(id));
+                if (!student || !confirm(`Удалить "${student.name}"?`)) return;
 
-        // ============================================================
-        // CERTIFICATE
-        // ============================================================
-        function generateCertificate(studentId) {
-            const student = students.find(s => s.id == studentId);
-            if (!student) { alert('Ученик не найден'); return; }
-
-            const subs = SUBJECTS[7];
-            const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
-            ];
-            const display = order.filter(s => subs.includes(s));
-            const deanName = DEANS[student.faculty] || 'Декан';
-
-            const gradeLabels = ['Превосходно', 'Выше ожидаемого', 'Удовлетворительно', 'Слабо', 'Отвратительно', 'Тролль'];
-
-            let html = `
-                    <div id="certificateDisplay" style="background:#f5e6c8;padding:24px;border-radius:14px;border:2px solid #d4af37;color:#1a1a1a;max-width:660px;margin:0 auto;">
-                        <div style="font-family:'Cinzel Decorative',serif;font-size:1.2rem;text-align:center;border-bottom:2px solid #b8860b;padding-bottom:6px;">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
-                        <div style="text-align:center;font-size:1.4rem;font-weight:700;letter-spacing:4px;color:#b8860b;margin:4px 0;">CERTIFICATE OF COMPLETION</div>
-                        <div style="text-align:center;font-size:1.6rem;font-weight:700;margin:4px 0 10px;border-bottom:1px dashed #b8860b;padding-bottom:6px;">${student.name.toUpperCase()}</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-size:0.9rem;margin:8px 0 12px;">
-                            ${display.map(sub => {
-                                const v = student.grades?.[sub];
-                                const text = (v !== undefined && v !== null) ? gradeLabels[5 - v] || 'Не сдано' : 'Не сдано';
-                                return `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted rgba(0,0,0,0.06);">
-                                    <span style="font-weight:500;">${sub}</span>
-                                    <span style="font-weight:700;color:#b8860b;">${text}</span>
-                                </div>`;
-                            }).join('')}
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding-top:6px;border-top:2px solid #b8860b;font-size:0.7rem;">
-                            <div>
-                                <div style="font-weight:700;font-size:0.6rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
-                                <div style="font-weight:600;">${deanName}</div>
-                                <div style="font-size:0.6rem;color:#666;">${student.faculty}</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-weight:600;">${new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'}).toUpperCase()}</div>
-                                <div style="font-weight:700;font-size:0.6rem;color:#4a4a4a;">ДИРЕКТОР</div>
-                                <div style="font-weight:600;">${DIRECTOR}</div>
-                                <div style="font-size:0.6rem;color:#666;">Директор</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-            $('certContainer').innerHTML = html;
-            $('downloadCertBtn').style.display = 'block';
-        }
-
-        async function downloadCertificate() {
-            const el = $('certificateDisplay');
-            if (!el) { alert('Сначала сгенерируйте аттестат'); return; }
-
-            if (typeof html2canvas === 'undefined') {
-                alert('Библиотека html2canvas загружается... Подождите');
-                return;
-            }
-
-            try {
-                const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#f5e6c8' });
-                const link = document.createElement('a');
-                const name = $('certStudent').options[$('certStudent').selectedIndex]?.text || 'student';
-                link.download = `Аттестат_${name}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            } catch (err) {
-                alert('Ошибка: ' + err.message);
-            }
-        }
-
-        // ============================================================
-        // REPORT
-        // ============================================================
-        function generateReport() {
-            const grouped = {};
-            students.forEach(s => {
-                const c = s.course || '?';
-                if (!grouped[c]) grouped[c] = [];
-                grouped[c].push(s);
-            });
-
-            const sorted = Object.keys(grouped).sort((a, b) => {
-                if (a === '?') return 1;
-                if (b === '?') return -1;
-                return parseInt(a) - parseInt(b);
-            });
-
-            let html = '';
-            sorted.forEach(c => {
-                const list = grouped[c];
-                const subs = SUBJECTS[parseInt(c)] || SUBJECTS[1];
-                html += `<h3 style="color:#d4af37;margin:12px 0 6px;">${c} курс (${subs.length} предметов)</h3>
-                        <table style="font-size:0.7rem;width:100%;border-collapse:collapse;">
-                        <thead><tr><th>Ученик</th><th>Факультет</th>`;
-                subs.forEach(s => { html += `<th>${s}</th>`; });
-                html += `<th>Сумма</th></tr></thead><tbody>`;
-
-                list.forEach(st => {
-                    html += `<tr class="${getFacultyClass(st.faculty)}"><td><strong>${st.name}</strong></td><td style="color:#666;font-size:0.6rem;">${st.faculty}</td>`;
-                    let sum = 0;
-                    subs.forEach(sub => {
-                        const v = st.grades?.[sub];
-                        const has = v !== undefined && v !== null;
-                        html +=
-                            `<td style="text-align:center;font-weight:600;color:${has ? GRADE_COLORS[v] || '#e8e4d8' : '#555'};">${has ? v : ''}</td>`;
-                        if (has) sum += v;
-                    });
-                    html += `<td style="font-weight:700;color:#d4af37;text-align:center;">${sum}</td></tr>`;
-                });
-                html += `</tbody></table>`;
-            });
-
-            if (!Object.keys(grouped).length) html = '<p style="color:#555;text-align:center;padding:20px;">Нет данных</p>';
-            return html;
-        }
-
-        function exportExcel() {
-            try {
-                const grouped = {};
-                students.forEach(s => {
-                    const c = s.course || '?';
-                    if (!grouped[c]) grouped[c] = [];
-                    grouped[c].push(s);
-                });
-
-                let html =
-                    `<html><head><meta charset="UTF-8"><style>table{border-collapse:collapse;font-family:Arial;font-size:12px;}th{background:#d4af37;padding:6px 8px;border:1px solid #000;}td{padding:4px 8px;border:1px solid #999;}.course-title{font-size:16px;font-weight:bold;padding:10px 0;}</style></head><body>`;
-                for (let c = 1; c <= 7; c++) {
-                    const list = grouped[c] || [];
-                    const subjects = SUBJECTS[c] || [];
-                    html += `<div class="course-title">${c} курс</div><table><tr><th>Ученик</th><th>Факультет</th>`;
-                    subjects.forEach(s => { html += `<th>${s}</th>`; });
-                    html += `<th>Сумма</th></tr>`;
-                    if (!list.length) {
-                        html += `<tr><td colspan="${subjects.length + 3}" style="text-align:center;color:#999;">Нет студентов</td></tr>`;
-                    } else {
-                        list.forEach(st => {
-                            html += `<tr><td>${st.name}</td><td>${st.faculty}</td>`;
-                            let sum = 0;
-                            subjects.forEach(sub => {
-                                const v = st.grades?.[sub];
-                                const val = (v !== undefined && v !== null) ? v : '';
-                                html += `<td style="text-align:center;">${val}</td>`;
-                                if (val) sum += parseInt(val);
-                            });
-                            html += `<td style="text-align:center;font-weight:bold;color:#b8860b;">${sum}</td></tr>`;
-                        });
-                    }
-                    html += `</table><br>`;
-                }
-                html += `</body></html>`;
-
-                const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `HogwartsDaily_${new Date().toISOString().slice(0, 10)}.xls`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                alert('✅ Excel скачан!');
-            } catch (err) { alert('❌ Ошибка: ' + err.message); }
-        }
-
-        // ============================================================
-        // LOGIN
-        // ============================================================
-        async function login() {
-            const username = $('loginUsername').value.trim();
-            const password = $('loginPassword').value;
-            const errorBox = $('loginError');
-
-            if (!username || !password) {
-                errorBox.textContent = '❌ Введите логин и пароль';
-                errorBox.className = 'status-msg show error';
-                return;
-            }
-
-            try {
-                const { data: user, error } = await db.from('users')
-                    .select('*')
-                    .eq('username', username)
-                    .maybeSingle();
-
-                if (error || !user) {
-                    errorBox.textContent = '❌ Пользователь не найден';
-                    errorBox.className = 'status-msg show error';
-                    return;
-                }
-
-                const hash = await sha256(password);
-                if (hash !== user.password) {
-                    errorBox.textContent = '❌ Неверный пароль';
-                    errorBox.className = 'status-msg show error';
-                    return;
-                }
-
-                userRole = user.role || 'guest';
-                userName = user.display_name || user.username;
-                $('loginPassword').value = '';
-                $('loginModal').classList.remove('open');
-                renderAll();
-                alert('🔓 Добро пожаловать, ' + userName + '!');
-            } catch (err) {
-                errorBox.textContent = '❌ Ошибка: ' + err.message;
-                errorBox.className = 'status-msg show error';
-            }
-        }
-
-        // ============================================================
-        // EVENT BINDINGS
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Load html2canvas for certificate
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-            document.head.appendChild(script);
-
-            await loadStudents();
-
-            // Course select
-            $('courseSelect').addEventListener('change', function() {
-                currentCourse = parseInt(this.value);
-                renderAll();
-            });
-
-            // Faculty select
-            document.querySelectorAll('.faculty-item').forEach(el => {
-                el.addEventListener('click', function() {
-                    currentFaculty = this.dataset.faculty;
+                try {
+                    await deleteStudent(student.id);
+                    students = students.filter(s => String(s.id) !== String(student.id));
                     renderAll();
-                });
-            });
-
-            // Login
-            $('loginBtn').addEventListener('click', () => $('loginModal').classList.add('open'));
-            $('closeLoginBtn').addEventListener('click', () => $('loginModal').classList.remove('open'));
-            $('loginConfirmBtn').addEventListener('click', login);
-            $('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-
-            // Logout
-            $('logoutBtn').addEventListener('click', function() {
-                userRole = 'guest';
-                userName = '';
-                $('loginModal').classList.remove('open');
-                renderAll();
-                alert('🚪 Вы вышли');
-            });
-
-            // Close modals on overlay click
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
-            });
-
-            // Add students
-            $('addBtn').addEventListener('click', function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
+                } catch (e) {
+                    alert('Ошибка удаления: ' + e.message);
                 }
-                $('addModal').classList.add('open');
-                $('addNames').value = '';
-                $('addStatus').className = 'status-msg';
             });
-            $('closeAddBtn').addEventListener('click', () => $('addModal').classList.remove('open'));
-            $('addCancelBtn').addEventListener('click', () => $('addModal').classList.remove('open'));
+        });
+    }
 
-            $('addConfirmBtn').addEventListener('click', async function() {
-                const names = $('addNames').value;
-                const faculty = $('addFaculty').value;
-                const course = parseInt($('addCourse').value);
+    if (canEdit) {
+        body.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
+            input.addEventListener('blur', async () => {
+                const student = students.find(s => String(s.id) === String(input.dataset.id));
+                if (!student) return;
 
-                if (!names.trim()) {
-                    showStatus('addStatus', '❌ Введите имена', 'error');
-                    return;
-                }
+                const subject = input.dataset.sub;
+                const value = input.value.trim();
+                const allowed = currentCourse === 7 ? [5,4,3,2,1,0] : [5,0];
 
-                const lines = names.split('\n').filter(l => l.trim());
-                let added = 0;
-                for (const line of lines) {
-                    const name = line.trim();
-                    if (!name) continue;
-                    if (students.some(s => s.name === name && s.faculty === faculty && s.course === course)) continue;
-
-                    const newStudent = {
-                        id: Date.now() + Math.random() * 1000 + added,
-                        name: name,
-                        faculty: faculty,
-                        course: course,
-                        grades: {}
-                    };
-
-                    if (await saveStudent(newStudent)) {
-                        students.push(newStudent);
-                        added++;
-                    }
-                }
-
-                if (added > 0) {
-                    showStatus('addStatus', `✅ Добавлено: ${added}`, 'success');
-                    $('addNames').value = '';
-                    renderAll();
+                if (value === '') {
+                    delete student.grades[subject];
                 } else {
-                    showStatus('addStatus', '❌ Ошибка или дубликаты', 'error');
-                }
-            });
-
-            // Transfer
-            $('transferBtn').addEventListener('click', function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
-                }
-                $('transferModal').classList.add('open');
-                $('transferStatus').className = 'status-msg';
-                renderTransferList();
-            });
-            $('closeTransferBtn').addEventListener('click', () => $('transferModal').classList.remove('open'));
-            $('transferCancelBtn').addEventListener('click', () => $('transferModal').classList.remove('open'));
-            $('transferFaculty').addEventListener('change', renderTransferList);
-
-            $('transferConfirmBtn').addEventListener('click', async function() {
-                const checks = document.querySelectorAll('.transfer-check:checked');
-                if (!checks.length) {
-                    showStatus('transferStatus', '❌ Выберите студентов', 'error');
-                    return;
-                }
-
-                const newCourse = parseInt($('transferCourse').value);
-                let transferred = 0;
-
-                for (const check of checks) {
-                    const id = parseInt(check.value);
-                    const student = students.find(s => s.id === id);
-                    if (!student || student.course === newCourse) continue;
-                    student.course = newCourse;
-                    student.grades = {};
-                    if (await saveStudent(student)) transferred++;
-                }
-
-                if (transferred > 0) {
-                    showStatus('transferStatus', `✅ Переведено: ${transferred}`, 'success');
-                    renderAll();
-                } else {
-                    showStatus('transferStatus', '❌ Ошибка', 'error');
-                }
-            });
-
-            // Clear faculty
-            $('clearBtn').addEventListener('click', async function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
-                }
-                const toDel = students.filter(s => s.faculty === currentFaculty);
-                if (!toDel.length) { alert('Нет студентов'); return; }
-                if (!confirm(`Удалить всех с ${currentFaculty}?`)) return;
-
-                let deleted = 0;
-                for (const s of toDel) {
-                    if (await deleteStudent(s.id)) deleted++;
-                }
-                if (deleted > 0) {
-                    students = students.filter(s => s.faculty !== currentFaculty);
-                    renderAll();
-                }
-            });
-
-            // Admin
-            $('adminBtn').addEventListener('click', function() {
-                if (userRole !== 'headmaster') {
-                    alert('Доступ только у завуча');
-                    return;
-                }
-                $('adminModal').classList.add('open');
-                $('adminStatus').className = 'status-msg';
-                renderAdminPanel();
-            });
-            $('closeAdminBtn').addEventListener('click', () => $('adminModal').classList.remove('open'));
-            $('adminModal').addEventListener('click', e => { if (e.target === e.currentTarget) $('adminModal').classList
-                    .remove('open'); });
-
-            $('adminAddBtn').addEventListener('click', async function() {
-                const username = $('adminUsername').value.trim();
-                const password = $('adminPassword').value.trim();
-                const role = $('adminRole').value;
-                const displayName = $('adminDisplayName').value.trim() || username;
-
-                if (!username || !password) {
-                    showStatus('adminStatus', '❌ Заполните поля', 'error');
-                    return;
+                    const n = Number(value);
+                    if (!Number.isInteger(n) || !allowed.includes(n)) {
+                        input.value = student.grades?.[subject] ?? '';
+                        return;
+                    }
+                    student.grades[subject] = n;
                 }
 
                 try {
-                    await addUserDB(username, password, role, displayName);
-                    showStatus('adminStatus', `✅ Пользователь ${username} добавлен`, 'success');
-                    $('adminUsername').value = '';
-                    $('adminPassword').value = '';
-                    $('adminDisplayName').value = '';
-                    renderAdminPanel();
-                } catch (err) {
-                    showStatus('adminStatus', '❌ ' + err.message, 'error');
+                    const saved = await updateStudent(student);
+                    Object.assign(student, saved);
+                    renderJournal();
+                } catch (e) {
+                    alert('Ошибка сохранения оценки: ' + e.message);
+                    await loadStudents();
                 }
             });
 
-            // Certificate
-            $('certBtn').addEventListener('click', function() {
-                if (currentCourse !== 7) { alert('Аттестат только для 7 курса'); return; }
-                $('certModal').classList.add('open');
-                renderCertSelect();
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') input.blur();
             });
-            $('closeCertBtn').addEventListener('click', () => $('certModal').classList.remove('open'));
+        });
+    }
+}
 
-            $('generateCertBtn').addEventListener('click', function() {
-                const id = $('certStudent').value;
-                if (!id) { alert('Выберите ученика'); return; }
-                generateCertificate(id);
+function renderCertSelect() {
+    const select = $('certStudent');
+    if (!select) return;
+
+    const old = select.value;
+    select.innerHTML = '<option value="">— Выберите ученика —</option>';
+
+    students
+        .filter(s => Number(s.course) === 7)
+        .sort((a,b) => a.name.localeCompare(b.name,'ru'))
+        .forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = String(s.id);
+            opt.textContent = `${s.name} (${s.faculty})`;
+            select.appendChild(opt);
+        });
+
+    if ([...select.options].some(o => o.value === old)) select.value = old;
+}
+
+function renderTransferList() {
+    const box = $('transferList');
+    if (!box) return;
+
+    const faculty = $('transferFaculty').value;
+    const list = students.filter(s => s.faculty === faculty);
+
+    if (!list.length) {
+        box.innerHTML = '<div style="color:#555;padding:8px;">Нет студентов</div>';
+        return;
+    }
+
+    box.innerHTML = `<label style="display:block;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08);">
+        <input type="checkbox" id="transferSelectAll"> <strong>Выбрать всех</strong>
+    </label>` + list.map(s =>
+        `<label style="display:block;padding:4px 0;"><input type="checkbox" class="transfer-check" value="${escapeHtml(s.id)}"> ${escapeHtml(s.name)} (${Number(s.course)} курс)</label>`
+    ).join('');
+    $('transferSelectAll')?.addEventListener('change', e => {
+        box.querySelectorAll('.transfer-check').forEach(cb => cb.checked = e.target.checked);
+    });
+}
+
+function updateUI() {
+    const role = ROLE_NAMES[userRole] || 'Гость';
+    if ($('roleBadge')) $('roleBadge').textContent = role;
+    if ($('currentRoleDisplay')) $('currentRoleDisplay').textContent = role;
+
+    const manage = userRole === 'dean' || userRole === 'headmaster';
+    if ($('addBtn')) $('addBtn').style.display = manage ? 'block' : 'none';
+    if ($('transferBtn')) $('transferBtn').style.display = manage ? 'block' : 'none';
+    if ($('clearBtn')) $('clearBtn').style.display = manage ? 'block' : 'none';
+    if ($('adminBtn')) $('adminBtn').style.display = userRole === 'headmaster' ? 'inline-block' : 'none';
+}
+
+function renderAll() {
+    renderFaculties();
+    renderLegend();
+    renderJournal();
+    renderCertSelect();
+    renderTransferList();
+    updateUI();
+}
+
+function openModal(id) {
+    const el = $(id);
+    if (el) el.classList.add('open');
+}
+
+function closeModal(id) {
+    const el = $(id);
+    if (el) el.classList.remove('open');
+}
+
+async function login() {
+    const username = $('loginUsername').value.trim();
+    const password = $('loginPassword').value;
+    const errorBox = $('loginError');
+
+    if (!username || !password) {
+        errorBox.textContent = '❌ Введите логин и пароль';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    errorBox.textContent = 'Проверка…';
+    errorBox.className = 'status-msg show';
+
+    const { data: user, error } = await db
+        .from('users')
+        .select('id,username,password_hash,role,display_name')
+        .eq('username', username)
+        .maybeSingle();
+
+    if (error) {
+        console.error(error);
+        errorBox.textContent = '❌ Ошибка Supabase: ' + error.message;
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    if (!user) {
+        errorBox.textContent = '❌ Пользователь не найден';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    const hash = await sha256(password);
+
+    if (hash !== user.password_hash) {
+        errorBox.textContent = '❌ Неверный пароль';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    userRole = user.role;
+    userName = user.display_name || user.username;
+    closeModal('loginModal');
+    errorBox.className = 'status-msg';
+    $('loginPassword').value = '';
+    renderAll();
+    alert(`🔓 Добро пожаловать, ${userName}!`);
+}
+
+function generateCertificate() {
+    const id = $('certStudent').value;
+    const student = students.find(s => String(s.id) === String(id));
+    if (!student) { alert('Выберите ученика'); return; }
+
+    const order = ['Заклинания','Зельеварение','ЗоТИ','История магии','Маггловедение','Полеты на метле','Прорицание','Травология','Трансфигурация','УЗМС'];
+    const subjects = order.filter(s => (SUBJECTS[7] || []).includes(s));
+
+    const dean = {
+        'Гриффиндор':'Минерва МакГонагалл',
+        'Слизерин':'Северус Снейп',
+        'Когтевран':'Филиус Флитвик',
+        'Пуффендуй':'Помона Стебль'
+    }[student.faculty] || '';
+
+    const names = ['Тролль','Отвратительно','Слабо','Удовлетворительно','Выше ожидаемого','Превосходно'];
+
+    $('certContainer').innerHTML = `
+        <div style="background:#f5e6c8;padding:24px;border-radius:14px;border:2px solid #d4af37;color:#1a1a1a;max-width:660px;margin:0 auto;">
+            <div style="text-align:center;font-size:1.2rem;border-bottom:2px solid #b8860b;padding-bottom:6px;">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
+            <div style="text-align:center;font-size:1.4rem;font-weight:700;letter-spacing:4px;color:#b8860b;margin:4px 0;">CERTIFICATE OF COMPLETION</div>
+            <div style="text-align:center;font-size:1.6rem;font-weight:700;margin:4px 0 10px;border-bottom:1px dashed #b8860b;padding-bottom:6px;">${escapeHtml(student.name).toUpperCase()}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-size:0.9rem;">
+                ${subjects.map(sub => {
+                    const v = student.grades?.[sub];
+                    return `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted rgba(0,0,0,.06);">
+                        <span>${escapeHtml(sub)}</span>
+                        <strong style="color:#b8860b;">${v === undefined ? 'Не сдано' : names[v]}</strong>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding-top:6px;border-top:2px solid #b8860b;font-size:0.7rem;">
+                <div><strong>ДЕКАН ФАКУЛЬТЕТА</strong><br>${escapeHtml(dean)}<br>${escapeHtml(student.faculty)}</div>
+                <div style="text-align:right;"><strong>${new Date().toLocaleDateString('ru-RU')}</strong><br>ДИРЕКТОР<br>Лана МакДауэлл</div>
+            </div>
+        </div>`;
+
+    $('downloadCertBtn').style.display = 'block';
+}
+
+function generateReport() {
+    if (!students.length) return '<p style="color:#555;text-align:center;padding:20px;">Нет данных</p>';
+
+    const grouped = {};
+    students.forEach(s => {
+        const c = Number(s.course) || '?';
+        (grouped[c] ||= []).push(s);
+    });
+
+    return Object.keys(grouped).sort((a,b) => Number(a)-Number(b)).map(c => {
+        const subs = SUBJECTS[c] || SUBJECTS[1];
+        return `<h3 style="color:#d4af37;margin:12px 0 6px;">${c} курс (${subs.length} предметов)</h3>
+        <table style="font-size:0.7rem;width:100%;border-collapse:collapse;">
+        <thead><tr><th>Ученик</th><th>Факультет</th>${subs.map(s=>`<th>${escapeHtml(s)}</th>`).join('')}<th>Сумма</th></tr></thead>
+        <tbody>${grouped[c].map(st => {
+            let sum = 0;
+            const cells = subs.map(sub => {
+                const v = st.grades?.[sub];
+                if (v !== undefined && v !== null) sum += Number(v);
+                return `<td style="text-align:center;">${v ?? ''}</td>`;
+            }).join('');
+            return `<tr class="${facultyClass(st.faculty)}"><td><strong>${escapeHtml(st.name)}</strong></td><td>${escapeHtml(st.faculty)}</td>${cells}<td style="font-weight:700;color:#d4af37;text-align:center;">${sum}</td></tr>`;
+        }).join('')}</tbody></table>`;
+    }).join('');
+}
+
+function exportExcel() {
+    let html = `<html><head><meta charset="UTF-8"><style>table{border-collapse:collapse;font-family:Arial;font-size:12px}th,td{padding:5px 8px;border:1px solid #999}th{background:#d4af37}</style></head><body>`;
+
+    for (let c=1; c<=7; c++) {
+        const list = students.filter(s => Number(s.course) === c);
+        const subs = SUBJECTS[c];
+        html += `<h2>${c} курс</h2><table><tr><th>Ученик</th><th>Факультет</th>${subs.map(s=>`<th>${escapeHtml(s)}</th>`).join('')}<th>Сумма</th></tr>`;
+        list.forEach(st => {
+            let sum = 0;
+            html += `<tr><td>${escapeHtml(st.name)}</td><td>${escapeHtml(st.faculty)}</td>`;
+            subs.forEach(sub => {
+                const v = st.grades?.[sub];
+                if (v !== undefined && v !== null) sum += Number(v);
+                html += `<td>${v ?? ''}</td>`;
             });
-            $('downloadCertBtn').addEventListener('click', downloadCertificate);
+            html += `<td>${sum}</td></tr>`;
+        });
+        html += `</table><br>`;
+    }
 
-            // Report
-            $('reportBtn').addEventListener('click', function() {
-                $('reportContainer').innerHTML = generateReport();
-                $('reportModal').classList.add('open');
+    html += '</body></html>';
+    const blob = new Blob([html], {type:'application/vnd.ms-excel'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xls`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+
+async function loadUsers() {
+    if (userRole !== 'headmaster') return;
+    const body = $('usersTableBody');
+    if (!body) return;
+    body.innerHTML = '<tr><td colspan="4" style="text-align:center;">Загрузка…</td></tr>';
+    const { data, error } = await db.from('users')
+        .select('id,username,role,display_name,created_at')
+        .order('created_at', { ascending: true });
+    if (error) {
+        body.innerHTML = `<tr><td colspan="4" style="color:#ef5350;">${escapeHtml(error.message)}</td></tr>`;
+        return;
+    }
+    body.innerHTML = (data || []).map(u => `
+        <tr>
+            <td>${escapeHtml(u.username)}</td>
+            <td>${escapeHtml(u.display_name || '')}</td>
+            <td>${escapeHtml(ROLE_NAMES[u.role] || u.role)}</td>
+            <td><button class="del-btn user-delete" data-id="${escapeHtml(u.id)}" ${u.username === 'headmaster' ? 'disabled title="Главного завуча удалить нельзя"' : ''}>✕</button></td>
+        </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:#777;">Пользователей нет</td></tr>';
+
+    body.querySelectorAll('.user-delete:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            if (!confirm('Удалить этого пользователя?')) return;
+            const { error } = await db.from('users').delete().eq('id', id);
+            if (error) return alert('Ошибка удаления: ' + error.message);
+            loadUsers();
+        });
+    });
+}
+
+async function createUser() {
+    if (userRole !== 'headmaster') return;
+    const username = $('newUsername').value.trim();
+    const password = $('newPassword').value;
+    const displayName = $('newDisplayName').value.trim() || username;
+    const role = $('newRole').value;
+    const status = $('adminStatus');
+
+    if (!username || !password) {
+        status.textContent = '❌ Укажите логин и пароль';
+        status.className = 'status-msg show error';
+        return;
+    }
+    if (!['professor','dean','headmaster'].includes(role)) {
+        status.textContent = '❌ Недопустимая роль';
+        status.className = 'status-msg show error';
+        return;
+    }
+
+    const hash = await sha256(password);
+    const { error } = await db.from('users').insert({
+        username, password_hash: hash, role, display_name: displayName
+    });
+
+    if (error) {
+        status.textContent = '❌ ' + error.message;
+        status.className = 'status-msg show error';
+        return;
+    }
+
+    status.textContent = '✅ Пользователь создан';
+    status.className = 'status-msg show success';
+    $('newUsername').value = '';
+    $('newPassword').value = '';
+    $('newDisplayName').value = '';
+    await loadUsers();
+}
+
+async function downloadCertificatePng() {
+    const node = $('certContainer')?.firstElementChild;
+    if (!node) return alert('Сначала сгенерируйте аттестат.');
+    if (!window.html2canvas) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        script.onload = () => downloadCertificatePng();
+        document.head.appendChild(script);
+        return;
+    }
+    const canvas = await html2canvas(node, {scale: 2, backgroundColor: '#f5e6c8'});
+    const a = document.createElement('a');
+    const student = students.find(s => String(s.id) === String($('certStudent').value));
+    a.download = `Hogwarts_Attestat_${(student?.name || 'student').replace(/[^\p{L}\p{N}_-]+/gu,'_')}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+}
+
+function exportExcel() {
+    if (!window.XLSX) {
+        alert('Не загрузился модуль Excel. Проверьте интернет и повторите попытку.');
+        return;
+    }
+    const wb = XLSX.utils.book_new();
+    for (let c=1; c<=7; c++) {
+        const subs = SUBJECTS[c];
+        const rows = [
+            ['Ученик','Факультет',...subs,'Сумма']
+        ];
+        students.filter(s => Number(s.course) === c).forEach(st => {
+            let sum=0;
+            const vals=subs.map(sub => {
+                const v=st.grades?.[sub];
+                if (v !== undefined && v !== null && v !== '') sum += Number(v);
+                return v ?? '';
             });
-            $('closeReportBtn').addEventListener('click', () => $('reportModal').classList.remove('open'));
-            $('exportBtn').addEventListener('click', exportExcel);
+            rows.push([st.name,st.faculty,...vals,sum]);
+        });
+        const ws=XLSX.utils.aoa_to_sheet(rows);
+        XLSX.utils.book_append_sheet(wb, ws, `${c} курс`);
+    }
+    XLSX.writeFile(wb, `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
 
+document.addEventListener('DOMContentLoaded', async () => {
+    // IMPORTANT: replace the placeholder key above with the anon key from your Supabase project.
+    if (!window.supabase?.createClient) {
+        setSync('Supabase CDN error', false);
+        showTableMessage('Не загрузилась библиотека Supabase. Проверьте интернет/блокировщик.', true);
+        return;
+    }
+
+    // The real anon key is inserted automatically below before saving this file.
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    try {
+        db.channel('hogwarts-daily-sync')
+          .on('postgres_changes', {event:'*', schema:'public', table:'students'}, async () => {
+              await loadStudents();
+          })
+          .subscribe((status) => {
+              if (status === 'SUBSCRIBED') setSync('Online • realtime', true);
+              else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') setSync('Online • polling', true);
+          });
+    } catch (e) {
+        console.warn('Realtime unavailable', e);
+    }
+
+
+    $('courseSelect')?.addEventListener('change', e => {
+        currentCourse = Number(e.target.value);
+        renderAll();
+    });
+
+    document.querySelectorAll('.faculty-item').forEach(el => {
+        el.addEventListener('click', () => {
+            currentFaculty = el.dataset.faculty;
             renderAll();
         });
-    </script>
+    });
+
+    $('loginBtn')?.addEventListener('click', () => openModal('loginModal'));
+    $('closeLoginBtn')?.addEventListener('click', () => closeModal('loginModal'));
+    $('loginConfirmBtn')?.addEventListener('click', login);
+    $('loginPassword')?.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+    $('logoutBtn')?.addEventListener('click', () => {
+        userRole = 'guest';
+        userName = '';
+        closeModal('loginModal');
+        renderAll();
+    });
+
+    $('addBtn')?.addEventListener('click', () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        openModal('addModal');
+    });
+    $('closeAddBtn')?.addEventListener('click', () => closeModal('addModal'));
+    $('addCancelBtn')?.addEventListener('click', () => closeModal('addModal'));
+
+    $('addConfirmBtn')?.addEventListener('click', async () => {
+        const names = $('addNames').value.split('\n').map(x=>x.trim()).filter(Boolean);
+        const faculty = $('addFaculty').value;
+        const course = Number($('addCourse').value);
+        const status = $('addStatus');
+
+        if (!names.length) {
+            status.textContent = '❌ Введите имена';
+            status.className = 'status-msg show error';
+            return;
+        }
+
+        let added = 0;
+        try {
+            for (const name of names) {
+                if (students.some(s => s.name === name && s.faculty === faculty && Number(s.course) === course)) continue;
+                const student = await insertStudent(name, faculty, course);
+                students.push(student);
+                added++;
+            }
+            status.textContent = `✅ Добавлено: ${added}`;
+            status.className = 'status-msg show ' + (added ? 'success' : 'error');
+            $('addNames').value = '';
+            renderAll();
+            setSync('Online • ' + students.length, true);
+        } catch (e) {
+            status.textContent = '❌ ' + e.message;
+            status.className = 'status-msg show error';
+        }
+    });
+
+    $('transferBtn')?.addEventListener('click', () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        openModal('transferModal');
+        renderTransferList();
+    });
+    $('closeTransferBtn')?.addEventListener('click', () => closeModal('transferModal'));
+    $('transferCancelBtn')?.addEventListener('click', () => closeModal('transferModal'));
+    $('transferFaculty')?.addEventListener('change', renderTransferList);
+
+    $('transferConfirmBtn')?.addEventListener('click', async () => {
+        const ids = [...document.querySelectorAll('.transfer-check:checked')].map(x=>x.value);
+        const newCourse = Number($('transferCourse').value);
+        const status = $('transferStatus');
+
+        if (!ids.length) {
+            status.textContent = '❌ Выберите студентов';
+            status.className = 'status-msg show error';
+            return;
+        }
+
+        let done = 0;
+        try {
+            for (const id of ids) {
+                const st = students.find(s => String(s.id) === String(id));
+                if (!st || Number(st.course) === newCourse) continue;
+                st.course = newCourse;
+                st.grades = {};
+                await updateStudent(st);
+                done++;
+            }
+            status.textContent = `✅ Переведено: ${done}`;
+            status.className = 'status-msg show success';
+            renderAll();
+        } catch (e) {
+            status.textContent = '❌ ' + e.message;
+            status.className = 'status-msg show error';
+        }
+    });
+
+    $('clearBtn')?.addEventListener('click', async () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        const list = students.filter(s => s.faculty === currentFaculty);
+        if (!list.length) return alert('Нет студентов');
+        if (!confirm(`Удалить всех с факультета ${currentFaculty}?`)) return;
+
+        try {
+            for (const st of list) await deleteStudent(st.id);
+            students = students.filter(s => s.faculty !== currentFaculty);
+            renderAll();
+        } catch (e) {
+            alert('Ошибка: ' + e.message);
+        }
+    });
+
+    $('certBtn')?.addEventListener('click', () => {
+        if (currentCourse !== 7) return alert('Аттестат только для 7 курса');
+        openModal('certModal');
+        renderCertSelect();
+    });
+    $('closeCertBtn')?.addEventListener('click', () => closeModal('certModal'));
+    $('generateCertBtn')?.addEventListener('click', generateCertificate);
+
+    $('reportBtn')?.addEventListener('click', () => {
+        $('reportContainer').innerHTML = generateReport();
+        openModal('reportModal');
+    });
+    $('closeReportBtn')?.addEventListener('click', () => closeModal('reportModal'));
+    $('exportBtn')?.addEventListener('click', exportExcel);
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+    });
+
+
+    $('adminBtn')?.addEventListener('click', async () => {
+        if (userRole !== 'headmaster') return;
+        openModal('adminModal');
+        await loadUsers();
+    });
+    $('closeAdminBtn')?.addEventListener('click', () => closeModal('adminModal'));
+    $('createUserBtn')?.addEventListener('click', createUser);
+    $('refreshUsersBtn')?.addEventListener('click', loadUsers);
+    $('downloadCertBtn')?.addEventListener('click', downloadCertificatePng);
+
+    updateUI();
+    renderAll();
+    await loadStudents();
+});
+</script>
+
 </body>
 </html>
