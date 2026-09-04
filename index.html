@@ -648,689 +648,637 @@
         </div>
     </div>
 
-    <script>
-        // ============================================================
-        // SUPABASE
-        // ============================================================
-        const supabaseUrl = 'https://lqmvcdkzofxziboxdxng.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+<script>
+'use strict';
 
-        // ============================================================
-        // CONFIG
-        // ============================================================
-        const SUBJECTS = {
-            1: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле'
-            ],
-            2: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            3: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            4: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            5: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            6: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'УЗМС', 'Прорицание'
-            ],
-            7: ['Заклинания', 'Трансфигурация', 'Зельеварение', 'История магии', 'Травология', 'ЗоТИ', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'УЗМС'
-            ]
-        };
+const SUPABASE_URL = 'https://lqmvcdkzofxziboxdxng.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXZjZGt6b2Z4emlib3hkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTQyOTQsImV4cCI6MjEwNDAzMDI5NH0.Ua9xDGgEbCGzdo5U_PH_tBjiWsqMPWBohZTtBpK2sX0';
 
-        const FACULTIES = ['Гриффиндор', 'Слизерин', 'Когтевран', 'Пуффендуй'];
-        const GRADE_COLORS = { 5: '#4caf50', 4: '#8bc34a', 3: '#ffb74d', 2: '#ff9800', 1: '#ef5350', 0: '#d32f2f' };
-        const ROLE_NAMES = { guest: 'Гость', professor: 'Профессор', dean: 'Декан', headmaster: 'Завуч' };
+let db = null;
+let students = [];
+let currentCourse = 7;
+let currentFaculty = 'Гриффиндор';
+let userRole = 'guest';
+let userName = '';
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let students = [];
-        let currentCourse = 7;
-        let currentFaculty = 'Гриффиндор';
-        let userRole = 'guest';
-        let userName = '';
+const SUBJECTS = {
+    1: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','Полеты на метле'],
+    2: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    3: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    4: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    5: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    6: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','УЗМС','Прорицание'],
+    7: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','Полеты на метле','Прорицание','УЗМС']
+};
 
-        // ============================================================
-        // FUNCTIONS
-        // ============================================================
-        function updateSyncStatus(connected) {
-            const dot = document.getElementById('syncDot');
-            const text = document.getElementById('syncText');
-            if (dot) dot.className = connected ? 'online-dot' : 'online-dot offline';
-            if (text) text.textContent = connected ? 'Online' : 'Offline';
-        }
+const FACULTIES = ['Гриффиндор','Слизерин','Когтевран','Пуффендуй'];
+const FACULTY_IDS = {
+    'Гриффиндор':'gryffindor',
+    'Слизерин':'slytherin',
+    'Когтевран':'ravenclaw',
+    'Пуффендуй':'hufflepuff'
+};
+const GRADE_COLORS = {5:'#4caf50',4:'#8bc34a',3:'#ffb74d',2:'#ff9800',1:'#ef5350',0:'#d32f2f'};
+const ROLE_NAMES = {guest:'Гость', professor:'Профессор', dean:'Декан', headmaster:'Завуч'};
 
-        function getFacultyClass(faculty) {
-            const map = { 'Гриффиндор': 'faculty-gryffindor', 'Слизерин': 'faculty-slytherin',
-                'Когтевран': 'faculty-ravenclaw', 'Пуффендуй': 'faculty-hufflepuff' };
-            return map[faculty] || '';
-        }
+function $(id) { return document.getElementById(id); }
 
-        async function loadStudents() {
-            try {
-                const { data, error } = await supabase.from('students').select('*');
-                if (error) throw error;
-                students = data || [];
-                updateSyncStatus(true);
-                console.log('✅ Загружено студентов:', students.length);
-                renderAll();
-                return data;
-            } catch (err) {
-                console.error('❌ Ошибка загрузки:', err);
-                updateSyncStatus(false);
-                return null;
-            }
-        }
+function setSync(text, online) {
+    if ($('syncText')) $('syncText').textContent = text;
+    if ($('syncDot')) $('syncDot').className = online ? 'online-dot' : 'online-dot offline';
+}
 
-        async function saveStudent(student) {
-            try {
-                const { error } = await supabase.from('students').upsert(student);
-                if (error) throw error;
-                return true;
-            } catch (err) {
-                console.error('❌ Ошибка сохранения:', err);
-                return false;
-            }
-        }
+function showTableMessage(message, error = false) {
+    const body = $('tableBody');
+    if (!body) return;
+    const cols = (SUBJECTS[currentCourse] || SUBJECTS[1]).length + 2;
+    body.innerHTML = `<tr><td colspan="${cols}" style="text-align:center;padding:20px;color:${error ? '#ef5350' : '#777'};">${escapeHtml(message)}</td></tr>`;
+}
 
-        async function deleteStudent(id) {
-            try {
-                const { error } = await supabase.from('students').delete().eq('id', id);
-                if (error) throw error;
-                return true;
-            } catch (err) {
-                console.error('❌ Ошибка удаления:', err);
-                return false;
-            }
-        }
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+}
 
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+function facultyClass(faculty) {
+    return {
+        'Гриффиндор':'faculty-gryffindor',
+        'Слизерин':'faculty-slytherin',
+        'Когтевран':'faculty-ravenclaw',
+        'Пуффендуй':'faculty-hufflepuff'
+    }[faculty] || '';
+}
 
-        async function loginUser(username, password) {
-            try {
-                const hashed = await hashPassword(password);
-                const { data, error } = await supabase.from('users')
-                    .select('*')
-                    .eq('username', username)
-                    .eq('password', hashed)
-                    .maybeSingle();
-                if (error) throw error;
-                return data;
-            } catch (err) {
-                console.error('❌ Ошибка входа:', err);
-                return null;
-            }
-        }
+async function sha256(text) {
+    const bytes = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
-        // ============================================================
-        // RENDER
-        // ============================================================
-        function renderAll() {
-            renderFaculties();
-            renderJournal();
-            renderLegend();
-            renderCertSelect();
-            renderTransferList();
-            updateUI();
-        }
+function normalizeStudent(s) {
+    return {
+        ...s,
+        course: Number(s.course),
+        grades: (s.grades && typeof s.grades === 'object') ? s.grades : {}
+    };
+}
 
-        function renderFaculties() {
-            document.querySelectorAll('.faculty-item').forEach(el => {
-                const f = el.dataset.faculty;
-                const count = students.filter(s => s.faculty === f).length;
-                const badge = document.getElementById(`count-${f.toLowerCase()}`);
-                if (badge) badge.textContent = count;
-                el.classList.toggle('active', f === currentFaculty);
-            });
-            document.getElementById('courseSelect').value = currentCourse;
-        }
+async function loadStudents() {
+    if (!db) return;
 
-        function renderLegend() {
-            const container = document.getElementById('legend');
-            if (!container) return;
-            const grades = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
-            let html = '';
-            grades.forEach(g => {
-                const label = currentCourse === 7 ?
-                    ['Превосходно', 'Выше ожидаемого', 'Удовлетворительно', 'Слабо', 'Отвратительно', 'Тролль'][5 - g] :
-                    (g === 5 ? 'Сдал' : 'Не сдал');
-                html +=
-                    `<span><span class="swatch" style="background:${GRADE_COLORS[g]};"></span> ${g} — ${label}</span>`;
-            });
-            container.innerHTML = html;
-        }
+    setSync('Загрузка…', false);
+    showTableMessage('Подключение к Supabase…');
 
-        function renderJournal() {
-            const course = currentCourse;
-            const faculty = currentFaculty;
-            const subjects = SUBJECTS[course] || SUBJECTS[1];
-            const filtered = students.filter(s => s.faculty === faculty && s.course === course);
-            const canEdit = userRole === 'professor' || userRole === 'headmaster';
+    const { data, error } = await db
+        .from('students')
+        .select('id,name,faculty,course,grades,created_at')
+        .order('name', { ascending: true });
 
-            document.getElementById('journalTitle').textContent = `📖 Журнал: ${course} курс`;
-            document.getElementById('studentCount').textContent = `👨‍🎓 ${filtered.length}`;
+    if (error) {
+        console.error('Supabase students error:', error);
+        setSync('Ошибка', false);
+        showTableMessage('Ошибка Supabase: ' + error.message, true);
+        return;
+    }
 
-            const thead = document.getElementById('tableHead');
-            let hRow = `<tr><th>Ученик</th><th>Факультет</th>`;
-            subjects.forEach(s => { hRow += `<th>${s}</th>`; });
-            hRow += `</tr>`;
-            thead.innerHTML = hRow;
+    students = (data || []).map(normalizeStudent);
+    setSync('Online • ' + students.length, true);
+    renderAll();
+}
 
-            const tbody = document.getElementById('tableBody');
-            if (!filtered.length) {
-                tbody.innerHTML =
-                    `<tr><td colspan="${subjects.length + 2}" style="text-align:center;color:#555;padding:20px;">Нет учеников</td></tr>`;
-                return;
-            }
+async function insertStudent(name, faculty, course) {
+    const { data, error } = await db
+        .from('students')
+        .insert([{ name, faculty, course, grades: {} }])
+        .select('id,name,faculty,course,grades,created_at')
+        .single();
 
-            let html = '';
-            filtered.forEach(student => {
-                const fClass = getFacultyClass(student.faculty);
-                html += `<tr class="${fClass}">`;
-                html += `<td class="student-name">
-                            ${student.name}
-                            ${(userRole === 'dean' || userRole === 'headmaster') ? `<button class="del-btn" data-id="${student.id}">✕</button>` : ''}
-                        </td>`;
-                html += `<td class="student-faculty">${student.faculty}</td>`;
-                subjects.forEach(sub => {
-                    const val = student.grades?.[sub];
-                    const has = val !== undefined && val !== null;
-                    const display = has ? val : '';
-                    const cls = has ? `g-${val}` : '';
-                    const readonly = !canEdit ? 'readonly' : '';
-                    html +=
-                        `<td><input class="grade-input ${cls} ${readonly}" type="text" value="${display}" data-id="${student.id}" data-sub="${sub}" ${readonly ? 'readonly' : ''} placeholder="–"></td>`;
-                });
-                html += `</tr>`;
-            });
-            tbody.innerHTML = html;
+    if (error) throw error;
+    return normalizeStudent(data);
+}
 
-            // Delete buttons
-            if (userRole === 'dean' || userRole === 'headmaster') {
-                tbody.querySelectorAll('.del-btn').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                        const id = parseInt(this.dataset.id);
-                        const student = students.find(s => s.id === id);
-                        if (student && confirm(`Удалить "${student.name}"?`)) {
-                            if (await deleteStudent(id)) {
-                                students = students.filter(s => s.id !== id);
-                                renderAll();
-                            }
-                        }
-                    });
-                });
-            }
+async function updateStudent(student) {
+    const { data, error } = await db
+        .from('students')
+        .update({
+            name: student.name,
+            faculty: student.faculty,
+            course: Number(student.course),
+            grades: student.grades || {}
+        })
+        .eq('id', student.id)
+        .select('id,name,faculty,course,grades,created_at')
+        .single();
 
-            // Grade editing
-            if (canEdit) {
-                tbody.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
-                    input.addEventListener('blur', async function() {
-                        const val = this.value.trim();
-                        const studentId = parseInt(this.dataset.id);
-                        const subject = this.dataset.sub;
-                        const student = students.find(s => s.id === studentId);
-                        if (!student) return;
+    if (error) throw error;
+    return normalizeStudent(data);
+}
 
-                        const available = currentCourse === 7 ? [5, 4, 3, 2, 1, 0] : [5, 0];
+async function deleteStudent(id) {
+    const { error } = await db.from('students').delete().eq('id', id);
+    if (error) throw error;
+}
 
-                        if (val === '') {
-                            delete student.grades[subject];
-                        } else {
-                            const num = parseInt(val);
-                            if (!isNaN(num) && available.includes(num)) {
-                                if (!student.grades) student.grades = {};
-                                student.grades[subject] = num;
-                            } else {
-                                const prev = student.grades?.[subject];
-                                this.value = prev !== undefined && prev !== null ? prev : '';
-                                return;
-                            }
-                        }
-                        await saveStudent(student);
-                        renderJournal();
-                    });
-                    input.addEventListener('keydown', function(e) { if (e.key === 'Enter') this.blur(); });
-                });
-            }
-        }
+function renderFaculties() {
+    document.querySelectorAll('.faculty-item').forEach(el => {
+        const faculty = el.dataset.faculty;
+        const count = students.filter(s => s.faculty === faculty).length;
+        const id = FACULTY_IDS[faculty];
+        const badge = id ? $('count-' + id) : null;
+        if (badge) badge.textContent = count;
+        el.classList.toggle('active', faculty === currentFaculty);
+    });
+    if ($('courseSelect')) $('courseSelect').value = String(currentCourse);
+}
 
-        function renderCertSelect() {
-            const select = document.getElementById('certStudent');
-            if (!select) return;
-            const val = select.value;
-            select.innerHTML = `<option value="">— Выберите ученика —</option>`;
-            const seventh = students.filter(s => s.course === 7).sort((a, b) => a.name.localeCompare(b.name));
-            seventh.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.name;
-                opt.textContent = `${s.name} (${s.faculty})`;
-                select.appendChild(opt);
-            });
-            if (val && seventh.some(s => s.name === val)) select.value = val;
-        }
+function renderLegend() {
+    const box = $('legend');
+    if (!box) return;
 
-        function renderTransferList() {
-            const faculty = document.getElementById('transferFaculty').value;
-            const filtered = students.filter(s => s.faculty === faculty);
-            const container = document.getElementById('transferList');
-            if (!container) return;
+    const grades = currentCourse === 7 ? [5,4,3,2,1,0] : [5,0];
+    const labels = {
+        5:'Превосходно',
+        4:'Выше ожидаемого',
+        3:'Удовлетворительно',
+        2:'Слабо',
+        1:'Отвратительно',
+        0:'Тролль'
+    };
 
-            if (!filtered.length) {
-                container.innerHTML = '<div style="color:#555;padding:8px;">Нет студентов</div>';
-                return;
-            }
+    box.innerHTML = grades.map(g =>
+        `<span><span class="swatch" style="background:${GRADE_COLORS[g]}"></span> ${g} — ${currentCourse === 7 ? labels[g] : (g === 5 ? 'Сдал' : 'Не сдал')}</span>`
+    ).join('');
+}
 
-            let html = '';
-            filtered.forEach(s => {
-                html +=
-                    `<div><input type="checkbox" class="transfer-check" value="${s.id}"> ${s.name} (${s.course} курс)</div>`;
-            });
-            container.innerHTML = html;
-        }
+function renderJournal() {
+    const subjects = SUBJECTS[currentCourse] || SUBJECTS[1];
+    const filtered = students.filter(s =>
+        s.faculty === currentFaculty && Number(s.course) === Number(currentCourse)
+    );
+    const canEdit = userRole === 'professor' || userRole === 'headmaster';
 
-        function updateUI() {
-            const badge = document.getElementById('roleBadge');
-            if (badge) {
-                badge.textContent = ROLE_NAMES[userRole] || 'Гость';
-            }
-            document.getElementById('currentRoleDisplay').textContent = ROLE_NAMES[userRole];
+    if ($('journalTitle')) $('journalTitle').textContent = `📖 Журнал: ${currentCourse} курс`;
+    if ($('studentCount')) $('studentCount').textContent = `👨‍🎓 ${filtered.length}`;
 
-            const canManage = userRole === 'dean' || userRole === 'headmaster';
-            document.getElementById('addBtn').style.display = canManage ? 'block' : 'none';
-            document.getElementById('transferBtn').style.display = canManage ? 'block' : 'none';
-            document.getElementById('clearBtn').style.display = canManage ? 'block' : 'none';
-        }
+    $('tableHead').innerHTML =
+        `<tr><th>Ученик</th><th>Факультет</th>${subjects.map(s => `<th>${escapeHtml(s)}</th>`).join('')}</tr>`;
 
-        // ============================================================
-        // EVENTS
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
+    const body = $('tableBody');
 
-            // Load data
-            loadStudents();
+    if (!filtered.length) {
+        body.innerHTML = `<tr><td colspan="${subjects.length + 2}" style="text-align:center;color:#555;padding:20px;">Нет учеников</td></tr>`;
+        return;
+    }
 
-            // Course select
-            document.getElementById('courseSelect').addEventListener('change', function() {
-                currentCourse = parseInt(this.value);
-                renderAll();
-            });
+    body.innerHTML = filtered.map(student => {
+        const del = (userRole === 'dean' || userRole === 'headmaster')
+            ? `<button class="del-btn" data-id="${escapeHtml(student.id)}">✕</button>` : '';
 
-            // Faculty select
-            document.querySelectorAll('.faculty-item').forEach(el => {
-                el.addEventListener('click', function() {
-                    currentFaculty = this.dataset.faculty;
+        const cells = subjects.map(subject => {
+            const value = student.grades?.[subject];
+            const has = value !== undefined && value !== null && value !== '';
+            const cls = has ? `g-${value}` : '';
+            return `<td><input class="grade-input ${cls}" type="text"
+                value="${has ? escapeHtml(value) : ''}"
+                data-id="${escapeHtml(student.id)}"
+                data-sub="${escapeHtml(subject)}"
+                ${canEdit ? '' : 'readonly'}
+                placeholder="–"></td>`;
+        }).join('');
+
+        return `<tr class="${facultyClass(student.faculty)}">
+            <td class="student-name">${escapeHtml(student.name)} ${del}</td>
+            <td class="student-faculty">${escapeHtml(student.faculty)}</td>
+            ${cells}
+        </tr>`;
+    }).join('');
+
+    if (userRole === 'dean' || userRole === 'headmaster') {
+        body.querySelectorAll('.del-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const student = students.find(s => String(s.id) === String(id));
+                if (!student || !confirm(`Удалить "${student.name}"?`)) return;
+
+                try {
+                    await deleteStudent(student.id);
+                    students = students.filter(s => String(s.id) !== String(student.id));
                     renderAll();
-                });
-            });
-
-            // Login
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                document.getElementById('loginModal').classList.add('open');
-            });
-
-            document.getElementById('closeLoginBtn').addEventListener('click', function() {
-                document.getElementById('loginModal').classList.remove('open');
-            });
-
-            document.getElementById('loginConfirmBtn').addEventListener('click', async function() {
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value;
-
-                if (!username || !password) {
-                    document.getElementById('loginError').textContent = '❌ Введите логин и пароль';
-                    document.getElementById('loginError').className = 'status-msg show error';
-                    return;
+                } catch (e) {
+                    alert('Ошибка удаления: ' + e.message);
                 }
+            });
+        });
+    }
 
-                const user = await loginUser(username, password);
-                if (user) {
-                    userRole = user.role;
-                    userName = user.display_name || user.username;
-                    document.getElementById('loginModal').classList.remove('open');
-                    document.getElementById('loginError').className = 'status-msg';
-                    renderAll();
-                    alert(`🔓 Добро пожаловать, ${userName}!`);
+    if (canEdit) {
+        body.querySelectorAll('.grade-input:not([readonly])').forEach(input => {
+            input.addEventListener('blur', async () => {
+                const student = students.find(s => String(s.id) === String(input.dataset.id));
+                if (!student) return;
+
+                const subject = input.dataset.sub;
+                const value = input.value.trim();
+                const allowed = currentCourse === 7 ? [5,4,3,2,1,0] : [5,0];
+
+                if (value === '') {
+                    delete student.grades[subject];
                 } else {
-                    document.getElementById('loginError').textContent = '❌ Неверный логин или пароль';
-                    document.getElementById('loginError').className = 'status-msg show error';
-                }
-            });
-
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                userRole = 'guest';
-                userName = '';
-                document.getElementById('loginModal').classList.remove('open');
-                renderAll();
-                alert('🚪 Вы вышли');
-            });
-
-            // Add students
-            document.getElementById('addBtn').addEventListener('click', function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
-                }
-                document.getElementById('addModal').classList.add('open');
-                document.getElementById('addStatus').className = 'status-msg';
-            });
-
-            document.getElementById('closeAddBtn').addEventListener('click', function() {
-                document.getElementById('addModal').classList.remove('open');
-            });
-
-            document.getElementById('addCancelBtn').addEventListener('click', function() {
-                document.getElementById('addModal').classList.remove('open');
-            });
-
-            document.getElementById('addConfirmBtn').addEventListener('click', async function() {
-                const names = document.getElementById('addNames').value;
-                const faculty = document.getElementById('addFaculty').value;
-                const course = parseInt(document.getElementById('addCourse').value);
-
-                if (!names.trim()) {
-                    document.getElementById('addStatus').textContent = '❌ Введите имена';
-                    document.getElementById('addStatus').className = 'status-msg show error';
-                    return;
-                }
-
-                const lines = names.split('\n').filter(l => l.trim());
-                let added = 0;
-                for (const line of lines) {
-                    const name = line.trim();
-                    if (!name) continue;
-                    if (students.some(s => s.name === name && s.faculty === faculty && s.course === course)) continue;
-
-                    const newStudent = {
-                        id: Date.now() + Math.random() * 1000 + added,
-                        name: name,
-                        faculty: faculty,
-                        course: course,
-                        grades: {}
-                    };
-
-                    if (await saveStudent(newStudent)) {
-                        students.push(newStudent);
-                        added++;
+                    const n = Number(value);
+                    if (!Number.isInteger(n) || !allowed.includes(n)) {
+                        input.value = student.grades?.[subject] ?? '';
+                        return;
                     }
+                    student.grades[subject] = n;
                 }
 
-                if (added > 0) {
-                    document.getElementById('addStatus').textContent = `✅ Добавлено: ${added}`;
-                    document.getElementById('addStatus').className = 'status-msg show success';
-                    document.getElementById('addNames').value = '';
-                    renderAll();
-                } else {
-                    document.getElementById('addStatus').textContent = '❌ Ошибка или дубликаты';
-                    document.getElementById('addStatus').className = 'status-msg show error';
-                }
-            });
-
-            // Transfer
-            document.getElementById('transferBtn').addEventListener('click', function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
-                }
-                document.getElementById('transferModal').classList.add('open');
-                document.getElementById('transferStatus').className = 'status-msg';
-                renderTransferList();
-            });
-
-            document.getElementById('closeTransferBtn').addEventListener('click', function() {
-                document.getElementById('transferModal').classList.remove('open');
-            });
-
-            document.getElementById('transferCancelBtn').addEventListener('click', function() {
-                document.getElementById('transferModal').classList.remove('open');
-            });
-
-            document.getElementById('transferFaculty').addEventListener('change', renderTransferList);
-
-            document.getElementById('transferConfirmBtn').addEventListener('click', async function() {
-                const checks = document.querySelectorAll('.transfer-check:checked');
-                if (!checks.length) {
-                    document.getElementById('transferStatus').textContent = '❌ Выберите студентов';
-                    document.getElementById('transferStatus').className = 'status-msg show error';
-                    return;
-                }
-
-                const newCourse = parseInt(document.getElementById('transferCourse').value);
-                let transferred = 0;
-
-                for (const check of checks) {
-                    const id = parseInt(check.value);
-                    const student = students.find(s => s.id === id);
-                    if (!student || student.course === newCourse) continue;
-                    student.course = newCourse;
-                    student.grades = {};
-                    if (await saveStudent(student)) transferred++;
-                }
-
-                if (transferred > 0) {
-                    document.getElementById('transferStatus').textContent = `✅ Переведено: ${transferred}`;
-                    document.getElementById('transferStatus').className = 'status-msg show success';
-                    renderAll();
-                } else {
-                    document.getElementById('transferStatus').textContent = '❌ Ошибка';
-                    document.getElementById('transferStatus').className = 'status-msg show error';
+                try {
+                    const saved = await updateStudent(student);
+                    Object.assign(student, saved);
+                    renderJournal();
+                } catch (e) {
+                    alert('Ошибка сохранения оценки: ' + e.message);
+                    await loadStudents();
                 }
             });
 
-            // Clear faculty
-            document.getElementById('clearBtn').addEventListener('click', async function() {
-                if (userRole !== 'dean' && userRole !== 'headmaster') {
-                    alert('Доступ только у деканов и завуча');
-                    return;
-                }
-                const toDel = students.filter(s => s.faculty === currentFaculty);
-                if (!toDel.length) { alert('Нет студентов'); return; }
-                if (!confirm(`Удалить всех с ${currentFaculty}?`)) return;
-
-                let deleted = 0;
-                for (const s of toDel) {
-                    if (await deleteStudent(s.id)) deleted++;
-                }
-                if (deleted > 0) {
-                    students = students.filter(s => s.faculty !== currentFaculty);
-                    renderAll();
-                }
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') input.blur();
             });
+        });
+    }
+}
 
-            // Certificate
-            document.getElementById('certBtn').addEventListener('click', function() {
-                if (currentCourse !== 7) { alert('Аттестат только для 7 курса'); return; }
-                document.getElementById('certModal').classList.add('open');
-                renderCertSelect();
-            });
+function renderCertSelect() {
+    const select = $('certStudent');
+    if (!select) return;
 
-            document.getElementById('closeCertBtn').addEventListener('click', function() {
-                document.getElementById('certModal').classList.remove('open');
-            });
+    const old = select.value;
+    select.innerHTML = '<option value="">— Выберите ученика —</option>';
 
-            document.getElementById('generateCertBtn').addEventListener('click', function() {
-                const name = document.getElementById('certStudent').value;
-                if (!name) { alert('Выберите ученика'); return; }
-                generateCertificate(name);
-            });
-
-            // Report
-            document.getElementById('reportBtn').addEventListener('click', function() {
-                document.getElementById('reportContainer').innerHTML = generateReport();
-                document.getElementById('reportModal').classList.add('open');
-            });
-
-            document.getElementById('closeReportBtn').addEventListener('click', function() {
-                document.getElementById('reportModal').classList.remove('open');
-            });
-
-            document.getElementById('exportBtn').addEventListener('click', exportExcel);
+    students
+        .filter(s => Number(s.course) === 7)
+        .sort((a,b) => a.name.localeCompare(b.name,'ru'))
+        .forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = String(s.id);
+            opt.textContent = `${s.name} (${s.faculty})`;
+            select.appendChild(opt);
         });
 
-        // ============================================================
-        // CERTIFICATE
-        // ============================================================
-        function generateCertificate(name) {
-            const student = students.find(s => s.name === name);
-            if (!student) { alert('Ученик не найден'); return; }
+    if ([...select.options].some(o => o.value === old)) select.value = old;
+}
 
-            const subs = SUBJECTS[7];
-            const order = ['Заклинания', 'Зельеварение', 'ЗоТИ', 'История магии', 'Маггловедение',
-                'Полеты на метле', 'Прорицание', 'Травология', 'Трансфигурация', 'УЗМС'
-            ];
-            const display = order.filter(s => subs.includes(s));
-            const deanName = student.faculty === 'Гриффиндор' ? 'Минерва МакГонагалл' :
-                student.faculty === 'Слизерин' ? 'Северус Снейп' :
-                student.faculty === 'Когтевран' ? 'Филиус Флитвик' : 'Помона Стебль';
+function renderTransferList() {
+    const box = $('transferList');
+    if (!box) return;
 
-            let html = `
-                <div style="background:#f5e6c8;padding:24px;border-radius:14px;border:2px solid #d4af37;color:#1a1a1a;max-width:660px;margin:0 auto;">
-                    <div style="font-family:'Cinzel Decorative',serif;font-size:1.2rem;text-align:center;border-bottom:2px solid #b8860b;padding-bottom:6px;">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
-                    <div style="text-align:center;font-size:1.4rem;font-weight:700;letter-spacing:4px;color:#b8860b;margin:4px 0;">CERTIFICATE OF COMPLETION</div>
-                    <div style="text-align:center;font-size:1.6rem;font-weight:700;margin:4px 0 10px;border-bottom:1px dashed #b8860b;padding-bottom:6px;">${name.toUpperCase()}</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-size:0.9rem;margin:8px 0 12px;">`;
+    const faculty = $('transferFaculty').value;
+    const list = students.filter(s => s.faculty === faculty);
 
-            display.forEach(sub => {
-                const v = student.grades?.[sub];
-                const text = (v !== undefined && v !== null) ?
-                    ['Превосходно', 'Выше ожидаемого', 'Удовлетворительно', 'Слабо', 'Отвратительно', 'Тролль'][5 - v] :
-                    'Не сдано';
-                html +=
-                    `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted rgba(0,0,0,0.06);">
-                        <span style="font-weight:500;">${sub}</span>
-                        <span style="font-weight:700;color:#b8860b;">${text}</span>
+    if (!list.length) {
+        box.innerHTML = '<div style="color:#555;padding:8px;">Нет студентов</div>';
+        return;
+    }
+
+    box.innerHTML = list.map(s =>
+        `<div><input type="checkbox" class="transfer-check" value="${escapeHtml(s.id)}"> ${escapeHtml(s.name)} (${Number(s.course)} курс)</div>`
+    ).join('');
+}
+
+function updateUI() {
+    const role = ROLE_NAMES[userRole] || 'Гость';
+    if ($('roleBadge')) $('roleBadge').textContent = role;
+    if ($('currentRoleDisplay')) $('currentRoleDisplay').textContent = role;
+
+    const manage = userRole === 'dean' || userRole === 'headmaster';
+    if ($('addBtn')) $('addBtn').style.display = manage ? 'block' : 'none';
+    if ($('transferBtn')) $('transferBtn').style.display = manage ? 'block' : 'none';
+    if ($('clearBtn')) $('clearBtn').style.display = manage ? 'block' : 'none';
+}
+
+function renderAll() {
+    renderFaculties();
+    renderLegend();
+    renderJournal();
+    renderCertSelect();
+    renderTransferList();
+    updateUI();
+}
+
+function openModal(id) {
+    const el = $(id);
+    if (el) el.classList.add('open');
+}
+
+function closeModal(id) {
+    const el = $(id);
+    if (el) el.classList.remove('open');
+}
+
+async function login() {
+    const username = $('loginUsername').value.trim();
+    const password = $('loginPassword').value;
+    const errorBox = $('loginError');
+
+    if (!username || !password) {
+        errorBox.textContent = '❌ Введите логин и пароль';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    errorBox.textContent = 'Проверка…';
+    errorBox.className = 'status-msg show';
+
+    const { data: user, error } = await db
+        .from('users')
+        .select('id,username,password_hash,role,display_name')
+        .eq('username', username)
+        .maybeSingle();
+
+    if (error) {
+        console.error(error);
+        errorBox.textContent = '❌ Ошибка Supabase: ' + error.message;
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    if (!user) {
+        errorBox.textContent = '❌ Пользователь не найден';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    const hash = await sha256(password);
+
+    if (hash !== user.password_hash) {
+        errorBox.textContent = '❌ Неверный пароль';
+        errorBox.className = 'status-msg show error';
+        return;
+    }
+
+    userRole = user.role;
+    userName = user.display_name || user.username;
+    closeModal('loginModal');
+    errorBox.className = 'status-msg';
+    $('loginPassword').value = '';
+    renderAll();
+    alert(`🔓 Добро пожаловать, ${userName}!`);
+}
+
+function generateCertificate() {
+    const id = $('certStudent').value;
+    const student = students.find(s => String(s.id) === String(id));
+    if (!student) { alert('Выберите ученика'); return; }
+
+    const order = ['Заклинания','Зельеварение','ЗоТИ','История магии','Маггловедение','Полеты на метле','Прорицание','Травология','Трансфигурация','УЗМС'];
+    const subjects = order.filter(s => (SUBJECTS[7] || []).includes(s));
+
+    const dean = {
+        'Гриффиндор':'Минерва МакГонагалл',
+        'Слизерин':'Северус Снейп',
+        'Когтевран':'Филиус Флитвик',
+        'Пуффендуй':'Помона Стебль'
+    }[student.faculty] || '';
+
+    const names = ['Тролль','Отвратительно','Слабо','Удовлетворительно','Выше ожидаемого','Превосходно'];
+
+    $('certContainer').innerHTML = `
+        <div style="background:#f5e6c8;padding:24px;border-radius:14px;border:2px solid #d4af37;color:#1a1a1a;max-width:660px;margin:0 auto;">
+            <div style="text-align:center;font-size:1.2rem;border-bottom:2px solid #b8860b;padding-bottom:6px;">HOGWARTS SCHOOL OF<br>WITCHCRAFT AND WIZARDRY</div>
+            <div style="text-align:center;font-size:1.4rem;font-weight:700;letter-spacing:4px;color:#b8860b;margin:4px 0;">CERTIFICATE OF COMPLETION</div>
+            <div style="text-align:center;font-size:1.6rem;font-weight:700;margin:4px 0 10px;border-bottom:1px dashed #b8860b;padding-bottom:6px;">${escapeHtml(student.name).toUpperCase()}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-size:0.9rem;">
+                ${subjects.map(sub => {
+                    const v = student.grades?.[sub];
+                    return `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted rgba(0,0,0,.06);">
+                        <span>${escapeHtml(sub)}</span>
+                        <strong style="color:#b8860b;">${v === undefined ? 'Не сдано' : names[v]}</strong>
                     </div>`;
+                }).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding-top:6px;border-top:2px solid #b8860b;font-size:0.7rem;">
+                <div><strong>ДЕКАН ФАКУЛЬТЕТА</strong><br>${escapeHtml(dean)}<br>${escapeHtml(student.faculty)}</div>
+                <div style="text-align:right;"><strong>${new Date().toLocaleDateString('ru-RU')}</strong><br>ДИРЕКТОР<br>Лана МакДауэлл</div>
+            </div>
+        </div>`;
+
+    $('downloadCertBtn').style.display = 'block';
+}
+
+function generateReport() {
+    if (!students.length) return '<p style="color:#555;text-align:center;padding:20px;">Нет данных</p>';
+
+    const grouped = {};
+    students.forEach(s => {
+        const c = Number(s.course) || '?';
+        (grouped[c] ||= []).push(s);
+    });
+
+    return Object.keys(grouped).sort((a,b) => Number(a)-Number(b)).map(c => {
+        const subs = SUBJECTS[c] || SUBJECTS[1];
+        return `<h3 style="color:#d4af37;margin:12px 0 6px;">${c} курс (${subs.length} предметов)</h3>
+        <table style="font-size:0.7rem;width:100%;border-collapse:collapse;">
+        <thead><tr><th>Ученик</th><th>Факультет</th>${subs.map(s=>`<th>${escapeHtml(s)}</th>`).join('')}<th>Сумма</th></tr></thead>
+        <tbody>${grouped[c].map(st => {
+            let sum = 0;
+            const cells = subs.map(sub => {
+                const v = st.grades?.[sub];
+                if (v !== undefined && v !== null) sum += Number(v);
+                return `<td style="text-align:center;">${v ?? ''}</td>`;
+            }).join('');
+            return `<tr class="${facultyClass(st.faculty)}"><td><strong>${escapeHtml(st.name)}</strong></td><td>${escapeHtml(st.faculty)}</td>${cells}<td style="font-weight:700;color:#d4af37;text-align:center;">${sum}</td></tr>`;
+        }).join('')}</tbody></table>`;
+    }).join('');
+}
+
+function exportExcel() {
+    let html = `<html><head><meta charset="UTF-8"><style>table{border-collapse:collapse;font-family:Arial;font-size:12px}th,td{padding:5px 8px;border:1px solid #999}th{background:#d4af37}</style></head><body>`;
+
+    for (let c=1; c<=7; c++) {
+        const list = students.filter(s => Number(s.course) === c);
+        const subs = SUBJECTS[c];
+        html += `<h2>${c} курс</h2><table><tr><th>Ученик</th><th>Факультет</th>${subs.map(s=>`<th>${escapeHtml(s)}</th>`).join('')}<th>Сумма</th></tr>`;
+        list.forEach(st => {
+            let sum = 0;
+            html += `<tr><td>${escapeHtml(st.name)}</td><td>${escapeHtml(st.faculty)}</td>`;
+            subs.forEach(sub => {
+                const v = st.grades?.[sub];
+                if (v !== undefined && v !== null) sum += Number(v);
+                html += `<td>${v ?? ''}</td>`;
             });
+            html += `<td>${sum}</td></tr>`;
+        });
+        html += `</table><br>`;
+    }
 
-            const now = new Date();
-            const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER',
-                'NOVEMBER', 'DECEMBER'
-            ];
-            const dateStr = `${now.getDate()} ${months[now.getMonth()]}, ${now.getFullYear()}`;
+    html += '</body></html>';
+    const blob = new Blob([html], {type:'application/vnd.ms-excel'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `HogwartsDaily_${new Date().toISOString().slice(0,10)}.xls`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
 
-            html += `
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding-top:6px;border-top:2px solid #b8860b;font-size:0.7rem;">
-                        <div>
-                            <div style="font-weight:700;font-size:0.6rem;color:#4a4a4a;">ДЕКАН ФАКУЛЬТЕТА</div>
-                            <div style="font-weight:600;">${deanName}</div>
-                            <div style="font-size:0.6rem;color:#666;">${student.faculty}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:600;">${dateStr}</div>
-                            <div style="font-weight:700;font-size:0.6rem;color:#4a4a4a;">ДИРЕКТОР</div>
-                            <div style="font-weight:600;">Лана МакДауэлл</div>
-                            <div style="font-size:0.6rem;color:#666;">Директор</div>
-                        </div>
-                    </div>
-                </div>`;
+document.addEventListener('DOMContentLoaded', async () => {
+    // IMPORTANT: replace the placeholder key above with the anon key from your Supabase project.
+    if (!window.supabase?.createClient) {
+        setSync('Supabase CDN error', false);
+        showTableMessage('Не загрузилась библиотека Supabase. Проверьте интернет/блокировщик.', true);
+        return;
+    }
 
-            document.getElementById('certContainer').innerHTML = html;
-            document.getElementById('downloadCertBtn').style.display = 'block';
+    // The real anon key is inserted automatically below before saving this file.
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    $('courseSelect')?.addEventListener('change', e => {
+        currentCourse = Number(e.target.value);
+        renderAll();
+    });
+
+    document.querySelectorAll('.faculty-item').forEach(el => {
+        el.addEventListener('click', () => {
+            currentFaculty = el.dataset.faculty;
+            renderAll();
+        });
+    });
+
+    $('loginBtn')?.addEventListener('click', () => openModal('loginModal'));
+    $('closeLoginBtn')?.addEventListener('click', () => closeModal('loginModal'));
+    $('loginConfirmBtn')?.addEventListener('click', login);
+    $('loginPassword')?.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+    $('logoutBtn')?.addEventListener('click', () => {
+        userRole = 'guest';
+        userName = '';
+        closeModal('loginModal');
+        renderAll();
+    });
+
+    $('addBtn')?.addEventListener('click', () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        openModal('addModal');
+    });
+    $('closeAddBtn')?.addEventListener('click', () => closeModal('addModal'));
+    $('addCancelBtn')?.addEventListener('click', () => closeModal('addModal'));
+
+    $('addConfirmBtn')?.addEventListener('click', async () => {
+        const names = $('addNames').value.split('\n').map(x=>x.trim()).filter(Boolean);
+        const faculty = $('addFaculty').value;
+        const course = Number($('addCourse').value);
+        const status = $('addStatus');
+
+        if (!names.length) {
+            status.textContent = '❌ Введите имена';
+            status.className = 'status-msg show error';
+            return;
         }
 
-        // ============================================================
-        // REPORT
-        // ============================================================
-        function generateReport() {
-            const grouped = {};
-            students.forEach(s => {
-                const c = s.course || '?';
-                if (!grouped[c]) grouped[c] = [];
-                grouped[c].push(s);
-            });
+        let added = 0;
+        try {
+            for (const name of names) {
+                if (students.some(s => s.name === name && s.faculty === faculty && Number(s.course) === course)) continue;
+                const student = await insertStudent(name, faculty, course);
+                students.push(student);
+                added++;
+            }
+            status.textContent = `✅ Добавлено: ${added}`;
+            status.className = 'status-msg show ' + (added ? 'success' : 'error');
+            $('addNames').value = '';
+            renderAll();
+            setSync('Online • ' + students.length, true);
+        } catch (e) {
+            status.textContent = '❌ ' + e.message;
+            status.className = 'status-msg show error';
+        }
+    });
 
-            const sorted = Object.keys(grouped).sort((a, b) => {
-                if (a === '?') return 1;
-                if (b === '?') return -1;
-                return parseInt(a) - parseInt(b);
-            });
+    $('transferBtn')?.addEventListener('click', () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        openModal('transferModal');
+        renderTransferList();
+    });
+    $('closeTransferBtn')?.addEventListener('click', () => closeModal('transferModal'));
+    $('transferCancelBtn')?.addEventListener('click', () => closeModal('transferModal'));
+    $('transferFaculty')?.addEventListener('change', renderTransferList);
 
-            let html = '';
-            sorted.forEach(c => {
-                const list = grouped[c];
-                const subs = SUBJECTS[parseInt(c)] || SUBJECTS[1];
-                html += `<h3 style="color:#d4af37;margin:12px 0 6px;">${c} курс (${subs.length} предметов)</h3>
-                        <table style="font-size:0.7rem;width:100%;border-collapse:collapse;">
-                        <thead><tr><th>Ученик</th><th>Факультет</th>`;
-                subs.forEach(s => { html += `<th>${s}</th>`; });
-                html += `<th>Сумма</th></tr></thead><tbody>`;
+    $('transferConfirmBtn')?.addEventListener('click', async () => {
+        const ids = [...document.querySelectorAll('.transfer-check:checked')].map(x=>x.value);
+        const newCourse = Number($('transferCourse').value);
+        const status = $('transferStatus');
 
-                list.forEach(st => {
-                    const fClass = getFacultyClass(st.faculty);
-                    html += `<tr class="${fClass}"><td><strong>${st.name}</strong></td><td style="color:#666;font-size:0.6rem;">${st.faculty}</td>`;
-                    let sum = 0;
-                    subs.forEach(sub => {
-                        const v = st.grades?.[sub];
-                        const has = v !== undefined && v !== null;
-                        html +=
-                            `<td style="text-align:center;font-weight:600;color:${has ? GRADE_COLORS[v] || '#e8e4d8' : '#555'};">${has ? v : ''}</td>`;
-                        if (has) sum += v;
-                    });
-                    html += `<td style="font-weight:700;color:#d4af37;text-align:center;">${sum}</td></tr>`;
-                });
-                html += `</tbody></table>`;
-            });
-
-            if (!Object.keys(grouped).length) html = '<p style="color:#555;text-align:center;padding:20px;">Нет данных</p>';
-            return html;
+        if (!ids.length) {
+            status.textContent = '❌ Выберите студентов';
+            status.className = 'status-msg show error';
+            return;
         }
 
-        function exportExcel() {
-            try {
-                const grouped = {};
-                students.forEach(s => {
-                    const c = s.course || '?';
-                    if (!grouped[c]) grouped[c] = [];
-                    grouped[c].push(s);
-                });
-
-                let html =
-                    `<html><head><meta charset="UTF-8"><style>table{border-collapse:collapse;font-family:Arial;font-size:12px;}th{background:#d4af37;padding:6px 8px;border:1px solid #000;}td{padding:4px 8px;border:1px solid #999;}.course-title{font-size:16px;font-weight:bold;padding:10px 0;}</style></head><body>`;
-                for (let c = 1; c <= 7; c++) {
-                    const list = grouped[c] || [];
-                    const subjects = SUBJECTS[c] || [];
-                    html += `<div class="course-title">${c} курс</div><table><tr><th>Ученик</th><th>Факультет</th>`;
-                    subjects.forEach(s => { html += `<th>${s}</th>`; });
-                    html += `<th>Сумма</th></tr>`;
-                    if (!list.length) {
-                        html += `<tr><td colspan="${subjects.length + 3}" style="text-align:center;color:#999;">Нет студентов</td></tr>`;
-                    } else {
-                        list.forEach(st => {
-                            html += `<tr><td>${st.name}</td><td>${st.faculty}</td>`;
-                            let sum = 0;
-                            subjects.forEach(sub => {
-                                const v = st.grades?.[sub];
-                                const val = (v !== undefined && v !== null) ? v : '';
-                                html += `<td style="text-align:center;">${val}</td>`;
-                                if (val) sum += parseInt(val);
-                            });
-                            html += `<td style="text-align:center;font-weight:bold;color:#b8860b;">${sum}</td></tr>`;
-                        });
-                    }
-                    html += `</table><br>`;
-                }
-                html += `</body></html>`;
-
-                const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `HogwartsDaily_${new Date().toISOString().slice(0, 10)}.xls`;
-                link.click();
-                alert('✅ Excel скачан!');
-            } catch (err) { alert('❌ Ошибка: ' + err.message); }
+        let done = 0;
+        try {
+            for (const id of ids) {
+                const st = students.find(s => String(s.id) === String(id));
+                if (!st || Number(st.course) === newCourse) continue;
+                st.course = newCourse;
+                st.grades = {};
+                await updateStudent(st);
+                done++;
+            }
+            status.textContent = `✅ Переведено: ${done}`;
+            status.className = 'status-msg show success';
+            renderAll();
+        } catch (e) {
+            status.textContent = '❌ ' + e.message;
+            status.className = 'status-msg show error';
         }
-    </script>
+    });
+
+    $('clearBtn')?.addEventListener('click', async () => {
+        if (userRole !== 'dean' && userRole !== 'headmaster') return alert('Доступ только у деканов и завуча');
+        const list = students.filter(s => s.faculty === currentFaculty);
+        if (!list.length) return alert('Нет студентов');
+        if (!confirm(`Удалить всех с факультета ${currentFaculty}?`)) return;
+
+        try {
+            for (const st of list) await deleteStudent(st.id);
+            students = students.filter(s => s.faculty !== currentFaculty);
+            renderAll();
+        } catch (e) {
+            alert('Ошибка: ' + e.message);
+        }
+    });
+
+    $('certBtn')?.addEventListener('click', () => {
+        if (currentCourse !== 7) return alert('Аттестат только для 7 курса');
+        openModal('certModal');
+        renderCertSelect();
+    });
+    $('closeCertBtn')?.addEventListener('click', () => closeModal('certModal'));
+    $('generateCertBtn')?.addEventListener('click', generateCertificate);
+
+    $('reportBtn')?.addEventListener('click', () => {
+        $('reportContainer').innerHTML = generateReport();
+        openModal('reportModal');
+    });
+    $('closeReportBtn')?.addEventListener('click', () => closeModal('reportModal'));
+    $('exportBtn')?.addEventListener('click', exportExcel);
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+    });
+
+    updateUI();
+    renderAll();
+    await loadStudents();
+});
+</script>
+
 </body>
 </html>
