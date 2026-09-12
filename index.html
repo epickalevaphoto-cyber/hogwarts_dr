@@ -672,6 +672,7 @@
                 </div>
                 <div class="form-row" style="margin-top:8px;">
                     <input type="password" id="newPassword" placeholder="Пароль">
+                    <select id="newSubject"><option value="">Предмет профессора</option></select>
                     <select id="newRole">
                         <option value="professor">Профессор</option>
                         <option value="dean">Декан</option>
@@ -720,6 +721,8 @@ let currentCourse = 7;
 let currentFaculty = 'Гриффиндор';
 let userRole = 'guest';
 let userName = '';
+let userSubject = '';
+let auditLogs = [];
 
 const SUBJECTS = {
     1: ['Заклинания','Трансфигурация','Зельеварение','История магии','Травология','ЗоТИ','Маггловедение','Полеты на метле'],
@@ -740,6 +743,7 @@ const FACULTY_IDS = {
 };
 const GRADE_COLORS = {5:'#4caf50',4:'#8bc34a',3:'#ffb74d',2:'#ff9800',1:'#ef5350',0:'#d32f2f'};
 const ROLE_NAMES = {guest:'Гость', professor:'Профессор', dean:'Декан', headmaster:'Завуч'};
+const LOGS_TABLE = 'audit_logs';
 
 function $(id) { return document.getElementById(id); }
 
@@ -821,6 +825,11 @@ async function insertStudent(name, faculty, course) {
     return normalizeStudent(data);
 }
 
+async function writeLog(action, details) {
+    if (!db || !userName) return;
+    await db.from(LOGS_TABLE).insert({username:userName, role:userRole, action, details});
+}
+
 async function updateStudent(student) {
     const { data, error } = await db
         .from('students')
@@ -879,7 +888,7 @@ function renderJournal() {
     const filtered = students.filter(s =>
         s.faculty === currentFaculty && Number(s.course) === Number(currentCourse)
     );
-    const canEdit = ['professor','dean','headmaster'].includes(userRole);
+    const canEdit = userRole === 'professor' || userRole === 'headmaster';
 
     if ($('journalTitle')) $('journalTitle').textContent = `📖 Журнал: ${currentCourse} курс`;
     if ($('studentCount')) $('studentCount').textContent = `👨‍🎓 ${filtered.length}`;
@@ -899,6 +908,7 @@ function renderJournal() {
             ? `<button class="del-btn" data-id="${escapeHtml(student.id)}">✕</button>` : '';
 
         const cells = subjects.map(subject => {
+            const allowedForUser = userRole !== 'professor' || userSubject === subject;
             const value = student.grades?.[subject];
             const has = value !== undefined && value !== null && value !== '';
             const cls = has ? `g-${value}` : '';
@@ -906,7 +916,7 @@ function renderJournal() {
                 value="${has ? escapeHtml(value) : ''}"
                 data-id="${escapeHtml(student.id)}"
                 data-sub="${escapeHtml(subject)}"
-                ${canEdit ? '' : 'readonly'}
+                ${canEdit && allowedForUser ? '' : 'readonly'}
                 placeholder="–"></td>`;
         }).join('');
 
@@ -926,6 +936,7 @@ function renderJournal() {
 
                 try {
                     await deleteStudent(student.id);
+                    await writeLog('Удаление студента', {student_id: student.id, student: student.name, faculty: student.faculty, course: student.course});
                     students = students.filter(s => String(s.id) !== String(student.id));
                     renderAll();
                 } catch (e) {
@@ -942,6 +953,7 @@ function renderJournal() {
                 if (!student) return;
 
                 const subject = input.dataset.sub;
+                const oldValue = student.grades?.[subject] ?? null;
                 const value = input.value.trim();
                 const allowed = currentCourse === 7 ? [5,4,3,2,1,0] : [5,0];
 
@@ -959,6 +971,7 @@ function renderJournal() {
                 try {
                     const saved = await updateStudent(student);
                     Object.assign(student, saved);
+                    await writeLog('Изменение оценки', {student_id: student.id, student: student.name, subject, old_value: oldValue, new_value: value === '' ? null : Number(value)});
                     renderJournal();
                 } catch (e) {
                     alert('Ошибка сохранения оценки: ' + e.message);
@@ -1062,7 +1075,7 @@ async function login() {
 
     const { data: user, error } = await db
         .from('users')
-        .select('id,username,password_hash,role,display_name')
+        .select('id,username,password_hash,role,display_name,subject')
         .eq('username', username)
         .maybeSingle();
 
@@ -1089,6 +1102,7 @@ async function login() {
 
     userRole = user.role;
     userName = user.display_name || user.username;
+    userSubject = user.subject || '';
     closeModal('loginModal');
     errorBox.className = 'status-msg';
     $('loginPassword').value = '';
@@ -1218,6 +1232,7 @@ async function loadUsers() {
             if (!confirm('Удалить этого пользователя?')) return;
             const { error } = await db.from('users').delete().eq('id', id);
             if (error) return alert('Ошибка удаления: ' + error.message);
+            await writeLog('Удаление пользователя', {user_id: id});
             loadUsers();
         });
     });
@@ -1244,7 +1259,7 @@ async function createUser() {
 
     const hash = await sha256(password);
     const { error } = await db.from('users').insert({
-        username, password_hash: hash, role, display_name: displayName
+        username, password_hash: hash, role, display_name: displayName, subject: role === 'professor' ? ($('newSubject').value || null) : null
     });
 
     if (error) {
@@ -1253,6 +1268,7 @@ async function createUser() {
         return;
     }
 
+    await writeLog('Создание пользователя', {username, role, display_name: displayName, subject: role === 'professor' ? $('newSubject').value || null : null});
     status.textContent = '✅ Пользователь создан';
     status.className = 'status-msg show success';
     $('newUsername').value = '';
