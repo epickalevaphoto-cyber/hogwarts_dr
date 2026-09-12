@@ -744,6 +744,17 @@ const FACULTY_IDS = {
 const GRADE_COLORS = {5:'#4caf50',4:'#8bc34a',3:'#ffb74d',2:'#ff9800',1:'#ef5350',0:'#d32f2f'};
 const ROLE_NAMES = {guest:'Гость', professor:'Профессор', dean:'Декан', headmaster:'Завуч'};
 const LOGS_TABLE = 'audit_logs';
+const ALL_SUBJECTS = [...new Set(Object.values(SUBJECTS).flat())];
+
+function populateSubjectSelect() {
+    const select = $('newSubject');
+    if (!select) return;
+    const current = select.value;
+    select.innerHTML = '<option value="">— Предмет профессора —</option>' +
+        ALL_SUBJECTS.map(subject => `<option value="${escapeHtml(subject)}">${escapeHtml(subject)}</option>`).join('');
+    select.value = current;
+}
+
 
 function $(id) { return document.getElementById(id); }
 
@@ -1357,6 +1368,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    populateSubjectSelect();
+    $('newRole')?.addEventListener('change', e => {
+        const isProfessor = e.target.value === 'professor';
+        const subject = $('newSubject');
+        if (subject) { subject.disabled = !isProfessor; if (!isProfessor) subject.value = ''; }
+    });
     $('loginBtn')?.addEventListener('click', () => openModal('loginModal'));
     $('closeLoginBtn')?.addEventListener('click', () => closeModal('loginModal'));
     $('loginConfirmBtn')?.addEventListener('click', login);
