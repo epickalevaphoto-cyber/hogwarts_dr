@@ -461,6 +461,7 @@
                 <button class="btn-outline" id="certBtn">🏆 Аттестат</button>
                 <button class="btn-green" id="reportBtn">📊 Отчет</button>
                 <button class="btn-outline" id="adminBtn" style="display:none;">⚙️ Админ</button>
+                <button class="btn-outline" id="logsBtn" style="display:none;">📜 Логи</button>
                 <span class="role-badge" id="roleBadge">Гость</span>
                 <span class="sync-status">
                     <span class="online-dot offline" id="syncDot"></span>
@@ -694,6 +695,15 @@
         </div>
     </div>
 
+    <!-- LOGS MODAL -->
+    <div class="modal" id="logsModal">
+        <div class="modal-content" style="max-width:90vw;">
+            <div class="modal-header"><h2>📜 Журнал действий</h2><button class="close-btn" id="closeLogsBtn">✕</button></div>
+            <div class="btn-row"><button class="btn-secondary" id="refreshLogsBtn">🔄 Обновить</button></div>
+            <div class="table-wrap" style="margin-top:12px;"><table><thead><tr><th>Дата</th><th>Пользователь</th><th>Роль</th><th>Действие</th><th>Подробности</th></tr></thead><tbody id="logsTableBody"></tbody></table></div>
+        </div>
+    </div>
+
     <!-- REPORT MODAL -->
     <div class="modal" id="reportModal">
         <div class="modal-content" style="max-width:90vw;">
@@ -839,6 +849,14 @@ async function insertStudent(name, faculty, course) {
 async function writeLog(action, details) {
     if (!db || !userName) return;
     await db.from(LOGS_TABLE).insert({username:userName, role:userRole, action, details});
+}
+
+async function loadLogs() {
+    const body = $('logsTableBody'); if (!body || !db) return;
+    body.innerHTML = '<tr><td colspan="5">Загрузка…</td></tr>';
+    const {data,error}=await db.from(LOGS_TABLE).select('*').order('created_at',{ascending:false}).limit(200);
+    if(error){ body.innerHTML='<tr><td colspan="5" style="color:#ef5350">'+escapeHtml(error.message)+'</td></tr>'; return; }
+    body.innerHTML=(data||[]).map(log=>`<tr><td>${new Date(log.created_at).toLocaleString('ru-RU')}</td><td>${escapeHtml(log.username)}</td><td>${escapeHtml(ROLE_NAMES[log.role]||log.role||'')}</td><td>${escapeHtml(log.action)}</td><td><pre style="white-space:pre-wrap;margin:0">${escapeHtml(JSON.stringify(log.details||{},null,2))}</pre></td></tr>`).join('') || '<tr><td colspan="5">Записей нет</td></tr>';
 }
 
 async function updateStudent(student) {
@@ -1049,6 +1067,7 @@ function updateUI() {
     if ($('transferBtn')) $('transferBtn').style.display = manage ? 'block' : 'none';
     if ($('clearBtn')) $('clearBtn').style.display = manage ? 'block' : 'none';
     if ($('adminBtn')) $('adminBtn').style.display = userRole === 'headmaster' ? 'inline-block' : 'none';
+    if ($('logsBtn')) $('logsBtn').style.display = userRole === 'headmaster' ? 'inline-block' : 'none';
 }
 
 function renderAll() {
@@ -1417,6 +1436,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             status.className = 'status-msg show ' + (added ? 'success' : 'error');
             $('addNames').value = '';
             renderAll();
+            await writeLog('Добавление студентов', {faculty, course, names, count: added});
             setSync('Online • ' + students.length, true);
         } catch (e) {
             status.textContent = '❌ ' + e.message;
@@ -1457,6 +1477,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             status.textContent = `✅ Переведено: ${done}`;
             status.className = 'status-msg show success';
             renderAll();
+            await writeLog('Перевод студентов', {student_ids: ids, new_course: newCourse, count: done});
         } catch (e) {
             status.textContent = '❌ ' + e.message;
             status.className = 'status-msg show error';
@@ -1472,6 +1493,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             for (const st of list) await deleteStudent(st.id);
             students = students.filter(s => s.faculty !== currentFaculty);
+            await writeLog('Очистка факультета', {faculty: currentFaculty, count: list.length});
             renderAll();
         } catch (e) {
             alert('Ошибка: ' + e.message);
@@ -1506,6 +1528,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUsers();
     });
     $('closeAdminBtn')?.addEventListener('click', () => closeModal('adminModal'));
+    $('logsBtn')?.addEventListener('click', async () => { if(userRole !== 'headmaster') return; openModal('logsModal'); await loadLogs(); });
+    $('closeLogsBtn')?.addEventListener('click', () => closeModal('logsModal'));
+    $('refreshLogsBtn')?.addEventListener('click', loadLogs);
     $('createUserBtn')?.addEventListener('click', createUser);
     $('refreshUsersBtn')?.addEventListener('click', loadUsers);
     $('downloadCertBtn')?.addEventListener('click', downloadCertificatePng);
